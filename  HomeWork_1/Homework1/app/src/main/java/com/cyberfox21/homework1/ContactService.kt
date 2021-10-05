@@ -41,7 +41,6 @@ class ContactService : Service() {
             null
         )
 
-
         var contactsList = ArrayList<String>()
         if (cursor != null) contactsList = retrieveContacts(cursor)
 
