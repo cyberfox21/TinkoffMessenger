@@ -33,12 +33,11 @@ class MainActivity : AppCompatActivity() {
         ) { activityResult ->
             if (activityResult.resultCode == Activity.RESULT_OK) {
                 // retrieve data
-                val names = activityResult.data?.getStringArrayExtra(SecondActivity.CONTACT_NAME)
-                val resultString = ""
-                names?.let {
-                    for (name in it) {
-                        resultString + "\n" + name
-                    }
+                val names =
+                    activityResult.data?.getStringArrayListExtra(SecondActivity.CONTACT_NAME)
+                var resultString = " "
+                names?.forEach {
+                    resultString += "$it "
                 }
                 binding.textView.text = resultString
             } else showError()

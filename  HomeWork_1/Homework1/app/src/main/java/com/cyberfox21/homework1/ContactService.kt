@@ -45,7 +45,7 @@ class ContactService : Service() {
         var contactsList = ArrayList<String>()
         if (cursor != null) contactsList = retrieveContacts(cursor)
 
-        result.putStringArrayListExtra(SecondActivity.CONTACT_NAME, contactsList)
+        result.putExtra(SecondActivity.CONTACT_NAME, contactsList)
 
         LocalBroadcastManager.getInstance(this).sendBroadcast(result)
     }
