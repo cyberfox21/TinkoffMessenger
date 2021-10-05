@@ -23,10 +23,7 @@ class MainActivity : AppCompatActivity() {
     private val requestPermissionResult =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
             if (isGranted) secondActivityResult.launch(SecondActivity.newIntent(this))
-            else {
-                makeToast(getString(R.string.denied_permission))
-                makeToast(getString(R.string.cant_load_contacts))
-            }
+            else showError()
         }
 
     //result of second activity
@@ -36,11 +33,15 @@ class MainActivity : AppCompatActivity() {
         ) { activityResult ->
             if (activityResult.resultCode == Activity.RESULT_OK) {
                 // retrieve data
-                binding.textView.text = activityResult.data?.let {
-                    it.getStringArrayExtra(SecondActivity.CONTACT_NAME).toString()
+                val names = activityResult.data?.getStringArrayExtra(SecondActivity.CONTACT_NAME)
+                val resultString = ""
+                names?.let {
+                    for (name in it) {
+                        resultString + "\n" + name
+                    }
                 }
-            }
-
+                binding.textView.text = resultString
+            } else showError()
         }
 
 
@@ -53,7 +54,11 @@ class MainActivity : AppCompatActivity() {
             requestPermissionResult.launch(Manifest.permission.READ_CONTACTS)
         }
 
+    private fun showError() {
+        makeToast(getString(R.string.denied_permission))
+        makeToast(getString(R.string.cant_load_contacts))
+    }
+
     private fun makeToast(msg: String) =
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
-
 }
