@@ -55,7 +55,10 @@ class ContactService : Service() {
 
         with(cursor) {
             while (moveToNext()) {
-                contactsList += "${getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME_PRIMARY)}"
+                val name = getString(
+                    getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME_PRIMARY)
+                )
+                contactsList += name
             }
         }
 
