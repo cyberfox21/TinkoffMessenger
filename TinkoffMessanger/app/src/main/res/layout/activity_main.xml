@@ -10,8 +10,13 @@
 <!--        android:layout_width="wrap_content"-->
 <!--        android:layout_height="wrap_content"/>-->
 
-    <com.cyberfox21.tinkoffmessanger.FlexBoxLayout
-        android:id="@+id/flexbox_layout"
+<!--    <com.cyberfox21.tinkoffmessanger.FlexBoxLayout-->
+<!--        android:id="@+id/flexbox_layout"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"/>-->
+
+    <com.cyberfox21.tinkoffmessanger.EmojiMessageViewGroup
+        android:id="@+id/emoji_message_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 

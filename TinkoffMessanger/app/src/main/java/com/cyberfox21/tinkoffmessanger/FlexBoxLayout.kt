@@ -74,8 +74,8 @@ class FlexBoxLayout @JvmOverloads constructor(
 
     override fun onLayout(p0: Boolean, p1: Int, p2: Int, p3: Int, p4: Int) {
 
-        var currentBottom = 0 // нижняя граница
-        var currentRight = 0 // правая граница
+        var currentBottom = 0
+        var currentRight = 0
 
         val btnAdd = getChildAt(0)
 

@@ -4,10 +4,12 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/shkol/hw_2/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.26666666666666666" />
+        <entry key="..\:/Users/shkol/hw_2/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/drawable/circle_image_view.xml" value="0.29322916666666665" />
         <entry key="..\:/Users/shkol/hw_2/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/drawable/custom_emoji_view_bg.xml" value="0.67" />
         <entry key="..\:/Users/shkol/hw_2/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/drawable/ic_launcher_background.xml" value="0.26666666666666666" />
-        <entry key="..\:/Users/shkol/hw_2/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/layout/activity_main.xml" value="0.67" />
+        <entry key="..\:/Users/shkol/hw_2/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/layout/activity_main.xml" value="0.22" />
         <entry key="..\:/Users/shkol/hw_2/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/layout/custom_emoji_view.xml" value="0.1" />
+        <entry key="..\:/Users/shkol/hw_2/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/layout/emoji_message_viewgroup.xml" value="0.33" />
         <entry key="..\:/Users/shkol/hw_2/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/layout/flexboxlayout_with_add_button.xml" value="0.75" />
       </map>
     </option>
