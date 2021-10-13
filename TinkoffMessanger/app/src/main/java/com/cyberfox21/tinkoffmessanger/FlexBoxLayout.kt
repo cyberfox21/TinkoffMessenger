@@ -5,8 +5,6 @@ import android.util.AttributeSet
 import android.util.Log
 import android.view.View.MeasureSpec.getSize
 import android.view.ViewGroup
-import androidx.core.view.marginBottom
-import androidx.core.view.marginRight
 import androidx.core.view.marginTop
 
 class FlexBoxLayout @JvmOverloads constructor(
@@ -16,14 +14,19 @@ class FlexBoxLayout @JvmOverloads constructor(
     defStyleRes: Int = 0
 ) : ViewGroup(context, attrs, defStyleAttr, defStyleRes) {
 
+    private var marginRight = 0
+    private var marginBottom = 0
+
     init {
         inflate(context, R.layout.flexboxlayout_with_add_button, this)
+        marginRight = 20
+        marginBottom = 20
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         Log.d("FlexBoxLayout", "childCount $childCount")
 
-        val width = getSize(widthMeasureSpec) - paddingLeft - paddingRight
+        val width = getSize(widthMeasureSpec) - paddingLeft - paddingRight + 2 * marginRight
 
         var totalWidth = 0
         var totalHeight = 0
@@ -37,8 +40,8 @@ class FlexBoxLayout @JvmOverloads constructor(
                 val child = getChildAt(i)
                 child.measure(widthMeasureSpec, heightMeasureSpec)
                 if (withMargins != 0) withMargins += marginRight
-                if (btnAdd.measuredWidth + child.measuredWidth + withMargins > width) {
-                    if (child.measuredWidth + withMargins <= width) {
+                if (btnAdd.measuredWidth + child.measuredWidth + withMargins + marginRight > width) {
+                    if (child.measuredWidth + withMargins + marginRight <= width) {
                         withMargins += child.measuredWidth
                     } else {
                         totalHeight += marginBottom + child.measuredHeight
@@ -82,13 +85,14 @@ class FlexBoxLayout @JvmOverloads constructor(
         if (childCount > 1) {
             for (i in 1 until childCount) {
                 val child = getChildAt(i)
-                if (btnAdd.measuredWidth + currentRight + child.measuredWidth > this.width) {
+                if (btnAdd.measuredWidth + currentRight + child.measuredWidth + marginRight > this.width) {
                     if (currentRight + child.measuredWidth > this.width) {
                         currentRight = 0
                         currentBottom += marginTop + marginBottom + child.measuredHeight
+                    } else {
+                        currentRight += marginRight
                     }
-
-                } else if (i != 0 && currentRight + marginRight < width) {
+                } else if (currentRight != 0 && currentRight + marginRight < width) {
                     currentRight += marginRight
                 }
                 child.layout(
@@ -102,6 +106,8 @@ class FlexBoxLayout @JvmOverloads constructor(
             if (currentRight + btnAdd.measuredWidth > width) {
                 currentRight = 0
                 currentBottom += marginTop + marginBottom + btnAdd.measuredHeight
+            } else {
+                currentRight += marginRight
             }
             btnAdd.layout(
                 currentRight,

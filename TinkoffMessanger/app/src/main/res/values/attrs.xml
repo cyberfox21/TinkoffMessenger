@@ -3,9 +3,6 @@
     <declare-styleable name="CustomEmojiView">
         <attr name="android:background">@drawable/custom_emoji_view_bg</attr>
         <attr name="android:padding">10dp</attr>
-    </declare-styleable>
-
-    <declare-styleable name="FlexBoxLayout">
         <attr name="android:layout_marginRight">8dp</attr>
         <attr name="android:layout_marginBottom">8dp</attr>
     </declare-styleable>
