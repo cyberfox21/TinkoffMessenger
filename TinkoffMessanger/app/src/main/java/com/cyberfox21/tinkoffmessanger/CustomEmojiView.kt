@@ -32,7 +32,7 @@ class CustomEmojiView @JvmOverloads constructor(
 
     private val textPaint = Paint().apply {
         color = Color.WHITE
-        textSize = 50f
+        textSize = 45f
         textAlign = Paint.Align.CENTER
         setBackgroundResource(R.drawable.custom_emoji_view_bg)
     }

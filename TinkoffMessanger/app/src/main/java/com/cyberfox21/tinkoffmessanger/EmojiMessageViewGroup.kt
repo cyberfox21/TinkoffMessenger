@@ -47,15 +47,25 @@ class EmojiMessageViewGroup @JvmOverloads constructor(
         val description = getChildAt(3)
         val flexBoxLayout = getChildAt(4)
 
-        measureChildWithMargins(imageView, widthMeasureSpec, 0, heightMeasureSpec, 0)
+        val marginBottom = (imageView.layoutParams as MarginLayoutParams).bottomMargin
+        val marginRight = (imageView.layoutParams as MarginLayoutParams).marginEnd
+
+        measureChildWithMargins(
+            imageView,
+            widthMeasureSpec,
+            imageView.measuredWidth,
+            heightMeasureSpec,
+            0
+        )
         measureChildWithMargins(time, widthMeasureSpec, 0, heightMeasureSpec, 0)
         measureChildWithMargins(title, widthMeasureSpec, 0, heightMeasureSpec, 0)
         measureChildWithMargins(description, widthMeasureSpec, 0, heightMeasureSpec, 0)
         measureChildWithMargins(flexBoxLayout, widthMeasureSpec, 0, heightMeasureSpec, 0)
 
-        val totalWidth = imageView.measuredWidth + description.measuredWidth + time.measuredWidth
+        val totalWidth =
+            (4 * marginRight) + imageView.measuredWidth + description.measuredWidth + time.measuredWidth
         val totalHeight = maxOf(
-            title.measuredHeight + description.measuredHeight + flexBoxLayout.measuredHeight,
+            4 * marginBottom + title.measuredHeight + description.measuredHeight + flexBoxLayout.measuredHeight,
             imageView.measuredHeight
         )
 
@@ -72,39 +82,42 @@ class EmojiMessageViewGroup @JvmOverloads constructor(
         val description = getChildAt(3)
         val flexBoxLayout = getChildAt(4)
 
+        val marginBottom = (imageView.layoutParams as MarginLayoutParams).bottomMargin
+        val marginRight = (imageView.layoutParams as MarginLayoutParams).rightMargin
+
         imageView.layout(
-            0 + paddingLeft,
-            0 + paddingTop,
-            imageView.measuredWidth + paddingLeft,
-            imageView.measuredHeight + paddingTop
+            0 + paddingLeft + marginRight,
+            0 + paddingTop + marginBottom,
+            imageView.measuredWidth + paddingLeft + marginRight,
+            imageView.measuredHeight + paddingTop + marginBottom
         )
 
         time.layout(
-            width - time.measuredWidth - paddingRight,
-            0 + paddingBottom,
-            width,
-            time.measuredHeight + paddingBottom
+            width - time.measuredWidth - paddingRight - marginRight,
+            0 + paddingBottom + marginBottom,
+            width + marginRight + marginRight,
+            time.measuredHeight + paddingBottom + marginBottom
         )
 
         title.layout(
-            imageView.width + paddingRight,
-            0 + paddingBottom,
-            width - time.width,
-            title.measuredHeight + paddingBottom
+            imageView.measuredWidth + paddingRight + 2 * marginRight,
+            0 + paddingBottom + marginBottom,
+            width - time.width - marginRight,
+            title.measuredHeight + paddingBottom + marginBottom
         )
 
         description.layout(
-            imageView.width + paddingRight,
-            title.bottom + paddingBottom,
-            width - time.width,
-            title.bottom + description.measuredHeight + paddingBottom
+            imageView.measuredWidth + paddingRight + 2 * marginRight,
+            title.bottom + paddingBottom + marginBottom,
+            width - time.measuredWidth - marginRight,
+            title.bottom + description.measuredHeight + paddingBottom + marginBottom
         )
 
         flexBoxLayout.layout(
-            imageView.width + paddingRight,
-            description.bottom + paddingBottom,
-            width - time.width,
-            description.bottom + flexBoxLayout.measuredHeight + paddingBottom
+            imageView.measuredWidth + 2 * marginRight + paddingRight,
+            description.bottom + paddingBottom + marginBottom,
+            width - time.width - marginRight,
+            description.bottom + flexBoxLayout.measuredHeight + paddingBottom + marginBottom
         )
 
     }
