@@ -11,30 +11,6 @@ class EmojiMessageViewGroup @JvmOverloads constructor(
     defStyleRes: Int = 0
 ) : ViewGroup(context, attrs, defStyleAttr, defStyleRes) {
 
-    var name = ""
-        set(value) {
-            field = value
-            requestLayout()
-        }
-
-    var message = ""
-        set(value) {
-            field = value
-            requestLayout()
-        }
-
-    var image = R.drawable.ic_launcher_background
-        set(value) {
-            field = value
-            requestLayout()
-        }
-
-    var time = ""
-        set(value) {
-            field = value
-            requestLayout()
-        }
-
     init {
         inflate(context, R.layout.emoji_message_viewgroup, this)
     }
@@ -103,7 +79,7 @@ class EmojiMessageViewGroup @JvmOverloads constructor(
         time.layout(
             width - time.measuredWidth - paddingRight - marginRight,
             0 + paddingBottom + marginBottom,
-            width + marginRight + marginRight,
+            width - paddingRight - marginRight,
             time.measuredHeight + paddingBottom + marginBottom
         )
 
@@ -111,20 +87,20 @@ class EmojiMessageViewGroup @JvmOverloads constructor(
             imageView.measuredWidth + paddingRight + 2 * marginRight,
             0 + paddingBottom + marginBottom,
             width - time.width - marginRight,
-            title.measuredHeight + paddingBottom + marginBottom
+            time.height + paddingBottom + marginBottom
         )
 
         description.layout(
             imageView.measuredWidth + paddingRight + 2 * marginRight,
             title.bottom + paddingBottom + marginBottom,
-            width - time.measuredWidth - marginRight,
+            width - paddingRight - marginRight,
             title.bottom + description.measuredHeight + paddingBottom + marginBottom
         )
 
         flexBoxLayout.layout(
             imageView.measuredWidth + 2 * marginRight + paddingRight,
             description.bottom + paddingBottom + marginBottom,
-            width - time.measuredWidth - marginRight,
+            width - paddingRight - marginRight,
             description.bottom + flexBoxLayout.measuredHeight + paddingBottom + marginBottom
         )
 

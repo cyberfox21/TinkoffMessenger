@@ -5,13 +5,15 @@
 
     <ImageView
         android:id="@+id/iv_add_emoji"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/btnAddWidth"
+        android:layout_height="@dimen/btnAddHeight"
         android:background="@drawable/custom_emoji_view_bg"
-        android:paddingLeft="20dp"
-        android:paddingTop="10dp"
-        android:paddingRight="20dp"
-        android:paddingBottom="10dp"
-        android:src="@drawable/ic_plus" />
+        android:paddingStart="@dimen/addEmojiBtnPaddingStart"
+        android:paddingTop="@dimen/addEmojiBtnPaddingTop"
+        android:paddingEnd="@dimen/addEmojiBtnPaddingEnd"
+        android:paddingBottom="@dimen/addEmojiBtnPaddingBottom"
+        android:contentDescription="@string/add_emoji_button"
+        android:src="@drawable/ic_plus"/>
+
 
 </merge>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="cicleImageViewAvatarLayoutWidth">50dp</dimen>
+    <dimen name="cicleImageViewAvatarLayoutHeight">50dp</dimen>
+    <dimen name="addEmojiBtnPaddingStart">10dp</dimen>
+    <dimen name="addEmojiBtnPaddingEnd">10dp</dimen>
+    <dimen name="addEmojiBtnPaddingTop">10dp</dimen>
+    <dimen name="addEmojiBtnPaddingBottom">10dp</dimen>
+    <dimen name="mergeLayoutMarginBottom">30dp</dimen>
+    <dimen name="mergeLayoutMarginEnd">30dp</dimen>
+    <dimen name="margin10dp">10dp</dimen>
+    <dimen name="padding20dp">10dp</dimen>
+    <dimen name="textSize14sp">14sp</dimen>
+    <dimen name="btnAddHeight">14sp</dimen>
+    <dimen name="btnAddWidth">24sp</dimen>
+</resources>

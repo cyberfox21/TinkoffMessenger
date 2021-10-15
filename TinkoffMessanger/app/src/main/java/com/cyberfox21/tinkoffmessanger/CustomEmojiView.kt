@@ -1,7 +1,6 @@
 package com.cyberfox21.tinkoffmessanger
 
 import android.content.Context
-import android.content.res.TypedArray
 import android.graphics.*
 import android.util.AttributeSet
 import android.view.View
@@ -28,11 +27,11 @@ class CustomEmojiView @JvmOverloads constructor(
         }
 
     private val textBoundsRectangle = Rect()
-    private val textCordinate = PointF()
+    private val textCoordinate = PointF()
 
     private val textPaint = Paint().apply {
         color = Color.WHITE
-        textSize = 45f
+        textSize = resources.getDimension(R.dimen.btnAddHeight)
         textAlign = Paint.Align.CENTER
         setBackgroundResource(R.drawable.custom_emoji_view_bg)
     }
@@ -44,17 +43,16 @@ class CustomEmojiView @JvmOverloads constructor(
     }
 
     init {
-        val typedArray: TypedArray =
-            context.obtainStyledAttributes(
-                attrs,
-                R.styleable.CustomEmojiView,
-                defStyleAttr,
-                defStyleRes
+
+        with(context.obtainStyledAttributes(attrs, R.styleable.CustomEmojiView)) {
+            setPadding(
+                EMOJI_VIEW_PADDING,
+                EMOJI_VIEW_PADDING,
+                EMOJI_VIEW_PADDING,
+                EMOJI_VIEW_PADDING
             )
-
-        setPadding(20, 20, 20, 20)
-
-        typedArray.recycle()
+            recycle()
+        }
 
         rootView.setOnClickListener {
             onEmojiClickListener?.onEmojiClick(it as CustomEmojiView)
@@ -81,12 +79,12 @@ class CustomEmojiView @JvmOverloads constructor(
     }
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
-        textCordinate.x = (w / 2).toFloat()
-        textCordinate.y = h / 2f + textBoundsRectangle.height() / 3
+        textCoordinate.x = (w / 2).toFloat()
+        textCoordinate.y = h / 2f + textBoundsRectangle.height() / 3
     }
 
     override fun onDraw(canvas: Canvas) {
-        canvas.drawText(text, textCordinate.x, textCordinate.y, textPaint)
+        canvas.drawText(text, textCoordinate.x, textCoordinate.y, textPaint)
     }
 
 
@@ -101,6 +99,8 @@ class CustomEmojiView @JvmOverloads constructor(
     }
 
     companion object {
+        const val EMOJI_VIEW_PADDING = 20
+
         private val SUPPORTED_DRAWABLE_STATE = intArrayOf(android.R.attr.state_selected)
     }
 }
