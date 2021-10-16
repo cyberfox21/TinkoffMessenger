@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/iv_add_emoji"
+        android:layout_width="@dimen/btnAddWidth"
+        android:layout_height="@dimen/btnAddHeight"
+        android:background="@drawable/custom_emoji_view_bg"
+        android:paddingStart="@dimen/addEmojiBtnPaddingStart"
+        android:paddingTop="@dimen/addEmojiBtnPaddingTop"
+        android:paddingEnd="@dimen/addEmojiBtnPaddingEnd"
+        android:paddingBottom="@dimen/addEmojiBtnPaddingBottom"
+        android:contentDescription="@string/add_emoji_button"
+        android:src="@drawable/ic_plus"/>
+
+
+</merge>

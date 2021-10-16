@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginEnd="@dimen/mergeLayoutMarginEnd"
+    android:layout_marginBottom="@dimen/mergeLayoutMarginBottom"
+    tools:parentTag="android.widget.FrameLayout">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/imageView"
+        android:layout_width="@dimen/cicleImageViewAvatarLayoutWidth"
+        android:layout_height="@dimen/cicleImageViewAvatarLayoutHeight"
+        android:layout_marginEnd="@dimen/margin10dp"
+        android:layout_marginBottom="@dimen/margin10dp"
+        android:clickable="true"
+        android:focusable="true"
+        tools:src="@drawable/ed" />
+
+    <TextView
+        android:id="@+id/time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="@string/example_time" />
+
+    <TextView
+        android:id="@+id/name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/green"
+        android:textSize="@dimen/textSize14sp"
+        tools:text="@string/example_name" />
+
+    <TextView
+        android:id="@+id/description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/textSize14sp"
+        tools:text="@string/example_message" />
+
+    <com.cyberfox21.tinkoffmessanger.FlexBoxLayout
+        android:id="@+id/emoji_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+</merge>

@@ -1,3 +1,7 @@
 <resources>
-    <string name="app_name">TinkoffMessanger</string>
+    <string name="app_name">TinkoffMessenger</string>
+    <string name="example_time">12:35</string>
+    <string name="example_name">Ed Sheeran</string>
+    <string name="example_message">Not afraid to be yourself.</string>
+    <string name="add_emoji_button">Add emoji button</string>
 </resources>
