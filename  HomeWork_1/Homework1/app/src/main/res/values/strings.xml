@@ -2,7 +2,6 @@
     <string name="app_name">Homework1</string>
     <string name="start_text_in_first_activity">Здесь будет отображаться \nрезультат второй активности</string>
     <string name="launch_second_activity">Запустить вторую активность</string>
-    <string name="start_service">Start Service</string>
     <string name="denied_permission">Denied read contacts permission</string>
     <string name="cant_load_contacts">Can\'t load contacts</string>
 </resources>

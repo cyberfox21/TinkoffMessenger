@@ -3,10 +3,13 @@ package com.cyberfox21.homework1
 import android.Manifest
 import android.app.Activity
 import android.os.Bundle
+import android.view.View
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.cyberfox21.homework1.databinding.ActivityMainBinding
+import java.lang.StringBuilder
 
 class MainActivity : AppCompatActivity() {
 
@@ -35,11 +38,15 @@ class MainActivity : AppCompatActivity() {
                 // retrieve data
                 val names =
                     activityResult.data?.getStringArrayListExtra(SecondActivity.CONTACT_NAME)
-                var resultString = " "
-                names?.forEach {
-                    resultString += "$it "
+                val adapter = names?.let {
+                    ArrayAdapter(
+                        this,
+                        android.R.layout.simple_list_item_1,
+                        it.toList()
+                    )
                 }
-                binding.textView.text = resultString
+                binding.textView.visibility = View.GONE
+                binding.listView.adapter = adapter
             } else showError()
         }
 
