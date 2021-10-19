@@ -4,4 +4,6 @@
     <string name="example_name">Ed Sheeran</string>
     <string name="example_message">Not afraid to be yourself.</string>
     <string name="add_emoji_button">Add emoji button</string>
+    <string name="send_message_or_attach_a_photo_button">Send message or attach a photo button</string>
+    <string name="profile_photo">Profile photo</string>
 </resources>

@@ -15,10 +15,12 @@
         android:layout_marginBottom="@dimen/margin10dp"
         android:clickable="true"
         android:focusable="true"
-        tools:src="@drawable/ed" />
+        tools:src="@drawable/ed"
+        android:contentDescription="@string/profile_photo"/>
 
     <TextView
         android:id="@+id/time"
+        android:textColor="@color/white"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         tools:text="@string/example_time" />
@@ -33,12 +35,13 @@
 
     <TextView
         android:id="@+id/description"
+        android:textColor="@color/white"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="@dimen/textSize14sp"
         tools:text="@string/example_message" />
 
-    <com.cyberfox21.tinkoffmessanger.FlexBoxLayout
+    <com.cyberfox21.tinkoffmessanger.presentation.FlexBoxLayout
         android:id="@+id/emoji_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />

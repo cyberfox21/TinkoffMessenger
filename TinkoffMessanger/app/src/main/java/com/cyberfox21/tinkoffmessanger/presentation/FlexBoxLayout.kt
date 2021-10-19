@@ -1,9 +1,10 @@
-package com.cyberfox21.tinkoffmessanger
+package com.cyberfox21.tinkoffmessanger.presentation
 
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View.MeasureSpec.getSize
 import android.view.ViewGroup
+import com.cyberfox21.tinkoffmessanger.R
 
 class FlexBoxLayout @JvmOverloads constructor(
     context: Context,

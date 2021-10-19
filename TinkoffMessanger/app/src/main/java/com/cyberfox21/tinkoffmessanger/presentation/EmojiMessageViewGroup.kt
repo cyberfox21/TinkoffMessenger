@@ -1,8 +1,9 @@
-package com.cyberfox21.tinkoffmessanger
+package com.cyberfox21.tinkoffmessanger.presentation
 
 import android.content.Context
 import android.util.AttributeSet
 import android.view.ViewGroup
+import com.cyberfox21.tinkoffmessanger.R
 
 class EmojiMessageViewGroup @JvmOverloads constructor(
     context: Context,

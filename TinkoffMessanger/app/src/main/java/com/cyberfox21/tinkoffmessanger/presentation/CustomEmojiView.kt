@@ -1,9 +1,10 @@
-package com.cyberfox21.tinkoffmessanger
+package com.cyberfox21.tinkoffmessanger.presentation
 
 import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
 import android.view.View
+import com.cyberfox21.tinkoffmessanger.R
 
 class CustomEmojiView @JvmOverloads constructor(
     context: Context,
