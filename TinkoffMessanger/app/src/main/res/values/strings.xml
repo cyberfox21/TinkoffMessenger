@@ -7,4 +7,5 @@
     <string name="send_message_or_attach_a_photo_button">Send message or attach a photo button</string>
     <string name="profile_photo">Profile photo</string>
     <string name="example_date">21 July</string>
+    <string name="type_something">Type something…</string>
 </resources>

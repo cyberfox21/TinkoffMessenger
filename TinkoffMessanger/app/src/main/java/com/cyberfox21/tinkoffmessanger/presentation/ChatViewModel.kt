@@ -3,19 +3,25 @@ package com.cyberfox21.tinkoffmessanger.presentation
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.cyberfox21.tinkoffmessanger.data.MessageRepositoryImpl
+import com.cyberfox21.tinkoffmessanger.data.ReactionRepositoryImpl
 import com.cyberfox21.tinkoffmessanger.domain.entity.Message
 import com.cyberfox21.tinkoffmessanger.domain.entity.Reaction
 import com.cyberfox21.tinkoffmessanger.domain.usecase.AddMessageUseCase
 import com.cyberfox21.tinkoffmessanger.domain.usecase.GetMessageListUseCase
+import com.cyberfox21.tinkoffmessanger.domain.usecase.GetReactionListUseCase
 import java.util.*
 
 class ChatViewModel : ViewModel() {
 
     private var i = 0
 
-    private val repository = MessageRepositoryImpl()
-    private val getMessageListUseCase = GetMessageListUseCase(repository)
-    private val addMessageUseCase = AddMessageUseCase(repository)
+    private val messageRepository = MessageRepositoryImpl
+    private val reactionsRepository = ReactionRepositoryImpl
+    private val getMessageListUseCase = GetMessageListUseCase(messageRepository)
+    private val addMessageUseCase = AddMessageUseCase(messageRepository)
+    private val getReactionListUseCase = GetReactionListUseCase(reactionsRepository)
+
+    val reactionList = getReactionListUseCase()
 
     private var _messageListLD = getMessageListUseCase()
     val messageList: LiveData<List<Message>>

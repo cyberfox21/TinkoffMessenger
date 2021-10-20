@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.cyberfox21.tinkoffmessanger.domain.entity.Message
 import com.cyberfox21.tinkoffmessanger.domain.repository.MessageRepository
 
-class MessageRepositoryImpl : MessageRepository {
+object MessageRepositoryImpl : MessageRepository {
 
     private var _messageListLD = MutableLiveData<List<Message>>()
     private val messageListLD: LiveData<List<Message>>

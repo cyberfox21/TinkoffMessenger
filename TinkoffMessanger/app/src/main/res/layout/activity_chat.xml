@@ -33,6 +33,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="5"
             android:ems="10"
+            android:textColorHint="@color/white"
+            android:hint="@string/type_something"
             android:inputType="textPersonName"
             android:textColor="@color/white"
             tools:text="Message" />

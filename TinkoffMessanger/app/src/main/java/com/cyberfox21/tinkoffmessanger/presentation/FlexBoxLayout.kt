@@ -33,10 +33,12 @@ class FlexBoxLayout @JvmOverloads constructor(
         btnAdd.measure(widthMeasureSpec, heightMeasureSpec)
 
         var totalWidth = 0
-        var totalHeight = btnAdd.measuredHeight
-        var currentWidth = btnAdd.measuredWidth
+        var totalHeight = 0
+        var currentWidth: Int
 
         if (childCount > 1) {
+            totalHeight = btnAdd.measuredHeight
+            currentWidth = btnAdd.measuredWidth
             var child = getChildAt(1)
             for (i in 1 until childCount) {
                 child = getChildAt(i)
@@ -106,13 +108,6 @@ class FlexBoxLayout @JvmOverloads constructor(
                 currentBottom,
                 currentRight + child.measuredWidth,
                 currentBottom + child.measuredHeight
-            )
-        } else {
-            btnAdd.layout(
-                0,
-                0,
-                btnAdd.measuredWidth,
-                btnAdd.measuredHeight
             )
         }
 

@@ -5,16 +5,24 @@ import android.text.Editable
 import android.text.TextWatcher
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.GridLayoutManager
 import com.cyberfox21.tinkoffmessanger.R
 import com.cyberfox21.tinkoffmessanger.databinding.ActivityChatBinding
 
+import com.cyberfox21.tinkoffmessanger.databinding.BottomSheetDialogLayoutBinding
+
+import com.google.android.material.bottomsheet.BottomSheetDialog
+
 class ChatActivity : AppCompatActivity() {
+
+    private lateinit var bottomSheetDialog: BottomSheetDialog
 
     private lateinit var binding: ActivityChatBinding
 
     private lateinit var viewModel: ChatViewModel
 
     private val chatRecyclerAdapter = ChatRecyclerAdapter()
+    private val reactionRecyclerAdapter = ReactionRecyclerAdapter()
     private val customMessageItemDecorator = CustomMessageItemDecorator()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,6 +33,7 @@ class ChatActivity : AppCompatActivity() {
         setupRecyclerView()
         addListeners()
         observeViewModel()
+        setBottomSheetDialog()
     }
 
     private fun setBinding() {
@@ -61,6 +70,26 @@ class ChatActivity : AppCompatActivity() {
 
             })
         }
+        chatRecyclerAdapter.onLongMessageClickListener =
+            object : ChatRecyclerAdapter.OnLongMessageClickListener {
+                override fun onLongMessageClick() {
+                    showBottomSheetDialog()
+                }
+
+            }
+    }
+
+    private fun setBottomSheetDialog() {
+        bottomSheetDialog = BottomSheetDialog(this)
+        val dialogLayoutBinding = BottomSheetDialogLayoutBinding.inflate(layoutInflater)
+        bottomSheetDialog.setContentView(dialogLayoutBinding.root)
+        dialogLayoutBinding.emojiRecycler.layoutManager = GridLayoutManager(this, 6)
+        dialogLayoutBinding.emojiRecycler.adapter = reactionRecyclerAdapter
+        reactionRecyclerAdapter.submitList(viewModel.reactionList)
+    }
+
+    private fun showBottomSheetDialog() {
+        bottomSheetDialog.show()
     }
 
     private fun sendMessage() {

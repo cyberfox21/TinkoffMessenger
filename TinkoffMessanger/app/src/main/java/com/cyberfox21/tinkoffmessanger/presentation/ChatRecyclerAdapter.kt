@@ -7,11 +7,18 @@ import androidx.recyclerview.widget.RecyclerView
 import com.cyberfox21.tinkoffmessanger.databinding.DateItemDecorationBinding
 import com.cyberfox21.tinkoffmessanger.domain.entity.Message
 
-class ChatRecyclerAdapter : ListAdapter<Message, RecyclerView.ViewHolder>(DiffUtilCallback()) {
+class ChatRecyclerAdapter :
+    ListAdapter<Message, RecyclerView.ViewHolder>(MessageDiffUtilCallback()) {
+
+    var onLongMessageClickListener: OnLongMessageClickListener? = null
 
     enum class ViewType(type: Int) {
         MESSAGE(0),
         DATE_DEVIDER(1)
+    }
+
+    interface OnLongMessageClickListener {
+        fun onLongMessageClick()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -65,6 +72,10 @@ class ChatRecyclerAdapter : ListAdapter<Message, RecyclerView.ViewHolder>(DiffUt
                     count = reaction.count.toString()
                 }
                 emojiLayout.addView(emojiView)
+            }
+            root.setOnLongClickListener {
+                onLongMessageClickListener?.onLongMessageClick()
+                true
             }
         }
     }
