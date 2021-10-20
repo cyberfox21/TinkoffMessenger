@@ -12,4 +12,5 @@ class MessageViewHolder(val emojiMessageViewGroup: EmojiMessageViewGroup) :
     val name = emojiMessageViewGroup.getChildAt(2) as TextView
     val text = emojiMessageViewGroup.getChildAt(3) as TextView
     val emojiLayout = emojiMessageViewGroup.getChildAt(4) as FlexBoxLayout
+
 }

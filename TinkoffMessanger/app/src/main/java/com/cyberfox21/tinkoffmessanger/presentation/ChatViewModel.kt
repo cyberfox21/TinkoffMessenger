@@ -24,13 +24,18 @@ class ChatViewModel : ViewModel() {
     fun sendMessage(image: Int, name: String, text: String) {
         val time = getTime()
         val message = Message(i, image, name, text, time, listOf<Reaction>())
-        addMessageUseCase(message)
         i++
+        addMessageUseCase(message)
     }
 
     private fun getTime(): String {
         val currentTime: Date = Calendar.getInstance().time
-        return currentTime.time.toString()
+        return currentTime.toString().substring(TIME_START_INDEX, TIME_END_INDEX)
+    }
+
+    companion object {
+        const val TIME_START_INDEX = 11
+        const val TIME_END_INDEX = 16
     }
 
 }

@@ -8,13 +8,13 @@ import com.cyberfox21.tinkoffmessanger.domain.repository.MessageRepository
 class MessageRepositoryImpl : MessageRepository {
 
     private var _messageListLD = MutableLiveData<List<Message>>()
-    private val messageLiveData: LiveData<List<Message>>
+    private val messageListLD: LiveData<List<Message>>
         get() = _messageListLD
 
     private val messageList = mutableListOf<Message>()
 
     override fun getMessageList(): LiveData<List<Message>> {
-        return messageLiveData
+        return messageListLD
     }
 
     override fun addMessage(msg: Message) {
@@ -23,7 +23,7 @@ class MessageRepositoryImpl : MessageRepository {
     }
 
     private fun updateList() {
-        _messageListLD.value = messageList
+        _messageListLD.value = messageList.toList()
     }
 
 }

@@ -15,6 +15,7 @@ class ChatActivity : AppCompatActivity() {
     private lateinit var viewModel: ChatViewModel
 
     private val chatRecyclerAdapter = ChatRecyclerAdapter()
+    private val customMessageItemDecorator = CustomMessageItemDecorator()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,6 +37,7 @@ class ChatActivity : AppCompatActivity() {
 
     private fun setupRecyclerView() {
         binding.chatRecycler.adapter = chatRecyclerAdapter
+        //binding.chatRecycler.addItemDecoration(customMessageItemDecorator)
     }
 
     private fun addListeners() {
@@ -53,7 +55,7 @@ class ChatActivity : AppCompatActivity() {
                 }
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) =
-                    binding.imageBtnSend.setImageResource(getImageBtnResource(count))
+                    imageBtnSend.setImageResource(getImageBtnResource(count))
 
                 override fun afterTextChanged(s: Editable?) {}
 
@@ -66,6 +68,7 @@ class ChatActivity : AppCompatActivity() {
         val name = resources.getString(R.string.example_name)
         val message = binding.etMessageField.text.toString()
         viewModel.sendMessage(image, name, message)
+        binding.etMessageField.setText("")
     }
 
     private fun observeViewModel() {
