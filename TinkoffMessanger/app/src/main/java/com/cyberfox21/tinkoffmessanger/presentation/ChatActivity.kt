@@ -3,6 +3,7 @@ package com.cyberfox21.tinkoffmessanger.presentation
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
@@ -10,6 +11,7 @@ import com.cyberfox21.tinkoffmessanger.R
 import com.cyberfox21.tinkoffmessanger.databinding.ActivityChatBinding
 
 import com.cyberfox21.tinkoffmessanger.databinding.BottomSheetDialogLayoutBinding
+import com.cyberfox21.tinkoffmessanger.domain.entity.Message
 
 import com.google.android.material.bottomsheet.BottomSheetDialog
 
@@ -23,7 +25,6 @@ class ChatActivity : AppCompatActivity() {
 
     private val chatRecyclerAdapter = ChatRecyclerAdapter()
     private val reactionRecyclerAdapter = ReactionRecyclerAdapter()
-    private val customMessageItemDecorator = CustomMessageItemDecorator()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,7 +47,6 @@ class ChatActivity : AppCompatActivity() {
 
     private fun setupRecyclerView() {
         binding.chatRecycler.adapter = chatRecyclerAdapter
-        //binding.chatRecycler.addItemDecoration(customMessageItemDecorator)
     }
 
     private fun addListeners() {
@@ -72,10 +72,9 @@ class ChatActivity : AppCompatActivity() {
         }
         chatRecyclerAdapter.onLongMessageClickListener =
             object : ChatRecyclerAdapter.OnLongMessageClickListener {
-                override fun onLongMessageClick() {
-                    showBottomSheetDialog()
+                override fun onLongMessageClick(message: Message) {
+                    showBottomSheetDialog(message)
                 }
-
             }
     }
 
@@ -88,7 +87,15 @@ class ChatActivity : AppCompatActivity() {
         reactionRecyclerAdapter.submitList(viewModel.reactionList)
     }
 
-    private fun showBottomSheetDialog() {
+    private fun showBottomSheetDialog(message: Message) {
+        reactionRecyclerAdapter.onEmojiDialogClickListener =
+            object : ReactionRecyclerAdapter.OnEmojiDialogClickListener {
+                override fun onEmojiDialogClick(emoji: String) {
+                    viewModel.addNewEmoji(message, emoji)
+                    Log.d("ChatActivity", "emoji selected $emoji")
+                    bottomSheetDialog.dismiss()
+                }
+            }
         bottomSheetDialog.show()
     }
 

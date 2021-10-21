@@ -7,5 +7,11 @@ interface MessageRepository {
 
     fun getMessageList(): LiveData<List<Message>>
 
+    fun getMessage(msgId: Int): Message?
+
     fun addMessage(msg: Message)
+
+    fun deleteMessage(msg: Message)
+
+    fun addEmojiToMessage(msg: Message)
 }

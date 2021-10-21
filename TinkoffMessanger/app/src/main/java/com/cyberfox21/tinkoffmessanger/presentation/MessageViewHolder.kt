@@ -3,6 +3,8 @@ package com.cyberfox21.tinkoffmessanger.presentation
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.cyberfox21.tinkoffmessanger.presentation.views.EmojiMessageViewGroup
+import com.cyberfox21.tinkoffmessanger.presentation.views.FlexBoxLayout
 
 class MessageViewHolder(val emojiMessageViewGroup: EmojiMessageViewGroup) :
     RecyclerView.ViewHolder(emojiMessageViewGroup) {

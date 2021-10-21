@@ -8,8 +8,9 @@
         android:id="@+id/tv_emoji"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:gravity="center"
         android:textColor="@color/white"
-        android:textSize="@dimen/textSize14sp"
+        android:textSize="@dimen/textSize32sp"
         tools:text="\uD83D\uDE02" />
 </FrameLayout>

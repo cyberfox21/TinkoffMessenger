@@ -6,5 +6,5 @@ data class Message(
     val name: String,
     val msg: String,
     val time: String,
-    val reactions: List<Reaction>
+    var reactions: MutableList<Reaction>
 )

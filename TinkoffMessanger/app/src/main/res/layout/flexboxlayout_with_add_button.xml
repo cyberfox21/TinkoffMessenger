@@ -8,12 +8,12 @@
         android:layout_width="@dimen/btnAddWidth"
         android:layout_height="@dimen/btnAddHeight"
         android:background="@drawable/custom_emoji_view_bg"
+        android:contentDescription="@string/add_emoji_button"
         android:paddingStart="@dimen/addEmojiBtnPaddingStart"
         android:paddingTop="@dimen/addEmojiBtnPaddingTop"
         android:paddingEnd="@dimen/addEmojiBtnPaddingEnd"
         android:paddingBottom="@dimen/addEmojiBtnPaddingBottom"
-        android:contentDescription="@string/add_emoji_button"
-        android:src="@drawable/ic_plus"/>
+        android:src="@drawable/ic_plus" />
 
 
 </merge>

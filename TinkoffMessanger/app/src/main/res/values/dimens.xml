@@ -9,8 +9,9 @@
     <dimen name="mergeLayoutMarginBottom">30dp</dimen>
     <dimen name="mergeLayoutMarginEnd">30dp</dimen>
     <dimen name="margin10dp">10dp</dimen>
-    <dimen name="padding20dp">10dp</dimen>
+    <dimen name="padding10dp">10dp</dimen>
     <dimen name="textSize14sp">14sp</dimen>
+    <dimen name="textSize32sp">32sp</dimen>
     <dimen name="btnAddHeight">14sp</dimen>
     <dimen name="btnAddWidth">24sp</dimen>
 </resources>

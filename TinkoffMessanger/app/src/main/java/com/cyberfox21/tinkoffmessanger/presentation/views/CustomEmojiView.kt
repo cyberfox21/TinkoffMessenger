@@ -1,4 +1,4 @@
-package com.cyberfox21.tinkoffmessanger.presentation
+package com.cyberfox21.tinkoffmessanger.presentation.views
 
 import android.content.Context
 import android.graphics.*

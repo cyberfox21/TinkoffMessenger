@@ -23,6 +23,7 @@
         android:layout_height="wrap_content"
         android:background="@color/unselected_emoji"
         android:orientation="horizontal"
+        android:paddingTop="@dimen/padding10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
@@ -33,10 +34,12 @@
             android:layout_height="wrap_content"
             android:layout_weight="5"
             android:ems="10"
-            android:textColorHint="@color/white"
             android:hint="@string/type_something"
             android:inputType="textPersonName"
+            android:paddingStart="@dimen/padding10dp"
             android:textColor="@color/white"
+            android:textColorHint="@color/white"
+            android:textSize="@dimen/textSize14sp"
             tools:text="Message" />
 
         <ImageButton
@@ -44,7 +47,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:background="@color/unselected_emoji"
             android:contentDescription="@string/send_message_or_attach_a_photo_button"
+            android:paddingTop="@dimen/padding10dp"
+            android:paddingBottom="@dimen/padding10dp"
             android:src="@drawable/ic_attach_btn"
             tools:srcCompat="@drawable/ic_plus" />
     </LinearLayout>

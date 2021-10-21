@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     android:layout_marginEnd="@dimen/mergeLayoutMarginEnd"
     android:layout_marginBottom="@dimen/mergeLayoutMarginBottom"
+    android:background="@color/unselected_emoji"
     tools:parentTag="android.widget.FrameLayout">
 
     <de.hdodenhof.circleimageview.CircleImageView
@@ -14,15 +15,15 @@
         android:layout_marginEnd="@dimen/margin10dp"
         android:layout_marginBottom="@dimen/margin10dp"
         android:clickable="true"
+        android:contentDescription="@string/profile_photo"
         android:focusable="true"
-        tools:src="@drawable/ed"
-        android:contentDescription="@string/profile_photo"/>
+        tools:src="@drawable/ed" />
 
     <TextView
         android:id="@+id/time"
-        android:textColor="@color/white"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="@color/white"
         tools:text="@string/example_time" />
 
     <TextView
@@ -35,13 +36,13 @@
 
     <TextView
         android:id="@+id/description"
-        android:textColor="@color/white"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textColor="@color/white"
         android:textSize="@dimen/textSize14sp"
         tools:text="@string/example_message" />
 
-    <com.cyberfox21.tinkoffmessanger.presentation.FlexBoxLayout
+    <com.cyberfox21.tinkoffmessanger.presentation.views.FlexBoxLayout
         android:id="@+id/emoji_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />

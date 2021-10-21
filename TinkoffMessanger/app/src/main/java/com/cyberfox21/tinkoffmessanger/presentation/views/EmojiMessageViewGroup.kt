@@ -1,4 +1,4 @@
-package com.cyberfox21.tinkoffmessanger.presentation
+package com.cyberfox21.tinkoffmessanger.presentation.views
 
 import android.content.Context
 import android.util.AttributeSet
@@ -41,7 +41,11 @@ class EmojiMessageViewGroup @JvmOverloads constructor(
 
         val totalWidth =
             (4 * marginRight) + imageView.measuredWidth +
-                    description.measuredWidth + time.measuredWidth
+                    maxOf(
+                        description.measuredWidth,
+                        title.measuredWidth,
+                        flexBoxLayout.measuredWidth
+                    ) + time.measuredWidth
         val totalHeight = maxOf(
             4 * marginBottom + title.measuredHeight +
                     description.measuredHeight + flexBoxLayout.measuredHeight,

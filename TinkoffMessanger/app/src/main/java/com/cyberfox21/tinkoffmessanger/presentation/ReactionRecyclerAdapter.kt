@@ -8,6 +8,12 @@ import com.cyberfox21.tinkoffmessanger.databinding.ItemEmojiBinding
 class ReactionRecyclerAdapter :
     ListAdapter<String, ReactionViewHolder>(ReactionDiffUtilCallback()) {
 
+    var onEmojiDialogClickListener: OnEmojiDialogClickListener? = null
+
+    interface OnEmojiDialogClickListener {
+        fun onEmojiDialogClick(emoji: String)
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ReactionViewHolder {
         return ReactionViewHolder(
             ItemEmojiBinding.inflate(
@@ -19,7 +25,14 @@ class ReactionRecyclerAdapter :
     }
 
     override fun onBindViewHolder(holder: ReactionViewHolder, position: Int) {
-        holder.binding.tvEmoji.text = currentList[position]
+        val binding = holder.binding
+        with(binding) {
+            tvEmoji.text = currentList[position]
+            root.setOnClickListener {
+                onEmojiDialogClickListener?.onEmojiDialogClick(currentList[position])
+            }
+        }
+
     }
 
 }

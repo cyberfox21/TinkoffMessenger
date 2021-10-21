@@ -7,14 +7,17 @@ import com.cyberfox21.tinkoffmessanger.domain.repository.MessageRepository
 
 object MessageRepositoryImpl : MessageRepository {
 
-    private var _messageListLD = MutableLiveData<List<Message>>()
-    private val messageListLD: LiveData<List<Message>>
-        get() = _messageListLD
+    private var messageListLD = MutableLiveData<List<Message>>()
 
-    private val messageList = mutableListOf<Message>()
+    private val messageList =
+        sortedSetOf(comparator = Comparator<Message> { o1, o2 -> (o1.id).compareTo(o2.id) })
 
     override fun getMessageList(): LiveData<List<Message>> {
         return messageListLD
+    }
+
+    override fun getMessage(msgId: Int): Message? {
+        return messageList.find { msgId == it.id }
     }
 
     override fun addMessage(msg: Message) {
@@ -22,8 +25,22 @@ object MessageRepositoryImpl : MessageRepository {
         updateList()
     }
 
+    override fun addEmojiToMessage(msg: Message) {
+        val oldItem = getMessage(msg.id)
+
+        oldItem?.let {
+            deleteMessage(oldItem)
+            addMessage(msg)
+        }
+    }
+
+    override fun deleteMessage(msg: Message) {
+        messageList.remove(msg)
+        updateList()
+    }
+
     private fun updateList() {
-        _messageListLD.value = messageList.toList()
+        messageListLD.value = messageList.toList()
     }
 
 }

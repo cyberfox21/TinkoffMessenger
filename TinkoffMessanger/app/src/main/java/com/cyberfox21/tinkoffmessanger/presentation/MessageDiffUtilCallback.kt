@@ -1,6 +1,5 @@
 package com.cyberfox21.tinkoffmessanger.presentation
 
-
 import androidx.recyclerview.widget.DiffUtil
 import com.cyberfox21.tinkoffmessanger.domain.entity.Message
 
@@ -10,6 +9,6 @@ class MessageDiffUtilCallback : DiffUtil.ItemCallback<Message>() {
     }
 
     override fun areContentsTheSame(oldItem: Message, newItem: Message): Boolean {
-        return oldItem == newItem
+        return false
     }
 }

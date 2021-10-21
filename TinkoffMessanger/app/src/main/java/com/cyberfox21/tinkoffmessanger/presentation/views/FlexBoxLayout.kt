@@ -1,7 +1,9 @@
-package com.cyberfox21.tinkoffmessanger.presentation
+package com.cyberfox21.tinkoffmessanger.presentation.views
 
 import android.content.Context
 import android.util.AttributeSet
+import android.util.Log
+import android.view.View
 import android.view.View.MeasureSpec.getSize
 import android.view.ViewGroup
 import com.cyberfox21.tinkoffmessanger.R
@@ -18,11 +20,16 @@ class FlexBoxLayout @JvmOverloads constructor(
 
     private var endPadding = 0
 
+    override fun onViewAdded(child: View?) {
+        super.onViewAdded(child)
+        Log.d("FlexBoxLayout", "child count $childCount")
+    }
+
     init {
         inflate(context, R.layout.flexboxlayout_with_add_button, this)
         marginRight = FLEXBOX_MARGIN_RIGHT
         marginBottom = FLEXBOX_MARGIN_BOTTOM
-        endPadding = resources.getDimension(R.dimen.padding20dp).toInt()
+        endPadding = resources.getDimension(R.dimen.padding10dp).toInt()
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -110,7 +117,6 @@ class FlexBoxLayout @JvmOverloads constructor(
                 currentBottom + child.measuredHeight
             )
         }
-
     }
 
     override fun generateLayoutParams(attrs: AttributeSet?): LayoutParams {
