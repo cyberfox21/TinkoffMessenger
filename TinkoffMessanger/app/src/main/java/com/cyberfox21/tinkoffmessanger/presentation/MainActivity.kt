@@ -12,6 +12,7 @@ import com.cyberfox21.tinkoffmessanger.R
 import com.cyberfox21.tinkoffmessanger.databinding.ActivityMainBinding
 import com.cyberfox21.tinkoffmessanger.domain.enums.ProfileMode
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.ChannelsFragment
+import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.ChatFragment
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.people.PeopleFragment
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.profile.ProfileFragment
 
@@ -56,7 +57,7 @@ class MainActivity : AppCompatActivity() {
                     Slide(Gravity.BOTTOM).excludeTarget(R.id.main_fragment_container, true)
                 )
                 binding.bottomNavigationView.visibility = when (f) {
-                    //is ChatFragment -> View.GONE
+                    is ChatFragment -> View.GONE
                     is ProfileFragment -> {
                         if(f.screenMode == ProfileMode.STRANGER) View.GONE
                         else View.VISIBLE

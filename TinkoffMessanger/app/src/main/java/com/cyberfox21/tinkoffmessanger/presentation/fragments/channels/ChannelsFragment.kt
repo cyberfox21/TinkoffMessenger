@@ -9,9 +9,7 @@ import com.cyberfox21.tinkoffmessanger.R
 import com.cyberfox21.tinkoffmessanger.databinding.FragmentChannelsBinding
 import com.cyberfox21.tinkoffmessanger.domain.entity.Topic
 import com.cyberfox21.tinkoffmessanger.domain.enums.Category
-import com.cyberfox21.tinkoffmessanger.domain.enums.ProfileMode
-import com.cyberfox21.tinkoffmessanger.presentation.fragments.people.PeopleFragment
-import com.cyberfox21.tinkoffmessanger.presentation.fragments.profile.ProfileFragment
+import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.ChatFragment
 import com.google.android.material.tabs.TabLayoutMediator
 
 class ChannelsFragment : Fragment(), ListChannelsFragment.OnTopicSelected {
@@ -44,24 +42,24 @@ class ChannelsFragment : Fragment(), ListChannelsFragment.OnTopicSelected {
 
     private fun setupViewPager() {
         val categories = listOf(Category.SUBSCRIBED, Category.ALL)
-        val vpAdapter = ChannelsViewPagerAdapter(parentFragmentManager, lifecycle)
+        val vpAdapter = ChannelsViewPagerAdapter(parentFragmentManager, lifecycle, this)
         vpAdapter.setCategoryList(categories)
         binding.vpCategories.adapter = vpAdapter
     }
 
     private fun setupTabLayout() {
-        TabLayoutMediator(binding.tabLayout, binding.vpCategories){ tab, position->
+        TabLayoutMediator(binding.tabLayout, binding.vpCategories) { tab, position ->
             tab.text = tabs[position]
         }.attach()
     }
 
     override fun showMatchingChat(topic: Topic) {
         parentFragmentManager.beginTransaction()
-            .addToBackStack(ChannelsFragment.CHANNELS_FRAGMENT_NAME)
-//            .replace(
-//                R.id.main_fragment_container,
-//                ChatFragment.newInstance(topic)
-//            )
+            .addToBackStack(CHANNELS_FRAGMENT_NAME)
+            .replace(
+                R.id.main_fragment_container,
+                ChatFragment.newInstance(topic)
+            )
             .commit()
     }
 

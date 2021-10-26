@@ -6,7 +6,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.cyberfox21.tinkoffmessanger.domain.enums.Category
 
-class ChannelsViewPagerAdapter(fragmentManager: FragmentManager, lifecycle: Lifecycle) :
+class ChannelsViewPagerAdapter(fragmentManager: FragmentManager, lifecycle: Lifecycle, val onTopicSelected: ListChannelsFragment.OnTopicSelected) :
     FragmentStateAdapter(fragmentManager, lifecycle) {
 
     private var categories = listOf<Category>()
@@ -19,7 +19,7 @@ class ChannelsViewPagerAdapter(fragmentManager: FragmentManager, lifecycle: Life
     fun setCategoryList(list: List<Category>) {
         categories = list
         categories.forEach {
-            fragments.add(ListChannelsFragment.newInstance(it))
+            fragments.add(ListChannelsFragment.newInstance(it, onTopicSelected))
         }
         notifyItemRangeChanged(LIST_START_POSITION, categories.size)
     }

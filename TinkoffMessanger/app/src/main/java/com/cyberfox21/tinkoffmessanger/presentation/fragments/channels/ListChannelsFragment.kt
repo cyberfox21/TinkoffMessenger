@@ -124,8 +124,10 @@ class ListChannelsFragment : Fragment() {
         const val EXTRA_CATEGORY = "extra_category"
         const val DELEGATE_MAPPER_START_POSITION = -1
 
-        fun newInstance(category: Category): ListChannelsFragment {
+        fun newInstance(category: Category, onTopicSelected: OnTopicSelected): ListChannelsFragment {
+
             return ListChannelsFragment().apply {
+                this.onTopicSelected = onTopicSelected
                 arguments = Bundle().apply {
                     putSerializable(EXTRA_CATEGORY, category)
                 }
