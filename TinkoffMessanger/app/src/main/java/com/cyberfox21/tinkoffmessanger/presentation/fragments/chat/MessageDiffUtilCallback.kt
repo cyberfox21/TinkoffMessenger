@@ -1,4 +1,4 @@
-package com.cyberfox21.tinkoffmessanger.presentation
+package com.cyberfox21.tinkoffmessanger.presentation.fragments.chat
 
 import androidx.recyclerview.widget.DiffUtil
 import com.cyberfox21.tinkoffmessanger.domain.entity.Message

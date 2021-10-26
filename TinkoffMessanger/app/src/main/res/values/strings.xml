@@ -8,4 +8,17 @@
     <string name="profile_photo">Profile photo</string>
     <string name="example_date">21 July</string>
     <string name="type_something">Type something…</string>
+    <string name="channels">Channels</string>
+    <string name="people">People</string>
+    <string name="profile">Profile</string>
+    <string name="log_out">Log out</string>
+    <string name="example_status">In a meeting</string>
+    <string name="online">online</string>
+    <string name="example_email">edsheeran@company.com</string>
+    <string name="subscribed">Subscribed</string>
+    <string name="all_streams">All streams</string>
+    <string name="example_count_messages">1240 mes</string>
+    <string name="example_search_users">Users…</string>
+    <string name="testing">Testing</string>
+    <string name="expand_channel_to_see_topics">Expand channel to see topics</string>
 </resources>

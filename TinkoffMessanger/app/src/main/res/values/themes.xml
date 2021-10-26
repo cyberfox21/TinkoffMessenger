@@ -1,8 +1,9 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Theme.TinkoffMessanger" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <item name="colorPrimary">@color/purple_500</item>
-        <item name="colorPrimaryVariant">@color/purple_700</item>
+        <item name="android:background">@color/background</item>
+        <item name="colorPrimary">@color/white</item>
+        <item name="colorPrimaryVariant">@color/white</item>
         <item name="colorOnPrimary">@color/white</item>
         <item name="colorSecondary">@color/teal_200</item>
         <item name="colorSecondaryVariant">@color/teal_700</item>
@@ -10,4 +11,32 @@
         <item name="android:statusBarColor" tools:targetApi="l">@color/green</item>
         <item name="android:navigationBarColor" tools:targetApi="l">@color/white</item>
     </style>
+
+
+    <style name="ThemeOverlay.App.BottomNavigationView" parent="Theme.MaterialComponents">
+        <item name="android:background">@color/bottom_navigation_background</item>
+        <item name="colorPrimary">@color/white</item>
+        <item name="colorOnPrimary">@color/white</item>
+    </style>
+
+    <style name="Theme.SearchView" parent="Theme.MaterialComponents">
+        <item name="android:background">@color/bottom_navigation_background</item>
+        <item name="colorPrimary">@color/white</item>
+        <item name="colorOnPrimary">@color/white</item>
+    </style>
+
+    <style name="THeme.BtnLogout" parent="Theme.MaterialComponents">
+        <item name="colorPrimary">@color/btn_logout_bg</item>
+    </style>
+
+    <style name="Theme.ImageProfile" parent="Theme.MaterialComponents">
+        <item name="background">@color/btn_logout_bg</item>
+    </style>
+
+    <style name="Theme.TabLayout" parent="Theme.MaterialComponents">
+        <item name="android:background">@color/bottom_navigation_background</item>
+        <item name="colorPrimary">@color/white</item>
+        <item name="colorSecondaryVariant">@color/green</item>
+    </style>
+
 </resources>

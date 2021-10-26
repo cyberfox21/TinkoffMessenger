@@ -1,11 +1,11 @@
-package com.cyberfox21.tinkoffmessanger.presentation
+package com.cyberfox21.tinkoffmessanger.presentation.fragments.chat
 
 import android.util.Log
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import com.cyberfox21.tinkoffmessanger.domain.entity.Message
-import com.cyberfox21.tinkoffmessanger.presentation.views.CustomEmojiView
-import com.cyberfox21.tinkoffmessanger.presentation.views.EmojiMessageViewGroup
+import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.views.CustomEmojiView
+import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.views.EmojiMessageViewGroup
 
 class ChatRecyclerAdapter :
     ListAdapter<Message, MessageViewHolder>(MessageDiffUtilCallback()) {
@@ -61,5 +61,7 @@ class ChatRecyclerAdapter :
             }
         }
     }
+
+
 
 }

@@ -1,4 +1,4 @@
-package com.cyberfox21.tinkoffmessanger.presentation.views
+package com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.views
 
 import android.content.Context
 import android.util.AttributeSet

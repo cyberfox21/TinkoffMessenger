@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/topic_background"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/green"
+    android:orientation="horizontal"
+    android:padding="@dimen/padding2dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/margin20dp"
+        android:layout_marginEnd="@dimen/margin10dp"
+        android:background="@android:color/transparent"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        tools:text="@string/testing" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:textColor="@color/white"
+        android:textSize="@dimen/textSize12sp"
+        tools:text="@string/example_count_messages" />
+
+</LinearLayout>

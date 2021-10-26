@@ -1,4 +1,4 @@
-package com.cyberfox21.tinkoffmessanger.presentation
+package com.cyberfox21.tinkoffmessanger.presentation.fragments.chat
 
 import android.os.Bundle
 import android.text.Editable
@@ -12,6 +12,7 @@ import com.cyberfox21.tinkoffmessanger.databinding.ActivityChatBinding
 
 import com.cyberfox21.tinkoffmessanger.databinding.BottomSheetDialogLayoutBinding
 import com.cyberfox21.tinkoffmessanger.domain.entity.Message
+import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.reactions.ReactionRecyclerAdapter
 
 import com.google.android.material.bottomsheet.BottomSheetDialog
 
@@ -121,5 +122,5 @@ class ChatActivity : AppCompatActivity() {
             R.drawable.ic_send_btn
         }
     }
-
+    
 }

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/padding16dp">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/iv_user_avatar"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@drawable/ed" />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/online"
+        android:layout_width="@dimen/user_avatar_dimension"
+        android:layout_height="@dimen/user_avatar_dimension"
+        android:layout_margin="@dimen/margin2dp"
+        android:background="@drawable/circle"
+        android:src="@drawable/ic_online"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_user_avatar"
+        app:layout_constraintEnd_toEndOf="@+id/iv_user_avatar" />
+
+    <TextView
+        android:id="@+id/tv_user_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/padding10dp"
+        android:textColor="@color/white"
+        app:layout_constraintStart_toEndOf="@+id/iv_user_avatar"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="@string/example_name" />
+
+    <TextView
+        android:id="@+id/tv_user_email"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/padding10dp"
+        android:textColor="@color/text_secondary"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/iv_user_avatar"
+        app:layout_constraintTop_toBottomOf="@+id/tv_user_name"
+        tools:text="@string/example_email" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

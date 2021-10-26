@@ -42,7 +42,7 @@
         android:textSize="@dimen/textSize14sp"
         tools:text="@string/example_message" />
 
-    <com.cyberfox21.tinkoffmessanger.presentation.views.FlexBoxLayout
+    <com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.views.FlexBoxLayout
         android:id="@+id/emoji_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
