@@ -5,11 +5,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.cyberfox21.tinkoffmessanger.R
 import com.cyberfox21.tinkoffmessanger.databinding.FragmentChannelsBinding
+import com.cyberfox21.tinkoffmessanger.domain.entity.Topic
 import com.cyberfox21.tinkoffmessanger.domain.enums.Category
+import com.cyberfox21.tinkoffmessanger.domain.enums.ProfileMode
+import com.cyberfox21.tinkoffmessanger.presentation.fragments.people.PeopleFragment
+import com.cyberfox21.tinkoffmessanger.presentation.fragments.profile.ProfileFragment
 import com.google.android.material.tabs.TabLayoutMediator
 
-class ChannelsFragment : Fragment() {
+class ChannelsFragment : Fragment(), ListChannelsFragment.OnTopicSelected {
 
     private var _binding: FragmentChannelsBinding? = null
     private val binding: FragmentChannelsBinding
@@ -50,9 +55,21 @@ class ChannelsFragment : Fragment() {
         }.attach()
     }
 
+    override fun showMatchingChat(topic: Topic) {
+        parentFragmentManager.beginTransaction()
+            .addToBackStack(ChannelsFragment.CHANNELS_FRAGMENT_NAME)
+//            .replace(
+//                R.id.main_fragment_container,
+//                ChatFragment.newInstance(topic)
+//            )
+            .commit()
+    }
+
     companion object {
+        const val CHANNELS_FRAGMENT_NAME = "channels_fragment"
         fun newInstance(): ChannelsFragment {
             return ChannelsFragment()
         }
     }
+
 }

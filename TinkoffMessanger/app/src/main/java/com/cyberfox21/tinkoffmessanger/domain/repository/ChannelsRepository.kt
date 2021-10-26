@@ -1,11 +1,10 @@
 package com.cyberfox21.tinkoffmessanger.domain.repository
 
-import androidx.lifecycle.LiveData
-import com.cyberfox21.tinkoffmessanger.domain.enums.Category
 import com.cyberfox21.tinkoffmessanger.domain.entity.Channel
+import com.cyberfox21.tinkoffmessanger.domain.enums.Category
 
 interface ChannelsRepository {
 
-    fun getChannelsList(category: Category): LiveData<List<Channel>>
+    fun getChannelsList(category: Category): List<Channel>
 
 }

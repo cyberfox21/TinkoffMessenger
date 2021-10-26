@@ -11,7 +11,7 @@
     app:layout_constraintTop_toTopOf="parent">
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/tv_channel_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
@@ -22,7 +22,7 @@
         tools:text="TextView" />
 
     <ImageView
-        android:id="@+id/imageView2"
+        android:id="@+id/iv_expand_channel"
         android:layout_width="@dimen/channel_arrow_dimension"
         android:layout_height="@dimen/channel_arrow_dimension"
         android:layout_gravity="center_vertical"
