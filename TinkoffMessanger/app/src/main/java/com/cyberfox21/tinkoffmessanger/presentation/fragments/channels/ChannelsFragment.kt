@@ -56,7 +56,7 @@ class ChannelsFragment : Fragment(), ListChannelsFragment.OnTopicSelected {
     override fun showMatchingChat(topic: Topic) {
         parentFragmentManager.beginTransaction()
             .addToBackStack(CHANNELS_FRAGMENT_NAME)
-            .replace(
+            .add(
                 R.id.main_fragment_container,
                 ChatFragment.newInstance(topic)
             )
