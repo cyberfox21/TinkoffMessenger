@@ -60,7 +60,8 @@ class ChannelsFragment : Fragment(), ListChannelsFragment.OnTopicSelected {
 
     private fun setupSearchPanel() {
         binding.channelsSearchView.doAfterTextChanged {
-            setFragmentResult(SEARCH_QUERY, Bundle().apply { putString(QUERY, it.toString()) })
+            val query = it?.toString() ?: ""
+            setFragmentResult(SEARCH_QUERY, Bundle().apply { putString(QUERY, query) })
         }
     }
 
