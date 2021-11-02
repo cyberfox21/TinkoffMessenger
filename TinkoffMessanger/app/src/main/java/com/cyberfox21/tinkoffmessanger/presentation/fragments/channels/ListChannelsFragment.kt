@@ -56,8 +56,8 @@ class ListChannelsFragment : Fragment() {
         setViewModel()
         setupRecyclerView()
         observeViewModel()
+        addListeners()
     }
-
 
     override fun onDestroyView() {
         super.onDestroyView()
@@ -75,7 +75,7 @@ class ListChannelsFragment : Fragment() {
 
     private fun setViewModel() {
         channelsViewModel = ViewModelProvider(this)[ChannelsViewModel::class.java]
-        channelsViewModel.getList(fragmentCategory) // load right list
+        channelsViewModel.searchChannels(fragmentCategory, INITIAL_QUERY) // load right list
     }
 
     private fun setupRecyclerView() {
@@ -115,7 +115,6 @@ class ListChannelsFragment : Fragment() {
     }
 
     private fun observeViewModel() {
-        channelsViewModel.searchChannels(fragmentCategory)
         channelsViewModel.channelsScreenState.observe(viewLifecycleOwner, {
             processChannelsScreenState(it)
         })
@@ -139,9 +138,20 @@ class ListChannelsFragment : Fragment() {
         }
     }
 
+    private fun addListeners() {
+        parentFragmentManager.setFragmentResultListener(
+            ChannelsFragment.SEARCH_QUERY,
+            viewLifecycleOwner
+        ) { key, bundle ->
+            val query = bundle.getString(key)
+            query?.let { channelsViewModel.searchChannels(fragmentCategory, it) }
+        }
+    }
+
     companion object {
         const val EXTRA_CATEGORY = "extra_category"
         const val DELEGATE_MAPPER_START_POSITION = -1
+        private const val INITIAL_QUERY: String = ""
 
         fun newInstance(
             category: Category,

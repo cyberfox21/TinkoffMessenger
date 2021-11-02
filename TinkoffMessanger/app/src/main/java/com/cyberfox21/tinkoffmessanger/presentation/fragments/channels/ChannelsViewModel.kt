@@ -39,11 +39,7 @@ class ChannelsViewModel : ViewModel() {
         subscribeToSearchChanges()
     }
 
-    fun getList(category: Category) {
-        channelsList = getChannelsListUseCase.invoke(category)
-    }
-
-    fun searchChannels(category: Category, searchQuery: String = INITIAL_QUERY) {
+    fun searchChannels(category: Category, searchQuery: String) {
         this.category = category
         searchSubject.onNext(searchQuery)
     }
@@ -57,7 +53,10 @@ class ChannelsViewModel : ViewModel() {
             .switchMap { searchQuery -> searchChannelsUseCase(searchQuery, category) }
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeBy(
-                onNext = { _channelsScreenState.value = ChannelsScreenState.Result(it) },
+                onNext = {
+                    channelsList = it
+                    _channelsScreenState.value = ChannelsScreenState.Result(it)
+                },
                 onError = { _channelsScreenState.value = ChannelsScreenState.Error(it) }
             )
             .addTo(compositeDisposable)

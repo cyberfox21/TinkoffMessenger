@@ -4,7 +4,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResult
 import com.cyberfox21.tinkoffmessanger.R
 import com.cyberfox21.tinkoffmessanger.databinding.FragmentChannelsBinding
 import com.cyberfox21.tinkoffmessanger.domain.entity.Topic
@@ -17,6 +19,8 @@ class ChannelsFragment : Fragment(), ListChannelsFragment.OnTopicSelected {
     private var _binding: FragmentChannelsBinding? = null
     private val binding: FragmentChannelsBinding
         get() = _binding ?: throw RuntimeException("FragmentChannelsBinding = null")
+
+    private lateinit var vpAdapter: ChannelsViewPagerAdapter
 
     private val tabs = listOf(Category.SUBSCRIBED.uiName, Category.ALL.uiName)
 
@@ -33,6 +37,7 @@ class ChannelsFragment : Fragment(), ListChannelsFragment.OnTopicSelected {
         super.onViewCreated(view, savedInstanceState)
         setupViewPager()
         setupTabLayout()
+        setupSearchPanel()
     }
 
     override fun onDestroyView() {
@@ -42,7 +47,7 @@ class ChannelsFragment : Fragment(), ListChannelsFragment.OnTopicSelected {
 
     private fun setupViewPager() {
         val categories = listOf(Category.SUBSCRIBED, Category.ALL)
-        val vpAdapter = ChannelsViewPagerAdapter(parentFragmentManager, lifecycle, this)
+        vpAdapter = ChannelsViewPagerAdapter(parentFragmentManager, lifecycle, this)
         vpAdapter.setCategoryList(categories)
         binding.vpCategories.adapter = vpAdapter
     }
@@ -51,6 +56,12 @@ class ChannelsFragment : Fragment(), ListChannelsFragment.OnTopicSelected {
         TabLayoutMediator(binding.tabLayout, binding.vpCategories) { tab, position ->
             tab.text = tabs[position]
         }.attach()
+    }
+
+    private fun setupSearchPanel() {
+        binding.channelsSearchView.doAfterTextChanged {
+            setFragmentResult(SEARCH_QUERY, Bundle().apply { putString(QUERY, it.toString()) })
+        }
     }
 
     override fun showMatchingChat(topic: Topic) {
@@ -65,6 +76,8 @@ class ChannelsFragment : Fragment(), ListChannelsFragment.OnTopicSelected {
 
     companion object {
         const val CHANNELS_FRAGMENT_NAME = "channels_fragment"
+        const val SEARCH_QUERY = "search_query"
+        const val QUERY = "search_query"
         fun newInstance(): ChannelsFragment {
             return ChannelsFragment()
         }

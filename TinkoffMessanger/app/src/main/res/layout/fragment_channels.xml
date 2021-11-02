@@ -4,11 +4,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <SearchView
+    <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/channels_search_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:queryHint="@string/example_channels_search_hint"
+        android:hint="@string/example_channels_search_hint"
+        android:maxLines="1"
+        android:singleLine="true"
         android:theme="@style/Theme.SearchView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
