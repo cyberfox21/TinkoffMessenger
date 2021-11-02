@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.cyberfox21.tinkoffmessanger.databinding.FragmentListChannelsBinding
@@ -113,18 +115,38 @@ class ListChannelsFragment : Fragment() {
     }
 
     private fun observeViewModel() {
-        mainAdapter.submitList(
-            channelsViewModel.channelsList.toDelegateChannelItemsList(
-                DELEGATE_MAPPER_START_POSITION
-            )
-        )
+        channelsViewModel.searchChannels(fragmentCategory)
+        channelsViewModel.channelsScreenState.observe(viewLifecycleOwner, {
+            processChannelsScreenState(it)
+        })
+    }
+
+    private fun processChannelsScreenState(state: ChannelsScreenState) {
+        when (state) {
+            is ChannelsScreenState.Result -> {
+                mainAdapter.submitList(
+                    state.items.toDelegateChannelItemsList(
+                        DELEGATE_MAPPER_START_POSITION
+                    )
+                )
+                binding.pbLoading.isVisible = false
+            }
+            ChannelsScreenState.Loading -> binding.pbLoading.isVisible = true
+            is ChannelsScreenState.Error -> {
+                Toast.makeText(this.context, "${state.error.message}", Toast.LENGTH_SHORT).show()
+                binding.pbLoading.isVisible = false
+            }
+        }
     }
 
     companion object {
         const val EXTRA_CATEGORY = "extra_category"
         const val DELEGATE_MAPPER_START_POSITION = -1
 
-        fun newInstance(category: Category, onTopicSelected: OnTopicSelected): ListChannelsFragment {
+        fun newInstance(
+            category: Category,
+            onTopicSelected: OnTopicSelected
+        ): ListChannelsFragment {
 
             return ListChannelsFragment().apply {
                 this.onTopicSelected = onTopicSelected

@@ -5,6 +5,8 @@ import com.cyberfox21.tinkoffmessanger.domain.entity.Channel
 import com.cyberfox21.tinkoffmessanger.domain.entity.Topic
 import com.cyberfox21.tinkoffmessanger.domain.enums.Category
 import com.cyberfox21.tinkoffmessanger.domain.repository.ChannelsRepository
+import io.reactivex.Observable
+import java.util.concurrent.TimeUnit
 
 object ChannelsRepositoryImpl : ChannelsRepository {
 
@@ -66,11 +68,16 @@ object ChannelsRepositoryImpl : ChannelsRepository {
         }
     }
 
-//    private fun updateAllList() {
-//        _allChannelsLD.value = allChannels.toList()
-//    }
-//
-//    private fun updateSubscribedList() {
-//        _subscribedLD.value = subscribedChannels.toList()
-//    }
+    override fun searchChannels(
+        searchQuery: String,
+        category: Category
+    ): Observable<List<Channel>> {
+        return Observable.fromCallable {
+            when (category) {
+                Category.SUBSCRIBED -> subscribedChannels.toList()
+                Category.ALL -> allChannels.toList()
+            }
+        }.delay(500, TimeUnit.MILLISECONDS)
+
+    }
 }

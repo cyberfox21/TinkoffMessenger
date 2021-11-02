@@ -26,7 +26,7 @@ android {
     kotlinOptions {
         jvmTarget = '11'
     }
-    buildFeatures{
+    buildFeatures {
         viewBinding true
     }
 }
@@ -40,4 +40,16 @@ dependencies {
 
     // Circle ImageView
     implementation "de.hdodenhof:circleimageview:$circleImageViewVersion"
+
+    //RxJava
+    implementation "io.reactivex.rxjava2:rxjava:$rxJavaVersion"
+    implementation "io.reactivex.rxjava2:rxandroid:$rxAndroidVersion"
+    implementation "io.reactivex.rxjava2:rxkotlin:$rxKotlinVersion"
+
+    //ViewModel
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$viewModelVersion"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:$viewModelVersion"
+
+    //LiveData
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$liveDataVersion"
 }

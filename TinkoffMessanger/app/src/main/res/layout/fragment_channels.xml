@@ -8,7 +8,7 @@
         android:id="@+id/channels_search_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:queryHint="@string/example_search_users"
+        android:queryHint="@string/example_channels_search_hint"
         android:theme="@style/Theme.SearchView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
