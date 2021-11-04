@@ -49,7 +49,7 @@ class ChannelsViewModel : ViewModel() {
             .subscribeOn(Schedulers.io())
             .distinctUntilChanged()
             .doOnNext { _channelsScreenState.postValue(ChannelsScreenState.Loading) }
-            .debounce(500L, TimeUnit.MILLISECONDS, Schedulers.io())
+            .debounce(DEBOUNCE_DURATION, TimeUnit.MILLISECONDS, Schedulers.io())
             .switchMap { searchQuery -> searchChannelsUseCase(searchQuery, category) }
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeBy(
@@ -69,6 +69,7 @@ class ChannelsViewModel : ViewModel() {
 
     companion object {
         private const val INITIAL_QUERY: String = ""
+        private const val DEBOUNCE_DURATION: Long = 500L
     }
 
 }

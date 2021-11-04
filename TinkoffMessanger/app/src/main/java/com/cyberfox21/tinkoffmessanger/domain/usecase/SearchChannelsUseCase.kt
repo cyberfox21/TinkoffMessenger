@@ -10,13 +10,12 @@ class SearchChannelsUseCase(private val repository: ChannelsRepository) {
         return repository.searchChannels(searchQuery, category)
             .map { channels ->
                 channels.filter { channel ->
-                    var flag = channel.name.contains(searchQuery, ignoreCase = true)
-                    if (!flag) channel.listOfTopics.forEach { topic ->
-                        if (topic.title.contains(searchQuery)) {
-                            flag = true
-                        }
+                    if (channel.name.contains(searchQuery, ignoreCase = true)) {
+                        return@filter true
                     }
-                    flag
+                    channel.listOfTopics
+                        .find { topic -> topic.title.contains(searchQuery) }
+                        ?.let { true } ?: false
                 }
             }
     }

@@ -10,6 +10,8 @@ import java.util.concurrent.TimeUnit
 
 object ChannelsRepositoryImpl : ChannelsRepository {
 
+    private const val LOADING_DURATION_DELAY = 500L
+
     private var _allChannelsLD = MutableLiveData<List<Channel>>()
     val allChannelsLD get() = _allChannelsLD
 
@@ -77,7 +79,7 @@ object ChannelsRepositoryImpl : ChannelsRepository {
                 Category.SUBSCRIBED -> subscribedChannels.toList()
                 Category.ALL -> allChannels.toList()
             }
-        }.delay(500, TimeUnit.MILLISECONDS)
+        }.delay(LOADING_DURATION_DELAY, TimeUnit.MILLISECONDS)
 
     }
 }
