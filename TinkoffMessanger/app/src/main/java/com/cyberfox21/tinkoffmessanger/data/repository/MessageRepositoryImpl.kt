@@ -1,4 +1,4 @@
-package com.cyberfox21.tinkoffmessanger.data
+package com.cyberfox21.tinkoffmessanger.data.repository
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

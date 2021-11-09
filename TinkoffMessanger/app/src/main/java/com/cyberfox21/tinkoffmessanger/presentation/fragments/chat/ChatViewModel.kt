@@ -2,8 +2,8 @@ package com.cyberfox21.tinkoffmessanger.presentation.fragments.chat
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import com.cyberfox21.tinkoffmessanger.data.MessageRepositoryImpl
-import com.cyberfox21.tinkoffmessanger.data.ReactionRepositoryImpl
+import com.cyberfox21.tinkoffmessanger.data.repository.MessageRepositoryImpl
+import com.cyberfox21.tinkoffmessanger.data.repository.ReactionRepositoryImpl
 import com.cyberfox21.tinkoffmessanger.domain.entity.Message
 import com.cyberfox21.tinkoffmessanger.domain.entity.Reaction
 import com.cyberfox21.tinkoffmessanger.domain.usecase.AddMessageUseCase

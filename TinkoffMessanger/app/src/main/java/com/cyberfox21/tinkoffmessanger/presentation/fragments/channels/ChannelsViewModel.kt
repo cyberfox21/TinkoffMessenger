@@ -3,7 +3,7 @@ package com.cyberfox21.tinkoffmessanger.presentation.fragments.channels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.cyberfox21.tinkoffmessanger.data.ChannelsRepositoryImpl
+import com.cyberfox21.tinkoffmessanger.data.repository.ChannelsRepositoryImpl
 import com.cyberfox21.tinkoffmessanger.domain.entity.Channel
 import com.cyberfox21.tinkoffmessanger.domain.enums.Category
 import com.cyberfox21.tinkoffmessanger.domain.usecase.GetChannelsListUseCase

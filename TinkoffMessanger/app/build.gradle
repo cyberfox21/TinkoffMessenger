@@ -55,4 +55,11 @@ dependencies {
 
     //Fragment
     implementation "androidx.fragment:fragment-ktx:$fragmentVersion"
+
+    // Retrofit
+    implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
+    implementation "com.squareup.retrofit2:converter-gson:$retrofitVersion"
+
+    //Gson
+    implementation "com.google.code.gson:gson:$gsonVersion"
 }
