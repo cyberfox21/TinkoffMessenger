@@ -4,7 +4,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.cyberfox21.tinkoffmessanger.domain.enums.Category
+import com.cyberfox21.tinkoffmessanger.presentation.enums.Category
 
 class ChannelsViewPagerAdapter(
     fragmentManager: FragmentManager,

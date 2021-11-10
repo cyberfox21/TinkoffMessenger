@@ -10,7 +10,7 @@ import androidx.transition.Slide
 import androidx.transition.TransitionManager
 import com.cyberfox21.tinkoffmessanger.R
 import com.cyberfox21.tinkoffmessanger.databinding.ActivityMainBinding
-import com.cyberfox21.tinkoffmessanger.domain.enums.ProfileMode
+import com.cyberfox21.tinkoffmessanger.presentation.enums.ProfileMode
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.ChannelsFragment
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.ChatFragment
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.people.PeopleFragment
@@ -59,7 +59,7 @@ class MainActivity : AppCompatActivity() {
                 binding.bottomNavigationView.visibility = when (f) {
                     is ChatFragment -> View.GONE
                     is ProfileFragment -> {
-                        if(f.screenMode == ProfileMode.STRANGER) View.GONE
+                        if (f.screenMode == ProfileMode.STRANGER) View.GONE
                         else View.VISIBLE
                     }
                     else -> View.VISIBLE

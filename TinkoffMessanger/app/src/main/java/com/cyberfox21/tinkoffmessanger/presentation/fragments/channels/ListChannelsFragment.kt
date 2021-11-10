@@ -11,7 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.cyberfox21.tinkoffmessanger.databinding.FragmentListChannelsBinding
 import com.cyberfox21.tinkoffmessanger.domain.entity.Channel
 import com.cyberfox21.tinkoffmessanger.domain.entity.Topic
-import com.cyberfox21.tinkoffmessanger.domain.enums.Category
+import com.cyberfox21.tinkoffmessanger.presentation.enums.Category
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.delegate.ChannelDelegateAdapter
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.delegate.MainChannelsRecyclerAdapter
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.delegate.TopicDelegateAdapter

@@ -5,9 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.cyberfox21.tinkoffmessanger.data.repository.ChannelsRepositoryImpl
 import com.cyberfox21.tinkoffmessanger.domain.entity.Channel
-import com.cyberfox21.tinkoffmessanger.domain.enums.Category
 import com.cyberfox21.tinkoffmessanger.domain.usecase.GetChannelsListUseCase
 import com.cyberfox21.tinkoffmessanger.domain.usecase.SearchChannelsUseCase
+import com.cyberfox21.tinkoffmessanger.presentation.enums.Category
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo

@@ -3,6 +3,7 @@ package com.cyberfox21.tinkoffmessanger.data.api
 import okhttp3.Credentials
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 
 
@@ -14,8 +15,9 @@ object ApiFactory {
 
     private var MY_TOKEN = Credentials.basic("shkolniktatyana21@gmail.com", API_KEY)
 
-    private val retrofit = Retrofit.Builder()
+    val retrofit = Retrofit.Builder()
         .addConverterFactory(GsonConverterFactory.create())
+        .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
         .client(OkHttpClient.Builder().addInterceptor { chain ->
             val request =
                 chain.request().newBuilder()

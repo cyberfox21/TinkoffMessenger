@@ -41,25 +41,30 @@ dependencies {
     // Circle ImageView
     implementation "de.hdodenhof:circleimageview:$circleImageViewVersion"
 
-    //RxJava
+    // RxJava
     implementation "io.reactivex.rxjava2:rxjava:$rxJavaVersion"
     implementation "io.reactivex.rxjava2:rxandroid:$rxAndroidVersion"
     implementation "io.reactivex.rxjava2:rxkotlin:$rxKotlinVersion"
 
-    //ViewModel
+    // ViewModel
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$viewModelVersion"
     implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:$viewModelVersion"
 
-    //LiveData
+    // LiveData
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$liveDataVersion"
 
-    //Fragment
+    // Fragment
     implementation "androidx.fragment:fragment-ktx:$fragmentVersion"
 
     // Retrofit
     implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
     implementation "com.squareup.retrofit2:converter-gson:$retrofitVersion"
+    implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofitVersion"
 
-    //Gson
+    // Gson
     implementation "com.google.code.gson:gson:$gsonVersion"
+
+    // Glide
+    implementation "com.github.bumptech.glide:glide:$glideVersion"
+    annotationProcessor "com.github.bumptech.glide:compiler:$glideVersion"
 }

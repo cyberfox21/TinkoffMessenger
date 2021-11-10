@@ -4,11 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.cyberfox21.tinkoffmessanger.R
 import com.cyberfox21.tinkoffmessanger.databinding.FragmentPeopleBinding
-import com.cyberfox21.tinkoffmessanger.domain.enums.ProfileMode
+import com.cyberfox21.tinkoffmessanger.presentation.enums.ProfileMode
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.profile.ProfileFragment
 
 class PeopleFragment : Fragment() {
@@ -72,9 +74,25 @@ class PeopleFragment : Fragment() {
     }
 
     private fun observeViewModel() {
-        viewModel.users.observe(viewLifecycleOwner, {
-            peopleRecyclerAdapter.submitList(it)
+        viewModel.peopleScreenState.observe(viewLifecycleOwner, {
+            processPeopleScreenState(it)
         })
+    }
+
+    private fun processPeopleScreenState(it: UsersScreenState) {
+        when (it) {
+            is UsersScreenState.Result -> {
+                peopleRecyclerAdapter.submitList(it.items)
+                binding.pbLoading.isVisible = false
+            }
+            UsersScreenState.Loading -> {
+                binding.pbLoading.isVisible = true
+            }
+            is UsersScreenState.Error -> {
+                Toast.makeText(this.context, "${it.error.message}", Toast.LENGTH_SHORT).show()
+                binding.pbLoading.isVisible = false
+            }
+        }
     }
 
     companion object {

@@ -5,12 +5,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
+import com.bumptech.glide.Glide
 import com.cyberfox21.tinkoffmessanger.databinding.ItemUserBinding
 import com.cyberfox21.tinkoffmessanger.domain.entity.User
 
 class PeopleRecyclerAdapter : ListAdapter<User, UserViewHolder>(UserDIffUtilCallback()) {
 
-    var onPersonClickListener : OnPersonClickListener? = null
+    var onPersonClickListener: OnPersonClickListener? = null
 
     interface OnPersonClickListener {
         fun onPeopleClick()
@@ -26,7 +27,7 @@ class PeopleRecyclerAdapter : ListAdapter<User, UserViewHolder>(UserDIffUtilCall
         val user = currentList[position]
         val binding = holder.binding
         with(binding) {
-            ivUserAvatar.setImageResource(user.avatar)
+            Glide.with(binding.root).load(user.avatar).into(ivUserAvatar)
             tvUserName.text = user.name
             tvUserEmail.text = user.email
             online.visibility = getStatus(user.status)

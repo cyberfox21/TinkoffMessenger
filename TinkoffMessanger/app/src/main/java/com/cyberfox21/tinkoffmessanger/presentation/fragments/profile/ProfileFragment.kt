@@ -3,13 +3,12 @@ package com.cyberfox21.tinkoffmessanger.presentation.fragments.profile
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
-import com.cyberfox21.tinkoffmessanger.R
 import com.cyberfox21.tinkoffmessanger.databinding.FragmentProfileBinding
-import com.cyberfox21.tinkoffmessanger.domain.enums.ProfileMode
+import com.cyberfox21.tinkoffmessanger.presentation.enums.ProfileMode
 
 class ProfileFragment : Fragment() {
 
-    lateinit var screenMode : ProfileMode
+    lateinit var screenMode: ProfileMode
 
     private var _binding: FragmentProfileBinding? = null
     private val binding: FragmentProfileBinding
@@ -49,7 +48,7 @@ class ProfileFragment : Fragment() {
     }
 
     private fun launchRightMode() {
-        if(screenMode == ProfileMode.STRANGER){
+        if (screenMode == ProfileMode.STRANGER) {
             binding.btnLogout.visibility = View.GONE
         }
     }

@@ -1,10 +1,12 @@
 package com.cyberfox21.tinkoffmessanger.domain.repository
 
-import androidx.lifecycle.LiveData
 import com.cyberfox21.tinkoffmessanger.domain.entity.User
+import io.reactivex.Single
 
 interface UsersRepository {
 
-    fun getUsersList(): LiveData<List<User>>
+    fun getUsersList(): Single<List<User>>
+
+    fun getMyUser(): Single<User>
 
 }

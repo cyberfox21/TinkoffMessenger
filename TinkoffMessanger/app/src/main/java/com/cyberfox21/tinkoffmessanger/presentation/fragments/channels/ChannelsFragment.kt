@@ -10,7 +10,7 @@ import androidx.fragment.app.setFragmentResult
 import com.cyberfox21.tinkoffmessanger.R
 import com.cyberfox21.tinkoffmessanger.databinding.FragmentChannelsBinding
 import com.cyberfox21.tinkoffmessanger.domain.entity.Topic
-import com.cyberfox21.tinkoffmessanger.domain.enums.Category
+import com.cyberfox21.tinkoffmessanger.presentation.enums.Category
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.ChatFragment
 import com.google.android.material.tabs.TabLayoutMediator
 

@@ -3,8 +3,8 @@ package com.cyberfox21.tinkoffmessanger.data.repository
 import androidx.lifecycle.MutableLiveData
 import com.cyberfox21.tinkoffmessanger.domain.entity.Channel
 import com.cyberfox21.tinkoffmessanger.domain.entity.Topic
-import com.cyberfox21.tinkoffmessanger.domain.enums.Category
 import com.cyberfox21.tinkoffmessanger.domain.repository.ChannelsRepository
+import com.cyberfox21.tinkoffmessanger.presentation.enums.Category
 import io.reactivex.Observable
 import java.util.concurrent.TimeUnit
 
