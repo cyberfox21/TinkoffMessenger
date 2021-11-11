@@ -26,8 +26,6 @@ class PeopleFragmentViewModel : ViewModel() {
     val peopleScreenState: LiveData<UsersScreenState>
         get() = _peopleScreenState
 
-//    var users = getUsersListUseCase()
-
     init {
         subscribeToUsersChanges()
     }

@@ -1,18 +1,21 @@
 package com.cyberfox21.tinkoffmessanger.data.api
 
-import com.cyberfox21.tinkoffmessanger.data.api.dto.*
+import com.cyberfox21.tinkoffmessanger.data.api.dto.MessagesResponse
+import com.cyberfox21.tinkoffmessanger.data.api.dto.UserDTO
+import com.cyberfox21.tinkoffmessanger.data.api.dto.UserPresenceResponse
+import com.cyberfox21.tinkoffmessanger.data.api.dto.UsersResponse
 import io.reactivex.Completable
 import io.reactivex.Single
 import retrofit2.http.*
 
 interface Api {
 
-    @GET("messages")
+    @GET("messages?anchor=newest")
     fun getMessages(
+        @Query("num_before") messagesNumberBefore : Int,
+        @Query("num_after") messagesNumberAfter : Int,
         @Query("narrow") narrowFilterArray : String,
-        @Query("anchor") anchor : String,
-        @Query("num_before") messagesNumberBefore : Int = 100,
-        @Query("num_after") messagesNumberAfter : Int = 0,
+
     ): Single<MessagesResponse>
 
     @GET("users")
@@ -26,39 +29,63 @@ interface Api {
     @GET("users/me")
     fun getMyUser(): Single<UserDTO>
 
+//    @GET("users/{user_id}/presence")
+//    fun getUserPresence(
+//        @Path(value = "user_id")
+//        userId: Int
+//    ) : Single<UserPresenceResponse>
+
     @GET("users/{user_id_or_email}/presence")
     fun getUserPresence(
         @Path("user_id_or_email") userIdOrEmail: String
     ) : Single<UserPresenceResponse>
 
-//    @GET("oneStreams")
-//    fun getAllStreams(): Single<StreamsResponse>
+//    @GET("streams")
+//    fun getChannels(): Single<ChannelsResponse>
 //
-//    @GET("users/me/{stream_id}/oneTopics")
-//    fun getTopicsByStreamId(@Path("stream_id") id: Int): Single<TopicsResponse>
+//    @GET("users/me/subscriptions")
+//    fun getSubscribedChannels(): Single<SubscribedChannelsResponse>
+
+//    @GET("users/me/{stream_id}/topics")
+//    fun getChannelTopics(
+//        @Path(value = "stream_id")
+//        channelId: Int
+//    ): Single<TopicsResponse>
+
+//    @GET("/static/generated/emoji/emoji_codes.json")
+//    fun getReactions() : Single<GetReactionsResponse>
 
     @FormUrlEncoded
     @POST("messages")
-    fun sendMessageToStream(
-        @Field("to") streamIdOrName: String,
-        @Field("content") content: String,
+    fun sendMessageToChannel(
+        @Field("to") channel: String,
         @Field("topic") topic: String,
-        @Field("type") type: String = "stream",
-    ) : Single<SendMessageResponse>
-
-    @FormUrlEncoded
-    @POST("messages")
-    fun sendPrivateMessage(
-        @Field("to") recipientsIdIntArray: String,
         @Field("content") content: String,
-        @Field("type") type: String = "private",
-    ) : Single<SendMessageResponse>
+        @Field("type") type: String = "stream",
+    ) : Completable
+
+//    @FormUrlEncoded
+//    @POST("messages")
+//    fun sendPrivateMessage(
+//        @Field("to") recipientsIdIntArray: String,
+//        @Field("content") content: String,
+//        @Field("type") type: String = "private",
+//    ) : Single<SendMessageResponse>
 
     @FormUrlEncoded
     @POST("messages/{message_id}/reactions")
     fun addReaction(
         @Path("message_id") messageId: Int,
         @Field("emoji_name") emojiName: String,
+    ) : Completable
+
+
+    @DELETE("messages/{message_id}/reactions")
+    fun deleteReaction(
+        @Path("message_id")
+        messageId: Int,
+        @Query("emoji_name")
+        emojiName: String
     ) : Completable
 
 }

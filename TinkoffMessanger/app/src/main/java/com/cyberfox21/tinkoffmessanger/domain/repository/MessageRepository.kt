@@ -1,17 +1,17 @@
 package com.cyberfox21.tinkoffmessanger.domain.repository
 
-import androidx.lifecycle.LiveData
 import com.cyberfox21.tinkoffmessanger.domain.entity.Message
+import io.reactivex.Completable
+import io.reactivex.Single
 
 interface MessageRepository {
 
-    fun getMessageList(): LiveData<List<Message>>
+    fun getMessageList(
+        numBefore: Int,
+        numAfter: Int,
+        channelName: String,
+        topicName: String
+    ): Single<List<Message>>
 
-    fun getMessage(msgId: Int): Message?
-
-    fun addMessage(msg: Message)
-
-    fun deleteMessage(msg: Message)
-
-    fun addEmojiToMessage(msg: Message)
+    fun addMessage(channelName: String, topicName: String, text: String): Completable
 }

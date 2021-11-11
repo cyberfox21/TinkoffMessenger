@@ -1,46 +1,67 @@
 package com.cyberfox21.tinkoffmessanger.data.repository
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import android.util.Log
+import androidx.core.text.HtmlCompat
+import com.cyberfox21.tinkoffmessanger.data.api.ApiFactory
+import com.cyberfox21.tinkoffmessanger.data.api.dto.Narrow
 import com.cyberfox21.tinkoffmessanger.domain.entity.Message
+import com.cyberfox21.tinkoffmessanger.domain.entity.Reaction
 import com.cyberfox21.tinkoffmessanger.domain.repository.MessageRepository
+import com.cyberfox21.tinkoffmessanger.util.DateFormatter
+import io.reactivex.Completable
+import io.reactivex.Single
+import io.reactivex.schedulers.Schedulers
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 
 object MessageRepositoryImpl : MessageRepository {
 
-    private var messageListLD = MutableLiveData<List<Message>>()
+    private val api = ApiFactory.api
 
-    private val messageList =
-        sortedSetOf(comparator = Comparator<Message> { o1, o2 -> (o1.id).compareTo(o2.id) })
-
-    override fun getMessageList(): LiveData<List<Message>> {
-        return messageListLD
+    override fun getMessageList(
+        numBefore: Int,
+        numAfter: Int,
+        channelName: String,
+        topicName: String
+    ): Single<List<Message>> {
+        val narrowList = listOf(
+            Narrow("stream", channelName),
+            Narrow("topic", topicName)
+        )
+        Log.d("CHECKER", Json.encodeToString(narrowList))
+        return api.getMessages(
+            messagesNumberBefore = numBefore,
+            messagesNumberAfter = numAfter,
+            narrowFilterArray = Json.encodeToString(narrowList)
+        ).flatMap { response ->
+            val mappedMessageList = response.messages.map {
+                Message(
+                    id = it.id,
+                    message = HtmlCompat.fromHtml(it.content, 0).toString(),
+                    time = DateFormatter.utcToDate(it.timestamp),
+                    senderId = it.senderId,
+                    senderName = it.senderFullName,
+                    senderAvatarUrl = it.avatarUrl,
+                    isCurrentUser = it.isMeMessage,
+                    reactions = it.reactions.map { reactionDTO ->
+                        Reaction(
+                            userId = reactionDTO.userId,
+                            name = reactionDTO.name,
+                            reaction = reactionDTO.code
+                        )
+                    }
+                )
+            }
+            Single.just(mappedMessageList)
+        }.subscribeOn(Schedulers.io())
     }
 
-    override fun getMessage(msgId: Int): Message? {
-        return messageList.find { msgId == it.id }
-    }
-
-    override fun addMessage(msg: Message) {
-        messageList.add(msg)
-        updateList()
-    }
-
-    override fun addEmojiToMessage(msg: Message) {
-        val oldItem = getMessage(msg.id)
-
-        oldItem?.let {
-            deleteMessage(oldItem)
-            addMessage(msg)
-        }
-    }
-
-    override fun deleteMessage(msg: Message) {
-        messageList.remove(msg)
-        updateList()
-    }
-
-    private fun updateList() {
-        messageListLD.value = messageList.toList()
+    override fun addMessage(channelName: String, topicName: String, text: String): Completable {
+        return api.sendMessageToChannel(
+            channel = channelName,
+            topic = topicName,
+            content = text
+        ).subscribeOn(Schedulers.io())
     }
 
 }

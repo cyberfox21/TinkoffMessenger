@@ -6,7 +6,6 @@ import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 
-
 object ApiFactory {
 
     private const val BASE_URL = "https://tinkoff-android-fall21.zulipchat.com/api/v1/"
@@ -15,7 +14,7 @@ object ApiFactory {
 
     private var MY_TOKEN = Credentials.basic("shkolniktatyana21@gmail.com", API_KEY)
 
-    val retrofit = Retrofit.Builder()
+    private val retrofit = Retrofit.Builder()
         .addConverterFactory(GsonConverterFactory.create())
         .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
         .client(OkHttpClient.Builder().addInterceptor { chain ->
@@ -27,6 +26,6 @@ object ApiFactory {
         .baseUrl(BASE_URL)
         .build()
 
-    val api = retrofit.create(Api::class.java)
+    val api: Api = retrofit.create(Api::class.java)
 
 }

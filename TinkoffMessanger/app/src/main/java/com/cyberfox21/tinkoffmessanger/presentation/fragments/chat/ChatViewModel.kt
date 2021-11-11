@@ -1,62 +1,99 @@
 package com.cyberfox21.tinkoffmessanger.presentation.fragments.chat
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.cyberfox21.tinkoffmessanger.data.repository.MessageRepositoryImpl
 import com.cyberfox21.tinkoffmessanger.data.repository.ReactionRepositoryImpl
+import com.cyberfox21.tinkoffmessanger.domain.entity.Channel
 import com.cyberfox21.tinkoffmessanger.domain.entity.Message
 import com.cyberfox21.tinkoffmessanger.domain.entity.Reaction
-import com.cyberfox21.tinkoffmessanger.domain.usecase.AddMessageUseCase
-import com.cyberfox21.tinkoffmessanger.domain.usecase.EditMessageUseCase
-import com.cyberfox21.tinkoffmessanger.domain.usecase.GetMessageListUseCase
-import com.cyberfox21.tinkoffmessanger.domain.usecase.GetReactionListUseCase
-import java.util.*
+import com.cyberfox21.tinkoffmessanger.domain.entity.Topic
+import com.cyberfox21.tinkoffmessanger.domain.usecase.*
+import io.reactivex.Single
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.addTo
+import io.reactivex.rxkotlin.subscribeBy
+import io.reactivex.schedulers.Schedulers
 
-class ChatViewModel : ViewModel() {
-
-    private var i = 0
+class ChatViewModel(private val channel: Channel, private val topic: Topic) : ViewModel() {
 
     private val messageRepository = MessageRepositoryImpl
     private val reactionsRepository = ReactionRepositoryImpl
+
     private val getMessageListUseCase = GetMessageListUseCase(messageRepository)
     private val addMessageUseCase = AddMessageUseCase(messageRepository)
-    private val editMessageUseCase = EditMessageUseCase(messageRepository)
+
     private val getReactionListUseCase = GetReactionListUseCase(reactionsRepository)
+    private val addReactionUseCase = AddReactionUseCase(reactionsRepository)
+    private val deleteReactionUseCase = DeleteReactionUseCase(reactionsRepository)
 
     val reactionList = getReactionListUseCase()
 
-    private var _messageListLD = getMessageListUseCase()
-    val messageList: LiveData<List<Message>>
-        get() = _messageListLD
+    private var numBefore: Int = 100
+    private var numAfter: Int = 0
 
-    fun sendMessage(image: Int, name: String, text: String) {
-        val time = getTime()
-        val message = Message(i, image, name, text, time, mutableListOf<Reaction>())
-        i++
-        addMessageUseCase(message)
+    private val compositeDisposable = CompositeDisposable()
+
+    private val messageObserver: Single<List<Message>> = getMessageListUseCase(
+        numBefore = numBefore,
+        numAfter = numAfter,
+        channelName = channel.name,
+        topicName = topic.title
+    )
+    private val reactionsObserver: Single<List<Reaction>> = getReactionListUseCase()
+
+    private var _chatScreenStateLD = MutableLiveData<ChatScreenState>()
+    val chatScreenStateLD: LiveData<ChatScreenState>
+        get() = _chatScreenStateLD
+
+    private var _reactionsListStateLD = MutableLiveData<ReactionsListState>()
+    val reactionsListStateLD: LiveData<ReactionsListState>
+        get() = _reactionsListStateLD
+
+
+    init {
+        subscribeToGiveReactionList()
+        subscribeToGiveMessages()
     }
 
-    fun addNewEmoji(message: Message, emoji: String) {
-        val newMessage = message.copy(reactions = message.reactions.apply {
-            add(
-                Reaction(
-                    emoji,
-                    COUNT_OF_REACTIONS
-                )
-            )
-        })
-        editMessageUseCase(newMessage)
+    private fun subscribeToGiveReactionList() {
+        reactionsObserver
+            .subscribeOn(Schedulers.io())
+            .doOnSuccess { _reactionsListStateLD.postValue(ReactionsListState.Loading) }
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribeBy(
+                onSuccess = { _reactionsListStateLD.value = ReactionsListState.Result(it) },
+                onError = { _reactionsListStateLD.value = ReactionsListState.Error(it) }
+            ).addTo(compositeDisposable)
     }
 
-    private fun getTime(): String {
-        val currentTime: Date = Calendar.getInstance().time
-        return currentTime.toString().substring(TIME_START_INDEX, TIME_END_INDEX)
+    private fun subscribeToGiveMessages() {
+        messageObserver
+            .subscribeOn(Schedulers.io())
+            .doOnSuccess { _chatScreenStateLD.postValue(ChatScreenState.Loading) }
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribeBy(
+                onSuccess = { _chatScreenStateLD.value = ChatScreenState.Result(it) },
+                onError = { _chatScreenStateLD.value = ChatScreenState.Error(it) },
+            ).addTo(compositeDisposable)
     }
+//
+//    fun sendMessage(image: Int, name: String, text: String) {
+//        addMessageUseCase()
+//    }
+//
+//    fun addEmoji(message: Message, emoji: String) {
+//        addReactionUseCase()
+//    }
+//
+//    fun deleteEmoji(){
+//        deleteReactionUseCase()
+//    }
 
-    companion object {
-        const val TIME_START_INDEX = 11
-        const val TIME_END_INDEX = 16
-        const val COUNT_OF_REACTIONS = 3
+    override fun onCleared() {
+        compositeDisposable.dispose()
     }
 
 }

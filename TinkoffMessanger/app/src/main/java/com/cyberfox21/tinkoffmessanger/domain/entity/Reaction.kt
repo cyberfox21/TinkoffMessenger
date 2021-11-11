@@ -1,3 +1,7 @@
 package com.cyberfox21.tinkoffmessanger.domain.entity
 
-class Reaction(var reaction: String, var count: Int)
+data class Reaction(
+    val userId: Int,
+    val name: String,
+    val reaction: String,
+)

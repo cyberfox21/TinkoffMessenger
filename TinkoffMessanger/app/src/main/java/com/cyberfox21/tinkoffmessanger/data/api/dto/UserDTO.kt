@@ -2,7 +2,7 @@ package com.cyberfox21.tinkoffmessanger.data.api.dto
 
 import com.google.gson.annotations.SerializedName
 
-data class UserDTO (
+data class UserDTO(
     @SerializedName("user_id")
     val id: Int,
 
@@ -16,5 +16,5 @@ data class UserDTO (
     val avatar_url: String,
 
     @SerializedName("is_active")
-    val is_active : Boolean
-    )
+    val is_active: Boolean
+)

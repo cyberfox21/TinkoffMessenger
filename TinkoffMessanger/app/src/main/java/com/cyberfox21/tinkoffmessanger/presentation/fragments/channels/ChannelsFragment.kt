@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
 import com.cyberfox21.tinkoffmessanger.R
 import com.cyberfox21.tinkoffmessanger.databinding.FragmentChannelsBinding
+import com.cyberfox21.tinkoffmessanger.domain.entity.Channel
 import com.cyberfox21.tinkoffmessanger.domain.entity.Topic
 import com.cyberfox21.tinkoffmessanger.presentation.enums.Category
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.ChatFragment
@@ -70,7 +71,16 @@ class ChannelsFragment : Fragment(), ListChannelsFragment.OnTopicSelected {
             .addToBackStack(CHANNELS_FRAGMENT_NAME)
             .add(
                 R.id.main_fragment_container,
-                ChatFragment.newInstance(topic)
+                ChatFragment.newInstance(
+                    Channel(
+                        "general",
+                        listOf<Topic>()
+                    ),
+                    Topic(
+                        "swimming turtles",
+                        28
+                    )
+                )
             )
             .commit()
     }

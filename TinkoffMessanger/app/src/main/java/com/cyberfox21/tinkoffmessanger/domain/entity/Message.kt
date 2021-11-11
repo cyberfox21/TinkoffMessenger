@@ -1,10 +1,14 @@
 package com.cyberfox21.tinkoffmessanger.domain.entity
 
+import java.util.*
+
 data class Message(
     val id: Int,
-    val image: Int,
-    val name: String,
-    val msg: String,
-    val time: String,
-    var reactions: MutableList<Reaction>
+    val message: String,
+    val time: Date,
+    val senderId: Int,
+    val senderName: String,
+    val senderAvatarUrl: String,
+    val isCurrentUser: Boolean,
+    val reactions: List<Reaction>
 )

@@ -56,7 +56,7 @@ class PeopleFragment : Fragment() {
     private fun addListeners() {
         peopleRecyclerAdapter.onPersonClickListener =
             object : PeopleRecyclerAdapter.OnPersonClickListener {
-                override fun onPeopleClick() {
+                override fun onPersonClick() {
                     showUserProfile()
                 }
 

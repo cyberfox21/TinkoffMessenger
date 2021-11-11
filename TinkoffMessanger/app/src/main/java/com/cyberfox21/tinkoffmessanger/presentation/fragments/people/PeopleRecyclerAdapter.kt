@@ -14,7 +14,7 @@ class PeopleRecyclerAdapter : ListAdapter<User, UserViewHolder>(UserDIffUtilCall
     var onPersonClickListener: OnPersonClickListener? = null
 
     interface OnPersonClickListener {
-        fun onPeopleClick()
+        fun onPersonClick()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserViewHolder {
@@ -30,9 +30,9 @@ class PeopleRecyclerAdapter : ListAdapter<User, UserViewHolder>(UserDIffUtilCall
             Glide.with(binding.root).load(user.avatar).into(ivUserAvatar)
             tvUserName.text = user.name
             tvUserEmail.text = user.email
-            online.visibility = getStatus(user.status)
+//            online.visibility = getStatus(user.status)
             root.setOnClickListener {
-                onPersonClickListener?.onPeopleClick()
+                onPersonClickListener?.onPersonClick()
             }
         }
     }
