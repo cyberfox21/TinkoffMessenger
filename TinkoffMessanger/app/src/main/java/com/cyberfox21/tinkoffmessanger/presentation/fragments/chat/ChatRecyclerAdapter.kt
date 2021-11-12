@@ -7,6 +7,7 @@ import com.bumptech.glide.Glide
 import com.cyberfox21.tinkoffmessanger.domain.entity.Message
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.views.CustomEmojiView
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.views.EmojiMessageViewGroup
+import com.cyberfox21.tinkoffmessanger.util.EmojiFormatter
 
 class ChatRecyclerAdapter :
     ListAdapter<Message, MessageViewHolder>(MessageDiffUtilCallback()) {
@@ -48,7 +49,7 @@ class ChatRecyclerAdapter :
                     }
                 }
                 emojiView.apply {
-                    emoji = message.reactions[i].reaction
+                    emoji = EmojiFormatter.stringToEmoji(message.reactions[i].reaction)
                     count = ""
 
                 }

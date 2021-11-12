@@ -3,6 +3,7 @@ package com.cyberfox21.tinkoffmessanger.data.repository
 import com.cyberfox21.tinkoffmessanger.data.api.ApiFactory
 import com.cyberfox21.tinkoffmessanger.domain.entity.Reaction
 import com.cyberfox21.tinkoffmessanger.domain.repository.ReactionRepository
+import com.cyberfox21.tinkoffmessanger.util.EmojiFormatter
 import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
@@ -29,7 +30,12 @@ object ReactionRepositoryImpl : ReactionRepository {
     }
 
     override fun getReactionList(): Single<List<Reaction>> {
-        return Single.just(reactions.toList()).subscribeOn(Schedulers.io())
+        val single = api.getReactions()
+            .map {
+                val jObject = it.reactionsObject
+                EmojiFormatter.jsonObjectToReactionsList(jObject)
+            }.subscribeOn(Schedulers.io())
+        return single
     }
 
     override fun addReaction(messageId: Int, reactionName: String): Completable {

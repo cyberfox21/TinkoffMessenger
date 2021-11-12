@@ -30,8 +30,6 @@ class ChatViewModel(private val channel: Channel, private val topic: Topic) : Vi
     private val addReactionUseCase = AddReactionUseCase(reactionsRepository)
     private val deleteReactionUseCase = DeleteReactionUseCase(reactionsRepository)
 
-    val reactionList = getReactionListUseCase()
-
     private var numBefore: Int = 100
     private var numAfter: Int = 0
 

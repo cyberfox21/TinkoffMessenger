@@ -1,9 +1,9 @@
 package com.cyberfox21.tinkoffmessanger.data.api.dto
 
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.json.JsonObject
+import com.google.gson.JsonObject
+import com.google.gson.annotations.SerializedName
 
 data class ReactionsResponse(
-    @SerialName("name_to_codepoint")
+    @SerializedName("name_to_codepoint")
     val reactionsObject: JsonObject
 )

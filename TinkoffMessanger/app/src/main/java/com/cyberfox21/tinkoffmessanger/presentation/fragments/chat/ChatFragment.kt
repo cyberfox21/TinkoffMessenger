@@ -13,6 +13,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.cyberfox21.tinkoffmessanger.R
 import com.cyberfox21.tinkoffmessanger.databinding.BottomSheetDialogLayoutBinding
 import com.cyberfox21.tinkoffmessanger.databinding.FragmentChatBinding
@@ -97,6 +98,8 @@ class ChatFragment : Fragment() {
     private fun setupViews() {
         binding.tvChatTopic.text = fragmentTopic.title
         binding.chatRecycler.adapter = chatRecyclerAdapter
+        val linearLayoutManager = LinearLayoutManager.VERTICAL
+        binding.chatRecycler.layoutManager
     }
 
     private fun addListeners() {
@@ -172,6 +175,7 @@ class ChatFragment : Fragment() {
             }
             ReactionsListState.Loading -> dialogLayoutBinding.pbLoading.isVisible = true
             is ReactionsListState.Error -> {
+                Log.d("ReactionsListState", "${it.error.message}")
                 dialogLayoutBinding.pbLoading.isVisible = false
                 Toast.makeText(
                     this.context,
