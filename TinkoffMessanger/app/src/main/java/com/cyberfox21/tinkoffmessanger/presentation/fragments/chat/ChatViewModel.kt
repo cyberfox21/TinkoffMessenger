@@ -1,5 +1,6 @@
 package com.cyberfox21.tinkoffmessanger.presentation.fragments.chat
 
+import android.text.Editable
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -81,10 +82,15 @@ class ChatViewModel(private val channel: Channel, private val topic: Topic) : Vi
                 onError = { _chatScreenStateLD.value = ChatScreenState.Error(it) },
             ).addTo(compositeDisposable)
     }
-//
-//    fun sendMessage(image: Int, name: String, text: String) {
-//        addMessageUseCase()
-//    }
+
+    fun sendMessage(text: Editable) {
+        addMessageUseCase(channelName = channel.name, topicName = topic.title, text.toString())
+            .subscribeBy(
+                onComplete = { Log.d("ChatViewModel", "Sending message successfully") },
+                onError = { Log.d("ChatViewModel", "Sending message with error ${it.message}") }
+            ).addTo(compositeDisposable)
+    }
+
 //
 //    fun addEmoji(message: Message, emoji: String) {
 //        addReactionUseCase()

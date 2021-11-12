@@ -13,7 +13,6 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.cyberfox21.tinkoffmessanger.R
 import com.cyberfox21.tinkoffmessanger.databinding.BottomSheetDialogLayoutBinding
 import com.cyberfox21.tinkoffmessanger.databinding.FragmentChatBinding
@@ -98,14 +97,12 @@ class ChatFragment : Fragment() {
     private fun setupViews() {
         binding.tvChatTopic.text = fragmentTopic.title
         binding.chatRecycler.adapter = chatRecyclerAdapter
-        val linearLayoutManager = LinearLayoutManager.VERTICAL
-        binding.chatRecycler.layoutManager
     }
 
     private fun addListeners() {
         with(binding) {
             imageBtnSend.setOnClickListener {
-                //sendMessage()
+                viewModel.sendMessage(binding.etMessageField.text)
             }
             etMessageField.addTextChangedListener(object : TextWatcher {
                 override fun beforeTextChanged(
@@ -157,15 +154,6 @@ class ChatFragment : Fragment() {
             }
         bottomSheetDialog.show()
     }
-//
-//    private fun sendMessage() {
-//        val image = R.drawable.ed
-//        val name = resources.getString(R.string.example_name)
-//        val message = binding.etMessageField.text.toString()
-//        viewModel.sendMessage(image, name, message)
-//        binding.etMessageField.setText("")
-//    }
-
 
     private fun processedReactionsListState(it: ReactionsListState) {
         when (it) {
