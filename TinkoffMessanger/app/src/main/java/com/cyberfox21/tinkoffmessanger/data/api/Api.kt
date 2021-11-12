@@ -1,9 +1,6 @@
 package com.cyberfox21.tinkoffmessanger.data.api
 
-import com.cyberfox21.tinkoffmessanger.data.api.dto.MessagesResponse
-import com.cyberfox21.tinkoffmessanger.data.api.dto.UserDTO
-import com.cyberfox21.tinkoffmessanger.data.api.dto.UserPresenceResponse
-import com.cyberfox21.tinkoffmessanger.data.api.dto.UsersResponse
+import com.cyberfox21.tinkoffmessanger.data.api.dto.*
 import io.reactivex.Completable
 import io.reactivex.Single
 import retrofit2.http.*
@@ -12,11 +9,11 @@ interface Api {
 
     @GET("messages?anchor=newest")
     fun getMessages(
-        @Query("num_before") messagesNumberBefore : Int,
-        @Query("num_after") messagesNumberAfter : Int,
-        @Query("narrow") narrowFilterArray : String,
+        @Query("num_before") messagesNumberBefore: Int,
+        @Query("num_after") messagesNumberAfter: Int,
+        @Query("narrow") narrowFilterArray: String,
 
-    ): Single<MessagesResponse>
+        ): Single<MessagesResponse>
 
     @GET("users")
     fun getUsers(): Single<UsersResponse>
@@ -24,7 +21,7 @@ interface Api {
     @GET("users/{user_id}")
     fun getUser(
         @Path("user_id") id: Int
-    ):Single<UsersResponse>
+    ): Single<UsersResponse>
 
     @GET("users/me")
     fun getMyUser(): Single<UserDTO>
@@ -38,7 +35,7 @@ interface Api {
     @GET("users/{user_id_or_email}/presence")
     fun getUserPresence(
         @Path("user_id_or_email") userIdOrEmail: String
-    ) : Single<UserPresenceResponse>
+    ): Single<UserPresenceResponse>
 
 //    @GET("streams")
 //    fun getChannels(): Single<ChannelsResponse>
@@ -52,8 +49,8 @@ interface Api {
 //        channelId: Int
 //    ): Single<TopicsResponse>
 
-//    @GET("/static/generated/emoji/emoji_codes.json")
-//    fun getReactions() : Single<GetReactionsResponse>
+    @GET("/static/generated/emoji/emoji_codes.json")
+    fun getReactions(): Single<ReactionsResponse>
 
     @FormUrlEncoded
     @POST("messages")
@@ -62,7 +59,7 @@ interface Api {
         @Field("topic") topic: String,
         @Field("content") content: String,
         @Field("type") type: String = "stream",
-    ) : Completable
+    ): Completable
 
 //    @FormUrlEncoded
 //    @POST("messages")
@@ -77,7 +74,7 @@ interface Api {
     fun addReaction(
         @Path("message_id") messageId: Int,
         @Field("emoji_name") emojiName: String,
-    ) : Completable
+    ): Completable
 
 
     @DELETE("messages/{message_id}/reactions")
@@ -86,6 +83,6 @@ interface Api {
         messageId: Int,
         @Query("emoji_name")
         emojiName: String
-    ) : Completable
+    ): Completable
 
 }

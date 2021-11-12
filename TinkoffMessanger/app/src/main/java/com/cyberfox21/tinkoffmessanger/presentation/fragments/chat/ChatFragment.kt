@@ -191,7 +191,7 @@ class ChatFragment : Fragment() {
             ChatScreenState.Loading -> binding.pbLoading.isVisible = true
             is ChatScreenState.Error -> {
                 binding.pbLoading.isVisible = false
-                Log.d("CHECKER", it.error.message.toString())
+                Log.d("ChatScreenState", "${it.error.message}")
                 Toast.makeText(
                     this.context,
                     "ChatScreenState ${it.error.message}",

@@ -77,7 +77,7 @@ class ChannelsFragment : Fragment(), ListChannelsFragment.OnTopicSelected {
                         listOf<Topic>()
                     ),
                     Topic(
-                        "swimming turtles",
+                        "topic demonstration",
                         28
                     )
                 )

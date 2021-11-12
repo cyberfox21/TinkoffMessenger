@@ -1,5 +1,6 @@
 package com.cyberfox21.tinkoffmessanger.presentation.fragments.chat
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -36,12 +37,7 @@ class ChatViewModel(private val channel: Channel, private val topic: Topic) : Vi
 
     private val compositeDisposable = CompositeDisposable()
 
-    private val messageObserver: Single<List<Message>> = getMessageListUseCase(
-        numBefore = numBefore,
-        numAfter = numAfter,
-        channelName = channel.name,
-        topicName = topic.title
-    )
+    private var messageObserver: Single<List<Message>>? = null
     private val reactionsObserver: Single<List<Reaction>> = getReactionListUseCase()
 
     private var _chatScreenStateLD = MutableLiveData<ChatScreenState>()
@@ -54,6 +50,12 @@ class ChatViewModel(private val channel: Channel, private val topic: Topic) : Vi
 
 
     init {
+        messageObserver = getMessageListUseCase(
+            numBefore = numBefore,
+            numAfter = numAfter,
+            channelName = channel.name,
+            topicName = topic.title
+        )
         subscribeToGiveReactionList()
         subscribeToGiveMessages()
     }
@@ -70,7 +72,9 @@ class ChatViewModel(private val channel: Channel, private val topic: Topic) : Vi
     }
 
     private fun subscribeToGiveMessages() {
-        messageObserver
+
+        Log.d("ChatViewModel", "subscribeToGiveMessages()")
+        messageObserver!!
             .subscribeOn(Schedulers.io())
             .doOnSuccess { _chatScreenStateLD.postValue(ChatScreenState.Loading) }
             .observeOn(AndroidSchedulers.mainThread())

@@ -45,9 +45,9 @@ object MessageRepositoryImpl : MessageRepository {
                     isCurrentUser = it.isMeMessage,
                     reactions = it.reactions.map { reactionDTO ->
                         Reaction(
-                            userId = reactionDTO.userId,
+                            reaction = reactionDTO.code,
                             name = reactionDTO.name,
-                            reaction = reactionDTO.code
+                            userId = reactionDTO.userId
                         )
                     }
                 )
