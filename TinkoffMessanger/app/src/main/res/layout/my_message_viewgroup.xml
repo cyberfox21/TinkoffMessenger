@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginEnd="@dimen/mergeLayoutMarginEnd"
+    android:layout_marginBottom="@dimen/mergeLayoutMarginBottom"
+    android:background="@drawable/my_message_bg"
+    tools:parentTag="android.widget.FrameLayout">
+
+    <TextView
+        android:id="@+id/time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:background="@android:color/transparent"
+        android:text="@string/example_time" />
+
+    <TextView
+        android:id="@+id/text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:textSize="@dimen/textSize14sp"
+        android:layout_marginEnd="@dimen/margin10dp"
+        android:layout_marginBottom="@dimen/margin10dp"
+        android:background="@android:color/transparent"
+        android:text="@string/example_message" />
+
+    <com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.views.FlexBoxLayout
+        android:id="@+id/emoji_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+</merge>

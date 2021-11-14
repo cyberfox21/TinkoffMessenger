@@ -17,13 +17,13 @@ object EmojiFormatter {
         if (!emojiCode.contains("-")) {
             return codeToEmoji(emojiCode.replace("\"", ""))
         }
-        return emojiCode
+        return emojiCode.substringBeforeLast("-")
     }
 
     fun jsonObjectToReactionsList(jsonObject: com.google.gson.JsonObject): List<Reaction> {
         val reactionList = sortedSetOf(
             comparator = Comparator<Reaction> { o1, o2 ->
-                (o1.name).compareTo(o2.name)
+                (o1.reaction).compareTo(o2.reaction)
             })
 
 
