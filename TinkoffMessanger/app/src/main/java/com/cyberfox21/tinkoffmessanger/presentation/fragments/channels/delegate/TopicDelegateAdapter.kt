@@ -5,6 +5,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.cyberfox21.tinkoffmessanger.databinding.ItemTopicBinding
 import com.cyberfox21.tinkoffmessanger.domain.entity.Topic
+import com.cyberfox21.tinkoffmessanger.presentation.AdapterDelegate
+import com.cyberfox21.tinkoffmessanger.presentation.DelegateItem
 
 class TopicDelegateAdapter(private val onTopicClick: OnTopicDelegateClickListener) :
     AdapterDelegate {
@@ -14,8 +16,15 @@ class TopicDelegateAdapter(private val onTopicClick: OnTopicDelegateClickListene
     }
 
     override fun onCreateViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
+        val binding = ItemTopicBinding.inflate(LayoutInflater.from(parent.context))
+        val lp = ViewGroup.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        )
         return TopicViewHolder(
-            ItemTopicBinding.inflate(LayoutInflater.from(parent.context)),
+            binding.apply {
+                root.layoutParams = lp
+            },
             onTopicClick
         )
     }

@@ -1,10 +1,10 @@
 package com.cyberfox21.tinkoffmessanger.presentation.fragments.chat
 
-import com.cyberfox21.tinkoffmessanger.domain.entity.Message
+import com.cyberfox21.tinkoffmessanger.presentation.DelegateItem
 
 sealed class ChatScreenState {
 
-    class Result(val items: List<Message>) : ChatScreenState() {}
+    class Result(val items: List<DelegateItem>) : ChatScreenState() {}
 
     object Loading : ChatScreenState() {}
 

@@ -1,6 +1,7 @@
 package com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.delegate
 
 import com.cyberfox21.tinkoffmessanger.domain.entity.Topic
+import com.cyberfox21.tinkoffmessanger.presentation.DelegateItem
 
 data class TopicDelegateItem(
     val id: Int,

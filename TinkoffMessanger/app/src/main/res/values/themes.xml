@@ -39,4 +39,8 @@
         <item name="colorSecondaryVariant">@color/green</item>
     </style>
 
+    <style name="Theme.MyMessage" parent="Theme.MaterialComponents">
+        <item name="android:background">@drawable/my_message_bg</item>
+    </style>
+
 </resources>

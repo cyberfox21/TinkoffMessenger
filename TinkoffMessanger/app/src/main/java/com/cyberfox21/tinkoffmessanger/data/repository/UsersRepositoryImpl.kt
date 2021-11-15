@@ -23,6 +23,19 @@ object UsersRepositoryImpl : UsersRepository {
             }.subscribeOn(Schedulers.io())
     }
 
+    override fun getUser(id: Int): Single<User> {
+        return api.getUser(id)
+            .map {
+                User(
+                    id = it.id,
+                    avatar = it.avatar_url,
+                    name = it.full_name,
+                    email = it.email,
+                    status = it.is_active
+                )
+            }.subscribeOn(Schedulers.io())
+    }
+
     override fun getUsersList(): Single<List<User>> {
         return api.getUsers()
             .subscribeOn(Schedulers.io())

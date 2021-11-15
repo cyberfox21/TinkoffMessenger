@@ -7,14 +7,14 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.cyberfox21.tinkoffmessanger.data.repository.MessageRepositoryImpl
 import com.cyberfox21.tinkoffmessanger.data.repository.ReactionRepositoryImpl
-import com.cyberfox21.tinkoffmessanger.domain.entity.Channel
-import com.cyberfox21.tinkoffmessanger.domain.entity.Message
-import com.cyberfox21.tinkoffmessanger.domain.entity.Reaction
-import com.cyberfox21.tinkoffmessanger.domain.entity.Topic
+import com.cyberfox21.tinkoffmessanger.data.repository.UsersRepositoryImpl
+import com.cyberfox21.tinkoffmessanger.domain.entity.*
 import com.cyberfox21.tinkoffmessanger.domain.usecase.*
+import com.cyberfox21.tinkoffmessanger.util.toDelegateChatItemsList
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.functions.BiFunction
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
@@ -23,6 +23,7 @@ class ChatViewModel(private val channel: Channel, private val topic: Topic) : Vi
 
     private val messageRepository = MessageRepositoryImpl
     private val reactionsRepository = ReactionRepositoryImpl
+    private val usersRepository = UsersRepositoryImpl
 
     private val getMessageListUseCase = GetMessageListUseCase(messageRepository)
     private val addMessageUseCase = AddMessageUseCase(messageRepository)
@@ -31,6 +32,8 @@ class ChatViewModel(private val channel: Channel, private val topic: Topic) : Vi
     private val addReactionUseCase = AddReactionUseCase(reactionsRepository)
     private val deleteReactionUseCase = DeleteReactionUseCase(reactionsRepository)
 
+    private val getCurrentUserUseCase = GetCurrentUserUseCase(usersRepository)
+
     private var numBefore: Int = 100
     private var numAfter: Int = 0
 
@@ -38,6 +41,7 @@ class ChatViewModel(private val channel: Channel, private val topic: Topic) : Vi
 
     private var messageObserver: Single<List<Message>>? = null
     private val reactionsObserver: Single<List<Reaction>> = getReactionListUseCase()
+    private val currentUserObserver: Single<User> = getCurrentUserUseCase()
 
     private var _chatScreenStateLD = MutableLiveData<ChatScreenState>()
     val chatScreenStateLD: LiveData<ChatScreenState>
@@ -73,12 +77,18 @@ class ChatViewModel(private val channel: Channel, private val topic: Topic) : Vi
     private fun subscribeToGiveMessages() {
 
         Log.d("ChatViewModel", "subscribeToGiveMessages()")
-        messageObserver!!
-            .subscribeOn(Schedulers.io())
+        Single.zip(messageObserver, currentUserObserver, BiFunction { msgList, user ->
+            return@BiFunction msgList to user
+        }).subscribeOn(Schedulers.io())
             .doOnSuccess { _chatScreenStateLD.postValue(ChatScreenState.Loading) }
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeBy(
-                onSuccess = { _chatScreenStateLD.value = ChatScreenState.Result(it) },
+                onSuccess = {
+                    val msgList = it.first
+                    val user = it.second
+                    val delegateItemList = msgList.toDelegateChatItemsList(user.id)
+                    _chatScreenStateLD.value = ChatScreenState.Result(delegateItemList)
+                },
                 onError = { _chatScreenStateLD.value = ChatScreenState.Error(it) },
             ).addTo(compositeDisposable)
     }

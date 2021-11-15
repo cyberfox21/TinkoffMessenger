@@ -14,10 +14,12 @@ class MyMessageViewGroup @JvmOverloads constructor(
 
     init {
         inflate(context, R.layout.my_message_viewgroup, this)
+            .background = resources.getDrawable(R.drawable.my_message_bg, context.theme)
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         require(childCount == 3) { "Child count should be 3, but was $childCount" }
+
         val time = getChildAt(0)
         val text = getChildAt(1)
         val flexBoxLayout = getChildAt(2)
@@ -25,20 +27,28 @@ class MyMessageViewGroup @JvmOverloads constructor(
         val marginBottom = (text.layoutParams as MarginLayoutParams).bottomMargin
         val marginRight = (text.layoutParams as MarginLayoutParams).marginEnd
 
+        (layoutParams as MarginLayoutParams).setMargins(
+            marginRight,
+            marginBottom,
+            marginRight,
+            marginBottom
+        )
+
         measureChildWithMargins(text, widthMeasureSpec, text.measuredWidth, heightMeasureSpec, 0)
         measureChildWithMargins(time, widthMeasureSpec, 0, heightMeasureSpec, 0)
         measureChildWithMargins(flexBoxLayout, widthMeasureSpec, 0, heightMeasureSpec, 0)
 
         val totalWidth =
-            maxOf(text.measuredWidth, time.measuredWidth) + marginRight * 2
-        val totalHeight = 3 * marginBottom + time.measuredHeight + text.measuredHeight + flexBoxLayout.measuredHeight
+            maxOf(text.measuredWidth, time.measuredWidth, flexBoxLayout.measuredWidth)
+        val totalHeight =
+            3 * marginBottom + time.measuredHeight + text.measuredHeight + flexBoxLayout.measuredHeight
 
         val resultWidth = resolveSize(
-            totalWidth + paddingRight + paddingLeft,
+            totalWidth,
             widthMeasureSpec
         )
         val resultHeight = resolveSize(
-            totalHeight + paddingTop + paddingBottom,
+            totalHeight,
             heightMeasureSpec
         )
 
@@ -55,23 +65,23 @@ class MyMessageViewGroup @JvmOverloads constructor(
         val marginRight = (text.layoutParams as MarginLayoutParams).marginEnd
 
         time.layout(
-            measuredWidth - paddingLeft - marginRight - time.measuredWidth,
+            width - paddingLeft - 2 * marginRight - time.measuredWidth,
             0 + paddingTop + marginBottom,
-            measuredWidth - paddingLeft - marginRight,
+            width - paddingLeft - marginRight,
             0 + time.measuredHeight + paddingTop + marginBottom
         )
 
         text.layout(
-            measuredWidth - paddingLeft - marginRight - text.measuredWidth,
+            marginRight,
             0 + paddingBottom + marginBottom + time.bottom,
-            measuredWidth - text.width - marginRight,
+            width - paddingLeft - marginRight,
             time.bottom + text.measuredHeight + paddingBottom + marginBottom
         )
 
         flexBoxLayout.layout(
-            measuredWidth - maxOf(time.width, text.width) - paddingLeft - marginRight,
+            marginRight,
             text.bottom + paddingBottom + marginBottom,
-            measuredWidth - paddingLeft - marginRight,
+            width - paddingLeft - marginRight,
             text.bottom + flexBoxLayout.measuredHeight + paddingBottom + marginBottom
         )
     }

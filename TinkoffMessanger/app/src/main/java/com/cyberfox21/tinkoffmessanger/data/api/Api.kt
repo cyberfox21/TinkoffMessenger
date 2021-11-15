@@ -21,7 +21,7 @@ interface Api {
     @GET("users/{user_id}")
     fun getUser(
         @Path("user_id") id: Int
-    ): Single<UsersResponse>
+    ): Single<UserDTO>
 
     @GET("users/me")
     fun getMyUser(): Single<UserDTO>

@@ -20,6 +20,10 @@ import com.cyberfox21.tinkoffmessanger.domain.entity.Channel
 import com.cyberfox21.tinkoffmessanger.domain.entity.Message
 import com.cyberfox21.tinkoffmessanger.domain.entity.Reaction
 import com.cyberfox21.tinkoffmessanger.domain.entity.Topic
+import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.delegate.AlienMessageDelegateAdapter
+import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.delegate.DateDelegateAdapter
+import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.delegate.MainChatRecyclerAdapter
+import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.delegate.MyMessageDelegateAdapter
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.reactions.ReactionRecyclerAdapter
 import com.google.android.material.bottomsheet.BottomSheetDialog
 
@@ -43,7 +47,7 @@ class ChatFragment : Fragment() {
 
     private lateinit var viewModel: ChatViewModel
 
-    private val chatRecyclerAdapter = ChatRecyclerAdapter()
+    private val chatRecyclerAdapter = MainChatRecyclerAdapter()
     private val reactionRecyclerAdapter = ReactionRecyclerAdapter()
 
     override fun onAttach(context: Context) {
@@ -96,6 +100,9 @@ class ChatFragment : Fragment() {
 
     private fun setupViews() {
         binding.tvChatTopic.text = fragmentTopic.title
+        chatRecyclerAdapter.addDelegate(AlienMessageDelegateAdapter())
+        chatRecyclerAdapter.addDelegate(MyMessageDelegateAdapter())
+        chatRecyclerAdapter.addDelegate(DateDelegateAdapter())
         binding.chatRecycler.adapter = chatRecyclerAdapter
     }
 
@@ -120,12 +127,12 @@ class ChatFragment : Fragment() {
 
             })
         }
-        chatRecyclerAdapter.onLongMessageClickListener =
-            object : ChatRecyclerAdapter.OnLongMessageClickListener {
-                override fun onLongMessageClick(message: Message) {
-                    showBottomSheetDialog(message)
-                }
-            }
+//        chatRecyclerAdapter.onLongMessageClickListener =
+//            object : ChatRecyclerAdapter.OnLongMessageClickListener {
+//                override fun onLongMessageClick(message: Message) {
+//                    showBottomSheetDialog(message)
+//                }
+//            }
     }
 
     private fun observeViewModel() {
@@ -201,6 +208,13 @@ class ChatFragment : Fragment() {
             R.drawable.ic_send_btn
         }
     }
+
+//    private fun configureToolbar() {
+//        binding.toolbarLayout.toolbar.setNavigationIcon(R.drawable.ic_back)
+//        binding.toolbarLayout.toolbar.setNavigationOnClickListener {
+//            activity?.onBackPressed()
+//        }
+//    }
 
     companion object {
 

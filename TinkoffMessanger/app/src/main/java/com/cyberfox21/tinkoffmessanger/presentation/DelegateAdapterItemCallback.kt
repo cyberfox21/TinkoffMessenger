@@ -1,4 +1,4 @@
-package com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.delegate
+package com.cyberfox21.tinkoffmessanger.presentation
 
 import androidx.recyclerview.widget.DiffUtil
 

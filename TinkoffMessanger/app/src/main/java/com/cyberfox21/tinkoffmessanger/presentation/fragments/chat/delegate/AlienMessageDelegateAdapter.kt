@@ -1,40 +1,41 @@
-package com.cyberfox21.tinkoffmessanger.presentation.fragments.chat
+package com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.delegate
 
 import android.util.Log
 import android.view.ViewGroup
-import androidx.recyclerview.widget.ListAdapter
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.cyberfox21.tinkoffmessanger.domain.entity.Message
-import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.delegate.AlienMessageViewHolder
+import com.cyberfox21.tinkoffmessanger.presentation.AdapterDelegate
+import com.cyberfox21.tinkoffmessanger.presentation.DelegateItem
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.views.CustomEmojiView
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.views.EmojiMessageViewGroup
 import com.cyberfox21.tinkoffmessanger.util.EmojiFormatter
 
-class ChatRecyclerAdapter :
-    ListAdapter<Message, AlienMessageViewHolder>(MessageDiffUtilCallback()) {
+class AlienMessageDelegateAdapter : AdapterDelegate {
 
     var onLongMessageClickListener: OnLongMessageClickListener? = null
 
     interface OnLongMessageClickListener {
-        fun onLongMessageClick(message: Message)
+        fun onLongMessageClick(message: AlienMessageDelegateItem)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AlienMessageViewHolder {
-        Log.d("ChatRecyclerAdapter", "OnCreateViewHolder")
+    override fun onCreateViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
         return AlienMessageViewHolder(EmojiMessageViewGroup(parent.context))
     }
 
-    override fun onBindViewHolder(holder: AlienMessageViewHolder, position: Int) {
-        Log.d("ChatRecyclerAdapter", "OnBindViewHolder")
-        bindMessage(holder, position)
+    override fun onBindViewHolder(
+        holder: RecyclerView.ViewHolder,
+        item: DelegateItem,
+        position: Int
+    ) {
+        bindMessage(holder, item)
     }
 
-    private fun bindMessage(holder: AlienMessageViewHolder, position: Int) {
-        val message = currentList[position]
-        with(holder) {
+    private fun bindMessage(holder: RecyclerView.ViewHolder, item: DelegateItem) {
+        val message = item as AlienMessageDelegateItem
+        with(holder as AlienMessageViewHolder) {
             Glide.with(emojiMessageViewGroup.context).load(message.senderAvatarUrl).into(imageView)
             name.text = message.senderName
-            text.text = message.message
+            text.text = message.text
             time.text = message.time.toString()
 
             val btnAdd = emojiLayout.getChildAt(0)
@@ -64,4 +65,6 @@ class ChatRecyclerAdapter :
             }
         }
     }
+
+    override fun isOfViewType(item: DelegateItem): Boolean = item is AlienMessageDelegateItem
 }

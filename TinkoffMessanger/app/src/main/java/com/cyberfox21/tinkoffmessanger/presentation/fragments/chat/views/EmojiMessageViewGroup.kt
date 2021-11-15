@@ -40,14 +40,13 @@ class EmojiMessageViewGroup @JvmOverloads constructor(
         measureChildWithMargins(flexBoxLayout, widthMeasureSpec, 0, heightMeasureSpec, 0)
 
         val totalWidth =
-            (4 * marginRight) + imageView.measuredWidth +
+            (3 * marginRight) + imageView.measuredWidth +
                     maxOf(
                         description.measuredWidth,
-                        title.measuredWidth,
-                        flexBoxLayout.measuredWidth
+                        title.measuredWidth
                     ) + time.measuredWidth
         val totalHeight = maxOf(
-            4 * marginBottom + title.measuredHeight +
+            3 * marginBottom + title.measuredHeight +
                     description.measuredHeight + flexBoxLayout.measuredHeight,
             imageView.measuredHeight
         )
@@ -99,7 +98,7 @@ class EmojiMessageViewGroup @JvmOverloads constructor(
             imageView.measuredWidth + paddingRight + 2 * marginRight,
             title.bottom + paddingBottom + marginBottom,
             width - paddingRight - marginRight,
-            title.bottom + description.measuredHeight + paddingBottom + marginBottom
+            title.bottom + description.measuredHeight
         )
 
         flexBoxLayout.layout(

@@ -6,4 +6,9 @@
         <attr name="android:layout_marginRight">8dp</attr>
         <attr name="android:layout_marginBottom">8dp</attr>
     </declare-styleable>
+    <declare-styleable name="CustomDateView">
+        <attr name="margin" format="integer" />
+        <attr name="paddingVertical" format="integer" />
+        <attr name="paddingHorizontal" format="integer" />
+    </declare-styleable>
 </resources>

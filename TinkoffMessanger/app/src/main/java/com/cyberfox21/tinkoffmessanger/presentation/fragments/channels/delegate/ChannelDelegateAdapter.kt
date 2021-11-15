@@ -5,6 +5,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.cyberfox21.tinkoffmessanger.databinding.ItemChannelBinding
 import com.cyberfox21.tinkoffmessanger.domain.entity.Channel
+import com.cyberfox21.tinkoffmessanger.presentation.AdapterDelegate
+import com.cyberfox21.tinkoffmessanger.presentation.DelegateItem
 
 class ChannelDelegateAdapter(private val onChannelClick: OnChannelDelegateClickListener) :
     AdapterDelegate {
@@ -14,8 +16,15 @@ class ChannelDelegateAdapter(private val onChannelClick: OnChannelDelegateClickL
     }
 
     override fun onCreateViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
+        val binding = ItemChannelBinding.inflate(LayoutInflater.from(parent.context))
+        val lp = ViewGroup.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        )
         return ChannelViewHolder(
-            ItemChannelBinding.inflate(LayoutInflater.from(parent.context)),
+            binding.apply {
+                root.layoutParams = lp
+            },
             onChannelClick
         )
     }

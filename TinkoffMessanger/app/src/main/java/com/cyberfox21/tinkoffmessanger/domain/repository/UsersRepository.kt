@@ -9,4 +9,5 @@ interface UsersRepository {
 
     fun getMyUser(): Single<User>
 
+    fun getUser(id: Int): Single<User>
 }
