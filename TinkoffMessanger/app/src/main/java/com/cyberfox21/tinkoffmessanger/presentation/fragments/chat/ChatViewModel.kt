@@ -1,5 +1,6 @@
 package com.cyberfox21.tinkoffmessanger.presentation.fragments.chat
 
+import android.app.Application
 import android.text.Editable
 import android.util.Log
 import androidx.lifecycle.LiveData
@@ -19,9 +20,13 @@ import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 
-class ChatViewModel(private val channelName: String, private val topicName: String) : ViewModel() {
+class ChatViewModel(
+    application: Application,
+    private val channelName: String,
+    private val topicName: String
+) : ViewModel() {
 
-    private val messageRepository = MessageRepositoryImpl
+    private val messageRepository = MessageRepositoryImpl(application)
     private val reactionsRepository = ReactionRepositoryImpl
     private val usersRepository = UsersRepositoryImpl
 

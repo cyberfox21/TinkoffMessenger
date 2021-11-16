@@ -3,6 +3,9 @@ package com.cyberfox21.tinkoffmessanger.util
 import com.cyberfox21.tinkoffmessanger.data.api.response.dto.ChannelDTO
 import com.cyberfox21.tinkoffmessanger.data.api.response.dto.SubscribedChannelDTO
 import com.cyberfox21.tinkoffmessanger.data.api.response.dto.TopicDTO
+import com.cyberfox21.tinkoffmessanger.data.database.model.ChannelDBModel
+import com.cyberfox21.tinkoffmessanger.data.database.model.MessageDBModel
+import com.cyberfox21.tinkoffmessanger.data.database.model.TopicDBModel
 import com.cyberfox21.tinkoffmessanger.domain.entity.Channel
 import com.cyberfox21.tinkoffmessanger.domain.entity.Message
 import com.cyberfox21.tinkoffmessanger.domain.entity.Topic
@@ -63,12 +66,23 @@ fun List<Message>.toDelegateChatItemsList(userId: Int): List<DelegateItem> {
     return delegateItemList
 }
 
-fun ChannelDTO.mapToChannel() = Channel(
+fun MessageDBModel.mapToMessage() = Message(
+    id = id,
+    message = message,
+    time = time,
+    senderId = senderId,
+    senderName = senderName,
+    senderAvatarUrl = senderAvatarUrl,
+    isCurrentUser = isCurrentUser,
+    reactions = reactions
+)
+
+fun SubscribedChannelDTO.mapToChannel() = Channel(
     id = streamId,
     name = name,
 )
 
-fun SubscribedChannelDTO.mapToChannel() = Channel(
+fun ChannelDTO.mapToChannel() = Channel(
     id = streamId,
     name = name,
 )
@@ -77,6 +91,17 @@ fun Channel.mapToChannelDelegateItem(selected: Boolean) = ChannelDelegateItem(
     id = id,
     name = name,
     isSelected = selected
+)
+
+fun Channel.mapToChannelDBModel(subscribed: Boolean) = ChannelDBModel(
+    id = id,
+    name = name,
+    subscribed = subscribed
+)
+
+fun ChannelDBModel.mapToChannel() = Channel(
+    id = id,
+    name = name
 )
 
 fun TopicDTO.mapToTopic() = Topic(
@@ -88,6 +113,18 @@ fun Topic.mapToTopicDelegateItem() = TopicDelegateItem(
     name = title,
     msgCount = messagesCount
 )
+
+fun TopicDBModel.mapToTopic() = Topic(
+    title = title,
+    messagesCount = messagesCount
+)
+
+fun Topic.mapToTopicDBModel(channelId: Int) = TopicDBModel(
+    title = title,
+    messagesCount = messagesCount,
+    channelId = channelId
+)
+
 
 
 

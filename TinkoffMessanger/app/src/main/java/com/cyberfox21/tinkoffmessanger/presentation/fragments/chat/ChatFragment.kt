@@ -92,7 +92,11 @@ class ChatFragment : Fragment() {
     }
 
     private fun setViewModel() {
-        val chatViewModelFactory = ChatViewModelFactory(fragmentChannelName, fragmentTopicName)
+        val chatViewModelFactory = ChatViewModelFactory(
+            requireActivity().application,
+            fragmentChannelName,
+            fragmentTopicName
+        )
         viewModel = ViewModelProvider(this, chatViewModelFactory)[ChatViewModel::class.java]
     }
 

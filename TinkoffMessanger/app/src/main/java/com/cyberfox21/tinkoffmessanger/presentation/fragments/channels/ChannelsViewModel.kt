@@ -1,8 +1,9 @@
 package com.cyberfox21.tinkoffmessanger.presentation.fragments.channels
 
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import com.cyberfox21.tinkoffmessanger.data.repository.ChannelsRepositoryImpl
 import com.cyberfox21.tinkoffmessanger.data.repository.TopicsRepositoryImpl
 import com.cyberfox21.tinkoffmessanger.domain.usecase.GetTopicsUseCase
@@ -19,10 +20,10 @@ import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
 import java.util.concurrent.TimeUnit
 
-class ChannelsViewModel : ViewModel() {
+class ChannelsViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val channelsRepository = ChannelsRepositoryImpl
-    private val topicsRepository = TopicsRepositoryImpl
+    private val channelsRepository = ChannelsRepositoryImpl(application)
+    private val topicsRepository = TopicsRepositoryImpl(application)
 
     private val searchChannelsUseCase = SearchChannelsUseCase(channelsRepository)
 

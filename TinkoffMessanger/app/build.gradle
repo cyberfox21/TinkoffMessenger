@@ -3,7 +3,10 @@ plugins {
     id 'kotlin-android'
     id 'kotlin-parcelize'
     id 'org.jetbrains.kotlin.plugin.serialization'
+    id 'kotlin-kapt'
 }
+
+apply plugin: 'kotlin-kapt'
 
 android {
     compileSdk 31
@@ -42,7 +45,7 @@ dependencies {
     // Circle ImageView
     implementation "de.hdodenhof:circleimageview:$circleImageViewVersion"
 
-    // RxJava
+    // RxJava 2
     implementation "io.reactivex.rxjava2:rxjava:$rxJavaVersion"
     implementation "io.reactivex.rxjava2:rxandroid:$rxAndroidVersion"
     implementation "io.reactivex.rxjava2:rxkotlin:$rxKotlinVersion"
@@ -71,4 +74,11 @@ dependencies {
     // Glide
     implementation "com.github.bumptech.glide:glide:$glideVersion"
     annotationProcessor "com.github.bumptech.glide:compiler:$glideVersion"
+
+    // Room
+    implementation "androidx.room:room-runtime:$roomVersion"
+    annotationProcessor "androidx.room:room-compiler:$roomVersion"
+    kapt "androidx.room:room-compiler:$roomVersion"
+    implementation("androidx.room:room-rxjava2:$roomVersion")
+
 }

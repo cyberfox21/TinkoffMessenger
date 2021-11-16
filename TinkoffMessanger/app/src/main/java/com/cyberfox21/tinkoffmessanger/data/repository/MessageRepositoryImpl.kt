@@ -1,9 +1,11 @@
 package com.cyberfox21.tinkoffmessanger.data.repository
 
+import android.app.Application
 import android.util.Log
 import androidx.core.text.HtmlCompat
 import com.cyberfox21.tinkoffmessanger.data.api.ApiFactory
 import com.cyberfox21.tinkoffmessanger.data.api.Narrow
+import com.cyberfox21.tinkoffmessanger.data.database.AppDatabase
 import com.cyberfox21.tinkoffmessanger.domain.entity.Message
 import com.cyberfox21.tinkoffmessanger.domain.entity.Reaction
 import com.cyberfox21.tinkoffmessanger.domain.repository.MessagesRepository
@@ -14,9 +16,12 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
-object MessageRepositoryImpl : MessagesRepository {
+class MessageRepositoryImpl(application: Application) : MessagesRepository {
 
     private val api = ApiFactory.api
+
+    private val messagesDao =
+        AppDatabase.getInstance(application, AppDatabase.MESSAGES_DB_NAME).messagesDao()
 
     override fun getMessageList(
         numBefore: Int,

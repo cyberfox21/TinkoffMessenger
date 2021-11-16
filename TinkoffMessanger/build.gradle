@@ -43,4 +43,6 @@ ext {
     kotlinxSerializationConverterVersion = "0.8.0"
 
     glideVersion = "4.12.0"
+
+    roomVersion = "2.3.0"
 }
