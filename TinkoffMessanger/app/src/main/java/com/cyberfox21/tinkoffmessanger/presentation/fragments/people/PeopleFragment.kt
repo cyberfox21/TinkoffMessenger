@@ -10,8 +10,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.cyberfox21.tinkoffmessanger.R
 import com.cyberfox21.tinkoffmessanger.databinding.FragmentPeopleBinding
-import com.cyberfox21.tinkoffmessanger.presentation.enums.ProfileMode
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.profile.ProfileFragment
+import com.cyberfox21.tinkoffmessanger.presentation.fragments.profile.ProfileMode
 
 class PeopleFragment : Fragment() {
 

@@ -1,71 +1,28 @@
 package com.cyberfox21.tinkoffmessanger.data.repository
 
-import androidx.lifecycle.MutableLiveData
+import com.cyberfox21.tinkoffmessanger.data.api.ApiFactory
 import com.cyberfox21.tinkoffmessanger.domain.entity.Channel
-import com.cyberfox21.tinkoffmessanger.domain.entity.Topic
 import com.cyberfox21.tinkoffmessanger.domain.repository.ChannelsRepository
-import com.cyberfox21.tinkoffmessanger.presentation.enums.Category
-import io.reactivex.Observable
-import java.util.concurrent.TimeUnit
+import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.Category
+import com.cyberfox21.tinkoffmessanger.util.mapToChannel
+import io.reactivex.Single
 
 object ChannelsRepositoryImpl : ChannelsRepository {
 
-    private const val LOADING_DURATION_DELAY = 500L
+    private val api = ApiFactory.api
 
-    private var _allChannelsLD = MutableLiveData<List<Channel>>()
-    val allChannelsLD get() = _allChannelsLD
-
-    private var _subscribedLD = MutableLiveData<List<Channel>>()
-    val subscribedLD get() = _subscribedLD
-
-    private var allChannels = mutableListOf(
-        Channel(
-            "#general", listOf(
-                Topic("#testing", 1345),
-                Topic("#bruh", 234)
-            )
-        ),
-        Channel(
-            "#Development", listOf(
-                Topic("#Android", 4605),
-                Topic("#iOS", 4522)
-            )
-        ),
-        Channel(
-            "#Design",
-            listOf(
-                Topic("#figma", 123),
-                Topic("#html", 12234),
-                Topic("#xml", 2342),
-                Topic("#css", 555)
-            )
-        ),
-        Channel("#PR", listOf())
-    )
-
-
-    private var subscribedChannels = mutableListOf(
-        Channel(
-            "#general", listOf(
-                Topic("#testing", 1345),
-                Topic("#bruh", 234)
-            )
-        ),
-        Channel(
-            "#Development", listOf(
-                Topic("#Android", 4605),
-                Topic("#iOS", 4522)
-            )
-        )
-    )
-
-    override fun getChannelsList(category: Category): List<Channel> {
-        return when (category) {
-            Category.ALL -> {
-                allChannels
+    private fun getChannelsList(): Single<List<Channel>> {
+        return api.getChannels().map { response ->
+            response.streams.map {
+                it.mapToChannel()
             }
-            Category.SUBSCRIBED -> {
-                subscribedChannels
+        }
+    }
+
+    private fun getSubscribedChannelsList(): Single<List<Channel>> {
+        return api.getSubscribedChannels().map { response ->
+            response.subscriptions.map {
+                it.mapToChannel()
             }
         }
     }
@@ -73,13 +30,11 @@ object ChannelsRepositoryImpl : ChannelsRepository {
     override fun searchChannels(
         searchQuery: String,
         category: Category
-    ): Observable<List<Channel>> {
-        return Observable.fromCallable {
-            when (category) {
-                Category.SUBSCRIBED -> subscribedChannels.toList()
-                Category.ALL -> allChannels.toList()
-            }
-        }.delay(LOADING_DURATION_DELAY, TimeUnit.MILLISECONDS)
-
+    ): Single<List<Channel>> {
+        return when (category) {
+            Category.SUBSCRIBED -> getSubscribedChannelsList()
+            Category.ALL -> getChannelsList()
+        }
     }
+
 }

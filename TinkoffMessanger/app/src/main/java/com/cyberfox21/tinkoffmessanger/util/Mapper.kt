@@ -1,48 +1,21 @@
 package com.cyberfox21.tinkoffmessanger.util
 
+import com.cyberfox21.tinkoffmessanger.data.api.response.dto.ChannelDTO
+import com.cyberfox21.tinkoffmessanger.data.api.response.dto.SubscribedChannelDTO
+import com.cyberfox21.tinkoffmessanger.data.api.response.dto.TopicDTO
 import com.cyberfox21.tinkoffmessanger.domain.entity.Channel
 import com.cyberfox21.tinkoffmessanger.domain.entity.Message
 import com.cyberfox21.tinkoffmessanger.domain.entity.Topic
-import com.cyberfox21.tinkoffmessanger.presentation.DelegateItem
-import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.delegate.ChannelDelegateItem
-import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.delegate.TopicDelegateItem
-import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.delegate.AlienMessageDelegateItem
-import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.delegate.DateDelegateItem
-import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.delegate.MessageReactionListItem
-import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.delegate.MyMessageDelegateItem
-
-private fun mapToChannelDelegateItem(item: Channel): DelegateItem {
-    return ChannelDelegateItem(
-        item.hashCode(),
-        item
-    )
-}
-
-private fun mapToTopicDelegateItem(item: Topic): DelegateItem {
-    return TopicDelegateItem(
-        item.hashCode(),
-        item
-    )
-}
-
-fun List<Channel>.toDelegateChannelItemsList(pos: Int): MutableList<DelegateItem> {
-    val delegateItemList = mutableListOf<DelegateItem>()
-    var count = 0
-    this.forEach { channel ->
-        delegateItemList.add(mapToChannelDelegateItem(channel))
-        if (pos == count) {
-            channel.listOfTopics.forEach {
-                delegateItemList.add(mapToTopicDelegateItem(it))
-            }
-        }
-        count++
-    }
-    return delegateItemList
-}
+import com.cyberfox21.tinkoffmessanger.presentation.commondelegate.DelegateItem
+import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.delegate.item.ChannelDelegateItem
+import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.delegate.item.TopicDelegateItem
+import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.delegate.item.AlienMessageDelegateItem
+import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.delegate.item.DateDelegateItem
+import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.delegate.item.MessageReactionListItem
+import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.delegate.item.MyMessageDelegateItem
 
 fun List<Message>.toDelegateChatItemsList(userId: Int): List<DelegateItem> {
     val delegateItemList = mutableListOf<DelegateItem>()
-    var count = 0
     this.indices.forEach { index ->
         val message = this[index]
         val reactions = message.reactions
@@ -89,4 +62,32 @@ fun List<Message>.toDelegateChatItemsList(userId: Int): List<DelegateItem> {
     }
     return delegateItemList
 }
+
+fun ChannelDTO.mapToChannel() = Channel(
+    id = streamId,
+    name = name,
+)
+
+fun SubscribedChannelDTO.mapToChannel() = Channel(
+    id = streamId,
+    name = name,
+)
+
+fun Channel.mapToChannelDelegateItem(selected: Boolean) = ChannelDelegateItem(
+    id = id,
+    name = name,
+    isSelected = selected
+)
+
+fun TopicDTO.mapToTopic() = Topic(
+    title = name,
+    messagesCount = lastMsgId
+)
+
+fun Topic.mapToTopicDelegateItem() = TopicDelegateItem(
+    name = title,
+    msgCount = messagesCount
+)
+
+
 

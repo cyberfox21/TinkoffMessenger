@@ -2,13 +2,13 @@ package com.cyberfox21.tinkoffmessanger.data.repository
 
 import com.cyberfox21.tinkoffmessanger.data.api.ApiFactory
 import com.cyberfox21.tinkoffmessanger.domain.entity.Reaction
-import com.cyberfox21.tinkoffmessanger.domain.repository.ReactionRepository
+import com.cyberfox21.tinkoffmessanger.domain.repository.ReactionsRepository
 import com.cyberfox21.tinkoffmessanger.util.EmojiFormatter
 import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 
-object ReactionRepositoryImpl : ReactionRepository {
+object ReactionRepositoryImpl : ReactionsRepository {
 
     private val api = ApiFactory.api
 

@@ -1,6 +1,6 @@
 package com.cyberfox21.tinkoffmessanger.presentation.fragments.chat
 
-import com.cyberfox21.tinkoffmessanger.presentation.DelegateItem
+import com.cyberfox21.tinkoffmessanger.presentation.commondelegate.DelegateItem
 
 sealed class ChatScreenState {
 

@@ -10,11 +10,11 @@ import androidx.transition.Slide
 import androidx.transition.TransitionManager
 import com.cyberfox21.tinkoffmessanger.R
 import com.cyberfox21.tinkoffmessanger.databinding.ActivityMainBinding
-import com.cyberfox21.tinkoffmessanger.presentation.enums.ProfileMode
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.ChannelsFragment
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.ChatFragment
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.people.PeopleFragment
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.profile.ProfileFragment
+import com.cyberfox21.tinkoffmessanger.presentation.fragments.profile.ProfileMode
 
 class MainActivity : AppCompatActivity() {
 

@@ -4,10 +4,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.cyberfox21.tinkoffmessanger.data.repository.ChannelsRepositoryImpl
-import com.cyberfox21.tinkoffmessanger.domain.entity.Channel
-import com.cyberfox21.tinkoffmessanger.domain.usecase.GetChannelsListUseCase
+import com.cyberfox21.tinkoffmessanger.data.repository.TopicsRepositoryImpl
+import com.cyberfox21.tinkoffmessanger.domain.usecase.GetTopicsUseCase
 import com.cyberfox21.tinkoffmessanger.domain.usecase.SearchChannelsUseCase
-import com.cyberfox21.tinkoffmessanger.presentation.enums.Category
+import com.cyberfox21.tinkoffmessanger.presentation.commondelegate.DelegateItem
+import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.delegate.item.ChannelDelegateItem
+import com.cyberfox21.tinkoffmessanger.util.mapToChannelDelegateItem
+import com.cyberfox21.tinkoffmessanger.util.mapToTopicDelegateItem
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
@@ -18,10 +21,12 @@ import java.util.concurrent.TimeUnit
 
 class ChannelsViewModel : ViewModel() {
 
-    private val repository = ChannelsRepositoryImpl
+    private val channelsRepository = ChannelsRepositoryImpl
+    private val topicsRepository = TopicsRepositoryImpl
 
-    private val getChannelsListUseCase = GetChannelsListUseCase(repository)
-    private val searchChannelsUseCase = SearchChannelsUseCase(repository)
+    private val searchChannelsUseCase = SearchChannelsUseCase(channelsRepository)
+
+    private val getTopicsUseCase = GetTopicsUseCase(topicsRepository)
 
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
     private val searchSubject: BehaviorSubject<String> =
@@ -31,7 +36,7 @@ class ChannelsViewModel : ViewModel() {
     val channelsScreenState: LiveData<ChannelsScreenState>
         get() = _channelsScreenState
 
-    var channelsList = listOf<Channel>()
+    private var channelsList = mutableListOf<ChannelDelegateItem>()
 
     private var category: Category = Category.SUBSCRIBED
 
@@ -53,13 +58,45 @@ class ChannelsViewModel : ViewModel() {
             .switchMap { searchQuery -> searchChannelsUseCase(searchQuery, category) }
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeBy(
-                onNext = {
-                    channelsList = it
-                    _channelsScreenState.value = ChannelsScreenState.Result(it)
+                onNext = { listOfChannels ->
+                    val delegateItemsList = listOfChannels.map {
+                        it.mapToChannelDelegateItem(selected = false)
+                    }.toMutableList()
+
+                    channelsList = delegateItemsList
+                    _channelsScreenState.postValue(
+                        ChannelsScreenState.Result(delegateItemsList.toMutableList())
+                    )
                 },
                 onError = { _channelsScreenState.value = ChannelsScreenState.Error(it) }
             )
             .addTo(compositeDisposable)
+    }
+
+    fun updateTopics(channelId: Int, isSelected: Boolean) {
+        val delegateItemsList: MutableList<DelegateItem> = channelsList.toMutableList()
+        if (isSelected) {
+            _channelsScreenState.postValue(ChannelsScreenState.Result(delegateItemsList))
+        } else {
+            getTopicsUseCase(channelId).subscribeBy(
+                onSuccess = { topics ->
+                    val elementPosition =
+                        delegateItemsList.indexOfFirst { it is ChannelDelegateItem && it.id == channelId }
+                    val channel = delegateItemsList[elementPosition]
+                    delegateItemsList.removeAt(elementPosition)
+                    delegateItemsList.add(
+                        elementPosition,
+                        (channel as ChannelDelegateItem).copy(isSelected = true)
+                    )
+                    delegateItemsList.addAll(elementPosition + 1, topics.map {
+                        it.mapToTopicDelegateItem()
+                    })
+                    _channelsScreenState.postValue(ChannelsScreenState.Result(delegateItemsList))
+                },
+                onError = { _channelsScreenState.postValue(ChannelsScreenState.Error(it)) }
+            ).addTo(compositeDisposable)
+        }
+
     }
 
     override fun onCleared() {

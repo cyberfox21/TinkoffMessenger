@@ -16,14 +16,12 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.cyberfox21.tinkoffmessanger.R
 import com.cyberfox21.tinkoffmessanger.databinding.BottomSheetDialogLayoutBinding
 import com.cyberfox21.tinkoffmessanger.databinding.FragmentChatBinding
-import com.cyberfox21.tinkoffmessanger.domain.entity.Channel
 import com.cyberfox21.tinkoffmessanger.domain.entity.Message
 import com.cyberfox21.tinkoffmessanger.domain.entity.Reaction
-import com.cyberfox21.tinkoffmessanger.domain.entity.Topic
-import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.delegate.AlienMessageDelegateAdapter
-import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.delegate.DateDelegateAdapter
-import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.delegate.MainChatRecyclerAdapter
-import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.delegate.MyMessageDelegateAdapter
+import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.delegate.adapter.AlienMessageDelegateAdapter
+import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.delegate.adapter.DateDelegateAdapter
+import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.delegate.adapter.MainChatRecyclerAdapter
+import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.delegate.adapter.MyMessageDelegateAdapter
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.reactions.ReactionRecyclerAdapter
 import com.google.android.material.bottomsheet.BottomSheetDialog
 
@@ -31,8 +29,8 @@ class ChatFragment : Fragment() {
 
     private lateinit var ctx: Context
 
-    private lateinit var fragmentChannel: Channel
-    private lateinit var fragmentTopic: Topic
+    private lateinit var fragmentChannelName: String
+    private lateinit var fragmentTopicName: String
 
     private lateinit var bottomSheetDialog: BottomSheetDialog
 
@@ -85,21 +83,21 @@ class ChatFragment : Fragment() {
 
     private fun parseArguments() {
         val args = requireArguments()
-        if (!args.containsKey(TOPIC_EXTRA)) throw RuntimeException("Param topic is absent")
-        val topic = args.getParcelable<Topic>(TOPIC_EXTRA)
-        topic?.let { fragmentTopic = it }
-        if (!args.containsKey(CHANNEL_EXTRA)) throw RuntimeException("Param channel is absent")
-        val channel = args.getParcelable<Channel>(CHANNEL_EXTRA)
-        channel?.let { fragmentChannel = it }
+        if (!args.containsKey(TOPIC_EXTRA)) throw RuntimeException("Param topicName is absent")
+        val topic = args.getString(TOPIC_EXTRA)
+        topic?.let { fragmentTopicName = it }
+        if (!args.containsKey(CHANNEL_EXTRA)) throw RuntimeException("Param channelName is absent")
+        val channel = args.getString(CHANNEL_EXTRA)
+        channel?.let { fragmentChannelName = it }
     }
 
     private fun setViewModel() {
-        val chatViewModelFactory = ChatViewModelFactory(fragmentChannel, fragmentTopic)
+        val chatViewModelFactory = ChatViewModelFactory(fragmentChannelName, fragmentTopicName)
         viewModel = ViewModelProvider(this, chatViewModelFactory)[ChatViewModel::class.java]
     }
 
     private fun setupViews() {
-        binding.tvChatTopic.text = fragmentTopic.title
+        binding.tvChatTopic.text = fragmentTopicName
         chatRecyclerAdapter.addDelegate(AlienMessageDelegateAdapter())
         chatRecyclerAdapter.addDelegate(MyMessageDelegateAdapter())
         chatRecyclerAdapter.addDelegate(DateDelegateAdapter())
@@ -221,11 +219,11 @@ class ChatFragment : Fragment() {
         const val CHANNEL_EXTRA = "channel_extra"
         const val TOPIC_EXTRA = "topic_extra"
 
-        fun newInstance(channel: Channel, topic: Topic): ChatFragment {
+        fun newInstance(channelName: String, topic: String): ChatFragment {
             return ChatFragment().apply {
                 arguments = Bundle().apply {
-                    putParcelable(CHANNEL_EXTRA, channel)
-                    putParcelable(TOPIC_EXTRA, topic)
+                    putString(CHANNEL_EXTRA, channelName)
+                    putString(TOPIC_EXTRA, topic)
                 }
             }
         }

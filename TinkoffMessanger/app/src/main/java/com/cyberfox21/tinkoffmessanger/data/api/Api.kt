@@ -1,6 +1,7 @@
 package com.cyberfox21.tinkoffmessanger.data.api
 
-import com.cyberfox21.tinkoffmessanger.data.api.dto.*
+import com.cyberfox21.tinkoffmessanger.data.api.response.*
+import com.cyberfox21.tinkoffmessanger.data.api.response.dto.UserDTO
 import io.reactivex.Completable
 import io.reactivex.Single
 import retrofit2.http.*
@@ -12,8 +13,7 @@ interface Api {
         @Query("num_before") messagesNumberBefore: Int,
         @Query("num_after") messagesNumberAfter: Int,
         @Query("narrow") narrowFilterArray: String,
-
-        ): Single<MessagesResponse>
+    ): Single<MessagesResponse>
 
     @GET("users")
     fun getUsers(): Single<UsersResponse>
@@ -26,28 +26,23 @@ interface Api {
     @GET("users/me")
     fun getMyUser(): Single<UserDTO>
 
-//    @GET("users/{user_id}/presence")
-//    fun getUserPresence(
-//        @Path(value = "user_id")
-//        userId: Int
-//    ) : Single<UserPresenceResponse>
-
-    @GET("users/{user_id_or_email}/presence")
+    @GET("users/{user_id}/presence")
     fun getUserPresence(
-        @Path("user_id_or_email") userIdOrEmail: String
+        @Path(value = "user_id")
+        userId: Int
     ): Single<UserPresenceResponse>
 
-//    @GET("streams")
-//    fun getChannels(): Single<ChannelsResponse>
-//
-//    @GET("users/me/subscriptions")
-//    fun getSubscribedChannels(): Single<SubscribedChannelsResponse>
+    @GET("streams")
+    fun getChannels(): Single<ChannelsResponse>
 
-//    @GET("users/me/{stream_id}/topics")
-//    fun getChannelTopics(
-//        @Path(value = "stream_id")
-//        channelId: Int
-//    ): Single<TopicsResponse>
+    @GET("users/me/subscriptions")
+    fun getSubscribedChannels(): Single<SubscribedChannelsResponse>
+
+    @GET("users/me/{stream_id}/topics")
+    fun getChannelTopics(
+        @Path(value = "stream_id")
+        channelId: Int
+    ): Single<TopicsResponse>
 
     @GET("/static/generated/emoji/emoji_codes.json")
     fun getReactions(): Single<ReactionsResponse>
@@ -61,13 +56,13 @@ interface Api {
         @Field("type") type: String = "stream",
     ): Completable
 
-//    @FormUrlEncoded
-//    @POST("messages")
-//    fun sendPrivateMessage(
-//        @Field("to") recipientsIdIntArray: String,
-//        @Field("content") content: String,
-//        @Field("type") type: String = "private",
-//    ) : Single<SendMessageResponse>
+    @FormUrlEncoded
+    @POST("messages")
+    fun sendPrivateMessage(
+        @Field("to") recipientsIdIntArray: String,
+        @Field("content") content: String,
+        @Field("type") type: String = "private",
+    ): Completable
 
     @FormUrlEncoded
     @POST("messages/{message_id}/reactions")

@@ -1,10 +1,11 @@
 package com.cyberfox21.tinkoffmessanger.presentation.fragments.profile
 
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.cyberfox21.tinkoffmessanger.databinding.FragmentProfileBinding
-import com.cyberfox21.tinkoffmessanger.presentation.enums.ProfileMode
 
 class ProfileFragment : Fragment() {
 

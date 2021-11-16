@@ -1,13 +1,9 @@
 package com.cyberfox21.tinkoffmessanger.domain.repository
 
 import com.cyberfox21.tinkoffmessanger.domain.entity.Channel
-import com.cyberfox21.tinkoffmessanger.presentation.enums.Category
-import io.reactivex.Observable
+import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.Category
+import io.reactivex.Single
 
 interface ChannelsRepository {
-
-    fun getChannelsList(category: Category): List<Channel>
-
-    fun searchChannels(searchQuery: String, category: Category): Observable<List<Channel>>
-
+    fun searchChannels(searchQuery: String, category: Category): Single<List<Channel>>
 }

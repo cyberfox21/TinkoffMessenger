@@ -19,7 +19,7 @@ import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 
-class ChatViewModel(private val channel: Channel, private val topic: Topic) : ViewModel() {
+class ChatViewModel(private val channelName: String, private val topicName: String) : ViewModel() {
 
     private val messageRepository = MessageRepositoryImpl
     private val reactionsRepository = ReactionRepositoryImpl
@@ -56,8 +56,8 @@ class ChatViewModel(private val channel: Channel, private val topic: Topic) : Vi
         messageObserver = getMessageListUseCase(
             numBefore = numBefore,
             numAfter = numAfter,
-            channelName = channel.name,
-            topicName = topic.title
+            channelName = channelName,
+            topicName = topicName
         )
         subscribeToGiveReactionList()
         subscribeToGiveMessages()
@@ -94,7 +94,7 @@ class ChatViewModel(private val channel: Channel, private val topic: Topic) : Vi
     }
 
     fun sendMessage(text: Editable) {
-        addMessageUseCase(channelName = channel.name, topicName = topic.title, text.toString())
+        addMessageUseCase(channelName = channelName, topicName = topicName, text.toString())
             .subscribeBy(
                 onComplete = { Log.d("ChatViewModel", "Sending message successfully") },
                 onError = { Log.d("ChatViewModel", "Sending message with error ${it.message}") }

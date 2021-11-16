@@ -1,10 +1,10 @@
 package com.cyberfox21.tinkoffmessanger.domain.usecase
 
 import com.cyberfox21.tinkoffmessanger.domain.entity.Message
-import com.cyberfox21.tinkoffmessanger.domain.repository.MessageRepository
+import com.cyberfox21.tinkoffmessanger.domain.repository.MessagesRepository
 import io.reactivex.Single
 
-class GetMessageListUseCase(private val repository: MessageRepository) {
+class GetMessageListUseCase(private val repository: MessagesRepository) {
     operator fun invoke(
         numBefore: Int,
         numAfter: Int,

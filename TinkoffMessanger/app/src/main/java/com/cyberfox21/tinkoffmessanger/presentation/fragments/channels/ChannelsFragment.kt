@@ -9,9 +9,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
 import com.cyberfox21.tinkoffmessanger.R
 import com.cyberfox21.tinkoffmessanger.databinding.FragmentChannelsBinding
-import com.cyberfox21.tinkoffmessanger.domain.entity.Channel
-import com.cyberfox21.tinkoffmessanger.domain.entity.Topic
-import com.cyberfox21.tinkoffmessanger.presentation.enums.Category
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.ChatFragment
 import com.google.android.material.tabs.TabLayoutMediator
 
@@ -66,21 +63,12 @@ class ChannelsFragment : Fragment(), ListChannelsFragment.OnTopicSelected {
         }
     }
 
-    override fun showMatchingChat(topic: Topic) {
+    override fun showMatchingChat(chnlName: String, topicName: String) {
         parentFragmentManager.beginTransaction()
             .addToBackStack(CHANNELS_FRAGMENT_NAME)
             .add(
                 R.id.main_fragment_container,
-                ChatFragment.newInstance(
-                    Channel(
-                        "general",
-                        listOf<Topic>()
-                    ),
-                    Topic(
-                        "swimming turtles",
-                        28
-                    )
-                )
+                ChatFragment.newInstance(chnlName, topicName)
             )
             .commit()
     }

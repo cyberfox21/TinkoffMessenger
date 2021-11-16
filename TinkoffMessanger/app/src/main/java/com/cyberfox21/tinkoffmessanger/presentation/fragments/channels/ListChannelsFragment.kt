@@ -9,18 +9,13 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.cyberfox21.tinkoffmessanger.databinding.FragmentListChannelsBinding
-import com.cyberfox21.tinkoffmessanger.domain.entity.Channel
-import com.cyberfox21.tinkoffmessanger.domain.entity.Topic
-import com.cyberfox21.tinkoffmessanger.presentation.enums.Category
-import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.delegate.ChannelDelegateAdapter
-import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.delegate.MainChannelsRecyclerAdapter
-import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.delegate.TopicDelegateAdapter
-import com.cyberfox21.tinkoffmessanger.util.toDelegateChannelItemsList
+import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.delegate.adapter.ChannelDelegateAdapter
+import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.delegate.adapter.MainChannelsRecyclerAdapter
+import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.delegate.adapter.TopicDelegateAdapter
 
 class ListChannelsFragment : Fragment() {
 
-    var savedPos = DELEGATE_MAPPER_START_POSITION
-    var currentType: Channel? = null
+    private var selectedChannelName: String = ""
 
     private lateinit var fragmentCategory: Category
     private lateinit var channelsViewModel: ChannelsViewModel
@@ -34,7 +29,7 @@ class ListChannelsFragment : Fragment() {
     private var onTopicSelected: OnTopicSelected? = null
 
     interface OnTopicSelected {
-        fun showMatchingChat(topic: Topic)
+        fun showMatchingChat(topicName: String, channelName: String)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -75,39 +70,28 @@ class ListChannelsFragment : Fragment() {
 
     private fun setViewModel() {
         channelsViewModel = ViewModelProvider(this)[ChannelsViewModel::class.java]
-        channelsViewModel.searchChannels(fragmentCategory, INITIAL_QUERY) // load right list
+        channelsViewModel.searchChannels(fragmentCategory, INITIAL_QUERY)
     }
 
     private fun setupRecyclerView() {
         mainAdapter.apply {
             addDelegate(ChannelDelegateAdapter(object :
                 ChannelDelegateAdapter.OnChannelDelegateClickListener {
-                override fun onChannelClick(item: Channel, position: Int) {
-                    if (currentType != null && currentType!!.name == item.name) {
-                        mainAdapter.submitList(
-                            channelsViewModel.channelsList.toDelegateChannelItemsList(
-                                DELEGATE_MAPPER_START_POSITION
-                            )
-                        )
-                        currentType = null
-                        savedPos = DELEGATE_MAPPER_START_POSITION
-                    } else {
-                        mainAdapter.submitList(
-                            channelsViewModel.channelsList.toDelegateChannelItemsList(
-                                if (savedPos < position) position - (currentType?.listOfTopics?.size
-                                    ?: 0) else position
-                            )
-                        )
-                        savedPos = position
-                        currentType = item
-                    }
+                override fun onChannelClick(
+                    channelId: Int,
+                    channelName: String,
+                    isSelected: Boolean
+                ) {
+                    selectedChannelName =
+                        if (selectedChannelName != channelName) channelName else ""
+                    channelsViewModel.updateTopics(channelId, isSelected)
                 }
 
             }))
             addDelegate(TopicDelegateAdapter(object :
                 TopicDelegateAdapter.OnTopicDelegateClickListener {
-                override fun onTopicClick(item: Topic, position: Int) {
-                    onTopicSelected?.showMatchingChat(item)
+                override fun onTopicClick(topicName: String) {
+                    onTopicSelected?.showMatchingChat(selectedChannelName, topicName)
                 }
             }))
         }
@@ -123,11 +107,7 @@ class ListChannelsFragment : Fragment() {
     private fun processChannelsScreenState(state: ChannelsScreenState) {
         when (state) {
             is ChannelsScreenState.Result -> {
-                mainAdapter.submitList(
-                    state.items.toDelegateChannelItemsList(
-                        DELEGATE_MAPPER_START_POSITION
-                    )
-                )
+                mainAdapter.submitList(state.items)
                 binding.pbLoading.isVisible = false
             }
             ChannelsScreenState.Loading -> binding.pbLoading.isVisible = true
@@ -150,7 +130,6 @@ class ListChannelsFragment : Fragment() {
 
     companion object {
         const val EXTRA_CATEGORY = "extra_category"
-        const val DELEGATE_MAPPER_START_POSITION = -1
         private const val INITIAL_QUERY: String = ""
 
         fun newInstance(
