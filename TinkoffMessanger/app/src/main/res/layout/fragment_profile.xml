@@ -1,8 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
+    <ProgressBar
+        android:id="@+id/pb_loading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
         android:id="@+id/linearLayout2"
@@ -20,10 +30,10 @@
             android:layout_height="@dimen/profile_photo_dimension"
             android:layout_gravity="center"
             android:background="@drawable/imageview_profile_circle_radius"
+            android:contentDescription="@string/profile_photo"
             android:maxWidth="@dimen/profile_photo_dimension"
             android:maxHeight="@dimen/profile_photo_dimension"
-            android:src="@drawable/ed"
-            android:contentDescription="@string/profile_photo" />
+            tools:src="@drawable/ed" />
 
         <TextView
             android:id="@+id/tv_profile_name"
@@ -33,9 +43,9 @@
             android:layout_marginLeft="@dimen/margin10dp"
             android:layout_marginTop="@dimen/margin10dp"
             android:layout_marginRight="@dimen/margin10dp"
-            android:text="@string/example_name"
             android:textColor="@color/white"
-            android:textSize="@dimen/textSize24sp" />
+            android:textSize="@dimen/textSize24sp"
+            tools:text="@string/example_name" />
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -48,18 +58,18 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/margin10dp"
-                android:text="@string/example_status"
                 android:textColor="@color/white"
-                android:textSize="@dimen/textSize16sp" />
+                android:textSize="@dimen/textSize16sp"
+                tools:text="@string/example_status" />
 
             <TextView
                 android:id="@+id/tv_online"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin10dp"
-                android:text="@string/online"
                 android:textColor="@color/neon_green"
-                android:textSize="@dimen/textSize16sp" />
+                android:textSize="@dimen/textSize16sp"
+                tools:text="@string/online" />
 
         </LinearLayout>
 

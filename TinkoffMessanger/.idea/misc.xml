@@ -31,6 +31,18 @@
                     key="..\:/Users/shkol/hw_2/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/layout/flexboxlayout_with_add_button.xml"
                     value="0.1" />
                 <entry
+                    key="..\:/Users/shkol/hw_3/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/drawable-anydpi/ic_channels.xml"
+                    value="0.19375" />
+                <entry
+                    key="..\:/Users/shkol/hw_3/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/drawable-anydpi/ic_people.xml"
+                    value="0.30416666666666664" />
+                <entry
+                    key="..\:/Users/shkol/hw_3/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/drawable-anydpi/ic_profile.xml"
+                    value="0.19375" />
+                <entry
+                    key="..\:/Users/shkol/hw_3/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/drawable-v24/bottom_nav.xml"
+                    value="0.1" />
+                <entry
                     key="..\:/Users/shkol/hw_3/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/drawable/btn_logout_bg.xml"
                     value="0.3828125" />
                 <entry
@@ -56,7 +68,7 @@
                     value="0.20520833333333333" />
                 <entry
                     key="..\:/Users/shkol/hw_3/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/layout/activity_main.xml"
-                    value="0.1" />
+                    value="0.25" />
                 <entry
                     key="..\:/Users/shkol/hw_3/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/layout/activity_test.xml"
                     value="0.1" />
@@ -95,7 +107,7 @@
                     value="0.5" />
                 <entry
                     key="..\:/Users/shkol/hw_3/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/layout/item_topic.xml"
-                    value="0.1" />
+                    value="0.33" />
                 <entry
                     key="..\:/Users/shkol/hw_3/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/layout/item_user.xml"
                     value="0.1" />
@@ -111,8 +123,8 @@
             </map>
         </option>
     </component>
-    <component name="ProjectRootManager" languageLevel="JDK_11" project-jdk-name="1.8"
-        project-jdk-type="JavaSDK" version="2">
+    <component name="ProjectRootManager" languageLevel="JDK_11" project-jdk-name="1.8" project-jdk-type="JavaSDK"
+        version="2">
         <output url="file://$PROJECT_DIR$/build/classes" />
     </component>
     <component name="ProjectType">

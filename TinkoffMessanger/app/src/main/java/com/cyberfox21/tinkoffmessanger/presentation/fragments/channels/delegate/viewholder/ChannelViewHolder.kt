@@ -13,8 +13,8 @@ class ChannelViewHolder(
 
     fun bind(item: ChannelDelegateItem) {
         binding.tvChannelTitle.text = item.name
+        binding.ivExpandChannel.setImageResource(getImageResource(item.isSelected))
         binding.root.setOnClickListener {
-            binding.ivExpandChannel.setImageResource(getImageResource(item.isSelected))
             onChannelClick.onChannelClick(item.id, item.name, item.isSelected)
         }
     }

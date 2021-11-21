@@ -10,14 +10,15 @@ import com.cyberfox21.tinkoffmessanger.domain.usecase.GetTopicsUseCase
 import com.cyberfox21.tinkoffmessanger.domain.usecase.SearchChannelsUseCase
 import com.cyberfox21.tinkoffmessanger.presentation.commondelegate.DelegateItem
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.delegate.item.ChannelDelegateItem
-import com.cyberfox21.tinkoffmessanger.util.mapToChannelDelegateItem
-import com.cyberfox21.tinkoffmessanger.util.mapToTopicDelegateItem
+import com.cyberfox21.tinkoffmessanger.presentation.mapToChannelDelegateItem
+import com.cyberfox21.tinkoffmessanger.presentation.mapToTopicDelegateItem
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
+import io.reactivex.subjects.BehaviorSubject.createDefault
 import java.util.concurrent.TimeUnit
 
 class ChannelsViewModel(application: Application) : AndroidViewModel(application) {
@@ -30,8 +31,7 @@ class ChannelsViewModel(application: Application) : AndroidViewModel(application
     private val getTopicsUseCase = GetTopicsUseCase(topicsRepository)
 
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
-    private val searchSubject: BehaviorSubject<String> =
-        BehaviorSubject.createDefault(INITIAL_QUERY)
+    private val searchSubject: BehaviorSubject<String> = createDefault(INITIAL_QUERY)
 
     private var _channelsScreenState: MutableLiveData<ChannelsScreenState> = MutableLiveData()
     val channelsScreenState: LiveData<ChannelsScreenState>
@@ -41,7 +41,13 @@ class ChannelsViewModel(application: Application) : AndroidViewModel(application
 
     private var category: Category = Category.SUBSCRIBED
 
+    var selectedChannelName: String? = null
+
     init {
+        start()
+    }
+
+    fun start() {
         subscribeToSearchChanges()
     }
 
@@ -76,11 +82,12 @@ class ChannelsViewModel(application: Application) : AndroidViewModel(application
 
     fun updateTopics(channelId: Int, isSelected: Boolean) {
         val delegateItemsList: MutableList<DelegateItem> = channelsList.toMutableList()
+
         if (isSelected) {
             _channelsScreenState.postValue(ChannelsScreenState.Result(delegateItemsList))
         } else {
             getTopicsUseCase(channelId).subscribeBy(
-                onSuccess = { topics ->
+                onNext = { topics ->
                     val elementPosition =
                         delegateItemsList.indexOfFirst { it is ChannelDelegateItem && it.id == channelId }
                     val channel = delegateItemsList[elementPosition]
@@ -97,7 +104,6 @@ class ChannelsViewModel(application: Application) : AndroidViewModel(application
                 onError = { _channelsScreenState.postValue(ChannelsScreenState.Error(it)) }
             ).addTo(compositeDisposable)
         }
-
     }
 
     override fun onCleared() {

@@ -1,55 +1,80 @@
 package com.cyberfox21.tinkoffmessanger.data.repository
 
+import android.app.Application
 import com.cyberfox21.tinkoffmessanger.data.api.ApiFactory
+import com.cyberfox21.tinkoffmessanger.data.database.AppDatabase
+import com.cyberfox21.tinkoffmessanger.data.mapToCurrentUserDBModel
+import com.cyberfox21.tinkoffmessanger.data.mapToUser
+import com.cyberfox21.tinkoffmessanger.data.mapToUserDBModel
 import com.cyberfox21.tinkoffmessanger.domain.entity.User
 import com.cyberfox21.tinkoffmessanger.domain.repository.UsersRepository
-import io.reactivex.Single
+import io.reactivex.Flowable
+import io.reactivex.Maybe
 import io.reactivex.schedulers.Schedulers
 
-object UsersRepositoryImpl : UsersRepository {
+class UsersRepositoryImpl(application: Application) : UsersRepository {
 
     private val api = ApiFactory.api
 
-    override fun getMyUser(): Single<User> {
-        return api.getMyUser()
-            .map {
-                User(
-                    id = it.id,
-                    avatar = it.avatar_url,
-                    name = it.full_name,
-                    email = it.email,
-                    status = it.is_active
-                )
-            }.subscribeOn(Schedulers.io())
-    }
+    private val usersDao =
+        AppDatabase.getInstance(application, AppDatabase.USERS_DB_NAME).usersDao()
 
-    override fun getUser(id: Int): Single<User> {
-        return api.getUser(id)
-            .map {
-                User(
-                    id = it.id,
-                    avatar = it.avatar_url,
-                    name = it.full_name,
-                    email = it.email,
-                    status = it.is_active
-                )
-            }.subscribeOn(Schedulers.io())
-    }
+    private fun getMyUserFromDB() = usersDao.getMyUser().map {
+        it.mapToUser()
+    }.subscribeOn(Schedulers.io())
 
-    override fun getUsersList(): Single<List<User>> {
+    private fun getMyUserFromNetwork() = api.getMyUser()
+        .map {
+            it.mapToUser()
+        }.doOnSuccess {
+            usersDao.addMyUserToDB(it.mapToCurrentUserDBModel())
+        }.subscribeOn(Schedulers.io())
+
+    private fun getUserFromDB(userId: Int) = usersDao.getUser(userId).map {
+        it.mapToUser()
+    }.subscribeOn(Schedulers.io())
+
+    private fun getUserFromNetwork(userId: Int) = api.getUser(userId)
+        .map {
+            it.mapToUser()
+        }.doOnSuccess {
+            usersDao.addUserToDB(it.mapToUserDBModel())
+        }.subscribeOn(Schedulers.io())
+
+    private fun getUsersListFromDB() = usersDao.getUsersList().map { list ->
+        list.map {
+            it.mapToUser()
+        }
+    }.subscribeOn(Schedulers.io())
+
+    private fun getUsersListFromNetwork(): Maybe<List<User>> {
         return api.getUsers()
-            .subscribeOn(Schedulers.io())
-            .flatMap { response ->
-                val mappedList = response.members.map {
-                    User(
-                        id = it.id,
-                        avatar = it.avatar_url,
-                        name = it.full_name,
-                        email = it.email,
-                        status = it.is_active
-                    )
+            .map { response ->
+                response.members.map {
+                    it.mapToUser()
                 }
-                Single.just(mappedList)
-            }
+            }.doOnSuccess { list ->
+                usersDao.addUsersListToDB(list.map {
+                    it.mapToUserDBModel()
+                })
+            }.subscribeOn(Schedulers.io()).toMaybe()
     }
+
+    override fun getMyUser(): Flowable<User> {
+        return getMyUserFromDB().switchIfEmpty(getMyUserFromNetwork()).toFlowable()
+    }
+
+
+    override fun getUser(id: Int): Flowable<User> =
+        getUserFromDB(id).switchIfEmpty(getUserFromNetwork(id)).toFlowable()
+
+
+    override fun getUsersList(): Flowable<List<User>> =
+        getUsersListFromDB().switchIfEmpty(getUsersListFromNetwork()).toFlowable().take(1)
+
+    companion object {
+        const val UNDEFINED_USER_ID = -1
+    }
+
 }
+

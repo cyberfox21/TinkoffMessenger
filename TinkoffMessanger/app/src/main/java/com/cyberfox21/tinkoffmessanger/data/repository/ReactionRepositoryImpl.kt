@@ -1,42 +1,50 @@
 package com.cyberfox21.tinkoffmessanger.data.repository
 
+import android.app.Application
 import com.cyberfox21.tinkoffmessanger.data.api.ApiFactory
+import com.cyberfox21.tinkoffmessanger.data.database.AppDatabase
+import com.cyberfox21.tinkoffmessanger.data.database.AppDatabase.Companion.REACTION_LIST_DB_NAME
+import com.cyberfox21.tinkoffmessanger.data.mapToReactionForReactionList
+import com.cyberfox21.tinkoffmessanger.data.mapToReactionListDBModel
 import com.cyberfox21.tinkoffmessanger.domain.entity.Reaction
 import com.cyberfox21.tinkoffmessanger.domain.repository.ReactionsRepository
 import com.cyberfox21.tinkoffmessanger.util.EmojiFormatter
 import io.reactivex.Completable
+import io.reactivex.Flowable
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 
-object ReactionRepositoryImpl : ReactionsRepository {
+class ReactionRepositoryImpl(application: Application) : ReactionsRepository {
 
     private val api = ApiFactory.api
 
-    private const val UNDEFINED_ID = -1
+    private val reactionListDao =
+        AppDatabase.getInstance(application, REACTION_LIST_DB_NAME).reactionListDao()
 
-    var reactions = mutableListOf<Reaction>()
-
-    init {
-        for (i in 0 until 50) {
-            val unicode = 0x1F600 + i
-            reactions.add(
-                Reaction(
-                    userId = UNDEFINED_ID,
-                    name = "Emoji",
-                    reaction = String(Character.toChars(unicode))
-                )
-            )
+    private fun getReactionListFromDB(): Single<List<Reaction>> =
+        reactionListDao.getReactionList().map { list ->
+            list.map {
+                it.mapToReactionForReactionList()
+            }
         }
-    }
 
-    override fun getReactionList(): Single<List<Reaction>> {
-        val single = api.getReactions()
-            .map {
-                val jObject = it.reactionsObject
-                EmojiFormatter.jsonObjectToReactionsList(jObject)
-            }.subscribeOn(Schedulers.io())
-        return single
-    }
+    // todo check is internet available
+    private fun getReactionListFromNetwork() = api.getReactions()
+        .map {
+            val jObject = it.reactionsObject
+            EmojiFormatter.jsonObjectToReactionsList(jObject)
+        }.doOnSuccess { reactionList ->
+            reactionListDao.addReactionListToDB(reactionList.map {
+                it.mapToReactionListDBModel()
+            })
+        }
+        .subscribeOn(Schedulers.io())
+
+    override fun getReactionList(): Flowable<List<Reaction>> =
+        Single.concat(
+            getReactionListFromDB(),
+            getReactionListFromNetwork()
+        )
 
     override fun addReaction(messageId: Int, reactionName: String): Completable {
         return api.addReaction(

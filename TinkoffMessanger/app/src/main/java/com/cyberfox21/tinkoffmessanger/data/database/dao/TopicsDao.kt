@@ -13,7 +13,7 @@ interface TopicsDao {
     @Query("SELECT * FROM topics where channelId = :channelId")
     fun getTopicsListForChannel(channelId: Int): Single<List<TopicDBModel>>
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun addTopicsListToDB(topicsList: List<TopicDBModel>)
 
 }

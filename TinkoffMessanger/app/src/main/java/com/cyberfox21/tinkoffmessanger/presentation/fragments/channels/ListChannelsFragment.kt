@@ -1,12 +1,15 @@
 package com.cyberfox21.tinkoffmessanger.presentation.fragments.channels
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResultListener
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import com.cyberfox21.tinkoffmessanger.databinding.FragmentListChannelsBinding
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.delegate.adapter.ChannelDelegateAdapter
@@ -59,6 +62,11 @@ class ListChannelsFragment : Fragment() {
         _binding = null
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        channelsViewModel.selectedChannelName = selectedChannelName
+    }
+
     private fun parseArguments() {
         val args = requireArguments()
         if (!args.containsKey(EXTRA_CATEGORY)) throw RuntimeException("Param category is absent")
@@ -69,6 +77,7 @@ class ListChannelsFragment : Fragment() {
     }
 
     private fun setViewModel() {
+        Log.d("ListChannelsFragment", "setViewModel()")
         channelsViewModel = ViewModelProvider(this)[ChannelsViewModel::class.java]
         channelsViewModel.searchChannels(fragmentCategory, INITIAL_QUERY)
     }
@@ -99,6 +108,7 @@ class ListChannelsFragment : Fragment() {
     }
 
     private fun observeViewModel() {
+        channelsViewModel.selectedChannelName?.let { selectedChannelName = it }
         channelsViewModel.channelsScreenState.observe(viewLifecycleOwner, {
             processChannelsScreenState(it)
         })
@@ -119,17 +129,17 @@ class ListChannelsFragment : Fragment() {
     }
 
     private fun addListeners() {
-        parentFragmentManager.setFragmentResultListener(
-            ChannelsFragment.SEARCH_QUERY,
-            viewLifecycleOwner
+        setFragmentResultListener(
+            ChannelsFragment.SEARCH_QUERY
         ) { key, bundle ->
-            val query = bundle.getString(key)
-            query?.let { channelsViewModel.searchChannels(fragmentCategory, it) }
+            channelsViewModel.searchChannels(
+                fragmentCategory, bundle.getString(key) ?: ""
+            )
         }
     }
 
     companion object {
-        const val EXTRA_CATEGORY = "extra_category"
+        private const val EXTRA_CATEGORY = "extra_category"
         private const val INITIAL_QUERY: String = ""
 
         fun newInstance(

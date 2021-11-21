@@ -10,10 +10,10 @@ import io.reactivex.Single
 @Dao
 interface MessagesDao {
 
-    @Query("SELECT * FROM messages")
-    fun getMessageList(): Single<List<MessageDBModel>>
+    @Query("SELECT * FROM messages WHERE topicName = :topicName")
+    fun getMessageList(topicName: String): Single<List<MessageDBModel>>
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun addMessageListToDB(messagesList: List<MessageDBModel>)
 
 }

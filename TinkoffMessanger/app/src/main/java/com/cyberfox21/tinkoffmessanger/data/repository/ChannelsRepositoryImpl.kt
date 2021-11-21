@@ -3,11 +3,13 @@ package com.cyberfox21.tinkoffmessanger.data.repository
 import android.app.Application
 import com.cyberfox21.tinkoffmessanger.data.api.ApiFactory
 import com.cyberfox21.tinkoffmessanger.data.database.AppDatabase
+import com.cyberfox21.tinkoffmessanger.data.mapToChannel
+import com.cyberfox21.tinkoffmessanger.data.mapToChannelDBModel
+import com.cyberfox21.tinkoffmessanger.data.mapToSubscribedChannelDBModel
 import com.cyberfox21.tinkoffmessanger.domain.entity.Channel
 import com.cyberfox21.tinkoffmessanger.domain.repository.ChannelsRepository
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.Category
-import com.cyberfox21.tinkoffmessanger.util.mapToChannel
-import com.cyberfox21.tinkoffmessanger.util.mapToChannelDBModel
+import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 
@@ -16,63 +18,72 @@ class ChannelsRepositoryImpl(application: Application) : ChannelsRepository {
     private val api = ApiFactory.api
 
     private val channelsDao =
-        AppDatabase.getInstance(application, AppDatabase.CHANNELS_DB_NAME).channelsDao()
+        AppDatabase.getInstance(application, AppDatabase.CHANNELS_DB_NAME).allChannelsDao()
 
-    private fun getChannelsList(): Single<List<Channel>> {
-        var result: Single<List<Channel>>? = null
-        val dbResult = channelsDao.getAllChannelsList().map { dbModels ->
-            if (dbModels.isEmpty()) {
-                result = api.getChannels().map { response ->
-                    response.streams.map {
-                        it.mapToChannel()
-                    }
-                }.doOnSuccess { channels ->
-                    channelsDao.addChannelsListToDB(
-                        channels.map {
-                            it.mapToChannelDBModel(subscribed = false)
-                        }
-                    )
-                }
-            }
+    private val subscribedChannelsDao =
+        AppDatabase.getInstance(application, AppDatabase.SUBSCRIBED_CHANNELS_DB_NAME)
+            .subscribedChannelsDao()
+
+    private fun getAllChannelsFromDB(): Single<List<Channel>> =
+        channelsDao.getAllChannelsList().map { dbModels ->
             dbModels.map {
                 it.mapToChannel()
             }
         }.subscribeOn(Schedulers.io())
-        if (result != null) {
-            return result as Single<List<Channel>>
-        }
-        return dbResult
 
-    }
 
-    private fun getSubscribedChannelsList(): Single<List<Channel>> {
-        var result: Single<List<Channel>>? = null
-        val dbResult = channelsDao.getSubscribedChannelsList().map { dbModels ->
-            if (dbModels.isEmpty()) {
-                result = api.getSubscribedChannels().map { response ->
-                    response.subscriptions.map {
-                        it.mapToChannel()
-                    }
-                }.doOnSuccess { subscriptions ->
-                    channelsDao.addChannelsListToDB(
-                        subscriptions.map {
-                            it.mapToChannelDBModel(subscribed = true)
-                        }
-                    )
-                }
+    // todo check internet is available
+    private fun getAllChannelsFromNetwork(): Single<List<Channel>> =
+        api.getChannels().map { response ->
+            response.streams.map {
+                it.mapToChannel()
             }
+        }.doOnSuccess { channels ->
+            channelsDao.addAllChannelsListToDB(
+                channels.map {
+                    it.mapToChannelDBModel()
+                }
+            )
+        }.subscribeOn(Schedulers.io())
+
+    private fun getSubscribedFromDB(): Single<List<Channel>> {
+        return subscribedChannelsDao.getSubscribedChannelsList().map { dbModels ->
             dbModels.map {
                 it.mapToChannel()
             }
         }.subscribeOn(Schedulers.io())
-        if (result != null) return result as Single<List<Channel>>
-        return dbResult
     }
+
+    private fun getSubscribedFromNetwork(): Single<List<Channel>> {
+        // todo check internet is available
+        return api.getSubscribedChannels().map { response ->
+            response.subscriptions.map {
+                it.mapToChannel()
+            }
+        }.doOnSuccess { subscriptions ->
+            subscribedChannelsDao.addSubscribedChannelsListToDB(
+                subscriptions.map {
+                    it.mapToSubscribedChannelDBModel()
+                }
+            )
+        }.subscribeOn(Schedulers.io())
+    }
+
+    private fun getChannelsList(): Observable<List<Channel>> = Observable.concat(
+        getAllChannelsFromDB().toObservable(),
+        getAllChannelsFromNetwork().toObservable()
+    ).distinct()
+
+
+    private fun getSubscribedChannelsList(): Observable<List<Channel>> = Observable.concat(
+        getSubscribedFromDB().toObservable(),
+        getSubscribedFromNetwork().toObservable()
+    ).distinct()
 
     override fun searchChannels(
         searchQuery: String,
         category: Category
-    ): Single<List<Channel>> {
+    ): Observable<List<Channel>> {
         return when (category) {
             Category.SUBSCRIBED -> getSubscribedChannelsList()
             Category.ALL -> getChannelsList()

@@ -2,11 +2,11 @@ package com.cyberfox21.tinkoffmessanger.domain.repository
 
 import com.cyberfox21.tinkoffmessanger.domain.entity.Reaction
 import io.reactivex.Completable
-import io.reactivex.Single
+import io.reactivex.Flowable
 
 interface ReactionsRepository {
 
-    fun getReactionList(): Single<List<Reaction>>
+    fun getReactionList(): Flowable<List<Reaction>>
 
     fun addReaction(messageId: Int, reactionName: String): Completable
 

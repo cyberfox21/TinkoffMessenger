@@ -7,6 +7,5 @@ import androidx.room.PrimaryKey
 data class ChannelDBModel(
     @PrimaryKey(autoGenerate = false)
     val id: Int,
-    val name: String,
-    val subscribed: Boolean
+    val name: String
 )

@@ -13,6 +13,6 @@ class SearchChannelsUseCase(private val repository: ChannelsRepository) {
                     return@filter channel.name.contains(searchQuery, ignoreCase = true)
                 }
             }
-        return channels.toObservable()
+        return channels
     }
 }

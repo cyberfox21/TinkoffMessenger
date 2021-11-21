@@ -15,5 +15,6 @@ data class MessageDBModel(
     val senderName: String,
     val senderAvatarUrl: String,
     val isCurrentUser: Boolean,
-    val reactions: List<Reaction>
+    val reactions: List<Reaction>,
+    val topicName: String
 )

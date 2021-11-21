@@ -14,6 +14,7 @@ object EmojiFormatter {
     }
 
     fun stringToEmoji(emojiCode: String): String {
+        if (emojiCode == "zulip") return ""
         if (!emojiCode.contains("-")) {
             return codeToEmoji(emojiCode.replace("\"", ""))
         }

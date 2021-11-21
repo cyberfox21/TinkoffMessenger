@@ -8,6 +8,7 @@
         android:id="@+id/channels_search_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
         android:hint="@string/example_channels_search_hint"
         android:maxLines="1"
         android:singleLine="true"
@@ -23,7 +24,12 @@
         android:theme="@style/Theme.TabLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/channels_search_view">
+        app:layout_constraintTop_toBottomOf="@+id/channels_search_view"
+        app:tabIndicatorColor="@color/green"
+        app:tabMode="fixed"
+        app:tabSelectedTextColor="@color/green"
+        app:tabTextAppearance="@style/Theme.TextAppearance"
+        app:tabTextColor="@color/white">
 
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"

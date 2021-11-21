@@ -8,6 +8,6 @@ class DelegateAdapterItemCallback : DiffUtil.ItemCallback<DelegateItem>() {
     }
 
     override fun areContentsTheSame(oldItem: DelegateItem, newItem: DelegateItem): Boolean {
-        return oldItem.hashCode() == newItem.hashCode()
+        return oldItem.content() == newItem.content()
     }
 }
