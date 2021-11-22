@@ -9,7 +9,7 @@ import com.cyberfox21.tinkoffmessanger.data.mapToMessageDBModel
 import com.cyberfox21.tinkoffmessanger.domain.entity.Message
 import com.cyberfox21.tinkoffmessanger.domain.repository.MessagesRepository
 import io.reactivex.Completable
-import io.reactivex.Flowable
+import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import kotlinx.serialization.encodeToString
@@ -62,13 +62,13 @@ class MessageRepositoryImpl(application: Application) : MessagesRepository {
         numAfter: Int,
         channelName: String,
         topicName: String
-    ): Flowable<List<Message>> {
-        return getMessagesFromDB(topicName).toFlowable().switchIfEmpty(
-            getMessagesFromNetwork(numBefore, numAfter, channelName, topicName).toFlowable()
-        )
-
+    ): Observable<List<Message>> {
+        return Observable.concat(
+            getMessagesFromDB(topicName).toObservable().map { it.sortedBy { msg -> msg.time } },
+            getMessagesFromNetwork(numBefore, numAfter, channelName, topicName).toObservable()
+                .map { it.sortedBy { msg -> msg.time } }
+        ).subscribeOn(Schedulers.io())
     }
-
 
     override fun addMessage(channelName: String, topicName: String, text: String): Completable {
         return api.sendMessageToChannel(

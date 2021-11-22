@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/margin10dp"
-    android:background="@color/btn_logout_bg"
+    android:backgroundTint="@color/green"
     android:orientation="horizontal"
     android:padding="@dimen/padding8dp">
 

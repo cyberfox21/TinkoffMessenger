@@ -21,7 +21,7 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
     private val _userLD = MutableLiveData<ProfileScreenState>()
     val userLD get() = _userLD
 
-    init {
+    fun start() {
         subscribeToGetCurrentUser()
     }
 

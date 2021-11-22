@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/actionSearch"
+        android:icon="@drawable/ic_search"
+        android:title="@string/example_channels_search_hint"
+        android:visible="false"
+        app:actionLayout="@layout/search_view"
+        app:showAsAction="always|collapseActionView" />
+
+</menu>

@@ -11,10 +11,8 @@ import com.cyberfox21.tinkoffmessanger.data.repository.ReactionRepositoryImpl
 import com.cyberfox21.tinkoffmessanger.data.repository.UsersRepositoryImpl
 import com.cyberfox21.tinkoffmessanger.domain.entity.Message
 import com.cyberfox21.tinkoffmessanger.domain.entity.Reaction
-import com.cyberfox21.tinkoffmessanger.domain.entity.User
 import com.cyberfox21.tinkoffmessanger.domain.usecase.*
 import com.cyberfox21.tinkoffmessanger.presentation.toDelegateChatItemsList
-import io.reactivex.Flowable
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -51,7 +49,12 @@ class ChatViewModel(
 
     private val messageBehaviorSubject: BehaviorSubject<String> = BehaviorSubject.create()
 
-    private var messageObserver: Flowable<List<Message>>? = null
+    private var messageObserver: Observable<List<Message>> = getMessageListUseCase(
+        numBefore = numBefore,
+        numAfter = numAfter,
+        channelName = channelName,
+        topicName = topicName
+    )
     private val reactionsObserver: Observable<List<Reaction>> = getReactionListUseCase()
 
     private var _chatScreenStateLD = MutableLiveData<ChatScreenState>()
@@ -64,12 +67,6 @@ class ChatViewModel(
 
 
     init {
-        messageObserver = getMessageListUseCase(
-            numBefore = numBefore,
-            numAfter = numAfter,
-            channelName = channelName,
-            topicName = topicName
-        )
         subscribeToGiveMessages()
         subscribeToGiveReactionList()
     }
@@ -86,29 +83,56 @@ class ChatViewModel(
     }
 
     private fun subscribeToGiveMessages() {
-        Flowable.concat(getMyUserUseCase(), messageObserver)
-            .subscribeOn(Schedulers.io())
+        getMyUserUseCase()
             .doOnNext { _chatScreenStateLD.postValue(ChatScreenState.Loading) }
-            .observeOn(AndroidSchedulers.mainThread())
             .subscribeBy(
-                onNext = {
-                    var user: User? = null
-                    when (it) {
-                        is User -> {
-                            user = (it as User)
-                        }
-                        is List<*> -> {
-                            user?.let { user ->
-                                val delegateItemList =
-                                    (it as List<Message>).toDelegateChatItemsList(user.id)
-                                _chatScreenStateLD.value = ChatScreenState.Result(delegateItemList)
-                            }
-
-                        }
-                    }
+                onNext = { user ->
+                    messageObserver
+                        .subscribeOn(Schedulers.io())
+                        .doOnNext { _chatScreenStateLD.postValue(ChatScreenState.Loading) }
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeBy(
+                            onNext = {
+                                _chatScreenStateLD.value =
+                                    ChatScreenState.Result(it.toDelegateChatItemsList(user.id))
+                            },
+                            onError = { _chatScreenStateLD.value = ChatScreenState.Error(it) },
+                        ).addTo(compositeDisposable)
                 },
-                onError = { _chatScreenStateLD.value = ChatScreenState.Error(it) },
+                onError = {
+                    _chatScreenStateLD.value = ChatScreenState.Error(it)
+                }
             ).addTo(compositeDisposable)
+
+//
+////        Observable.concat(getMyUserUseCase().toObservable(), messageObserver?.toObservable())
+//        messageObserver
+//            .subscribeOn(Schedulers.io())
+//            .doOnSuccess { _chatScreenStateLD.postValue(ChatScreenState.Loading) }
+//            .observeOn(AndroidSchedulers.mainThread())
+//            .subscribeBy(
+//                onSuccess = {
+////                    var user: User? = null
+////                    when (it) {
+////                        is User -> {
+////                            user = (it as User)
+////                        }
+////                        is List<*> -> {
+////                            user?.let { user ->
+//////                                val delegateItemList =
+////                                    (it as List<Message>).toDelegateChatItemsList(user.id)
+//
+////                    val delegateItemList =
+////                                    (it as List<Message>).toDelegateChatItemsList(user.id)
+//
+//                    _chatScreenStateLD.value = ChatScreenState.Result(it.toDelegateChatItemsList())
+////                            }
+////
+////                        }
+////                    }
+//                },
+//                onError = { _chatScreenStateLD.value = ChatScreenState.Error(it) },
+//            ).addTo(compositeDisposable)
     }
 
     fun sendMessage(text: Editable) {

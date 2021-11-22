@@ -9,7 +9,6 @@ import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import com.cyberfox21.tinkoffmessanger.databinding.FragmentListChannelsBinding
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.delegate.adapter.ChannelDelegateAdapter
@@ -83,6 +82,7 @@ class ListChannelsFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
+        binding.categoryChannelsRecycler.setHasFixedSize(true)
         mainAdapter.apply {
             addDelegate(ChannelDelegateAdapter(object :
                 ChannelDelegateAdapter.OnChannelDelegateClickListener {

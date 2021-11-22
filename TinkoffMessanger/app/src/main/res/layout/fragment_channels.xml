@@ -2,31 +2,55 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/background">
 
-    <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/channels_search_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
-        android:hint="@string/example_channels_search_hint"
-        android:maxLines="1"
-        android:singleLine="true"
-        android:theme="@style/Theme.SearchView"
+    <include
+        android:id="@+id/toolbarLayout"
+        layout="@layout/toolbar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:theme="@style/Theme.SearchView" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/bottom_navigation_background"
+        app:layout_constraintBottom_toTopOf="@+id/tabLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbarLayout" />
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="@dimen/margin10dp"
+        android:layout_marginRight="@dimen/margin10dp"
+        android:background="@color/selected_emoji"
+        android:backgroundTint="@color/selected_emoji"
+        app:layout_constraintBottom_toTopOf="@+id/tabLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbarLayout" />
+
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/bottom_navigation_background"
         android:theme="@style/Theme.TabLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/channels_search_view"
+        app:layout_constraintTop_toBottomOf="@+id/divider"
+        app:tabGravity="fill"
         app:tabIndicatorColor="@color/green"
+        app:tabIndicatorFullWidth="false"
+        app:tabIndicatorGravity="bottom"
         app:tabMode="fixed"
+        app:tabRippleColor="@null"
         app:tabSelectedTextColor="@color/green"
         app:tabTextAppearance="@style/Theme.TextAppearance"
         app:tabTextColor="@color/white">

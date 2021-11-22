@@ -9,7 +9,8 @@ import com.cyberfox21.tinkoffmessanger.data.mapToUserDBModel
 import com.cyberfox21.tinkoffmessanger.domain.entity.User
 import com.cyberfox21.tinkoffmessanger.domain.repository.UsersRepository
 import io.reactivex.Flowable
-import io.reactivex.Maybe
+import io.reactivex.Observable
+import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 
 class UsersRepositoryImpl(application: Application) : UsersRepository {
@@ -47,7 +48,7 @@ class UsersRepositoryImpl(application: Application) : UsersRepository {
         }
     }.subscribeOn(Schedulers.io())
 
-    private fun getUsersListFromNetwork(): Maybe<List<User>> {
+    private fun getUsersListFromNetwork(): Single<List<User>> {
         return api.getUsers()
             .map { response ->
                 response.members.map {
@@ -57,7 +58,7 @@ class UsersRepositoryImpl(application: Application) : UsersRepository {
                 usersDao.addUsersListToDB(list.map {
                     it.mapToUserDBModel()
                 })
-            }.subscribeOn(Schedulers.io()).toMaybe()
+            }.subscribeOn(Schedulers.io())
     }
 
     override fun getMyUser(): Flowable<User> {
@@ -69,12 +70,11 @@ class UsersRepositoryImpl(application: Application) : UsersRepository {
         getUserFromDB(id).switchIfEmpty(getUserFromNetwork(id)).toFlowable()
 
 
-    override fun getUsersList(): Flowable<List<User>> =
-        getUsersListFromDB().switchIfEmpty(getUsersListFromNetwork()).toFlowable().take(1)
-
-    companion object {
-        const val UNDEFINED_USER_ID = -1
-    }
+    override fun getUsersList(): Observable<List<User>> =
+        Observable.concat(
+            getUsersListFromDB().toObservable().map { it.sortedBy { user -> user.name } },
+            getUsersListFromNetwork().toObservable().map { it.sortedBy { user -> user.name } }
+        ).subscribeOn(Schedulers.io())
 
 }
 

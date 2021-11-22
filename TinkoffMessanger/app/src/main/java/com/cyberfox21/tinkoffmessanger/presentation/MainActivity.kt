@@ -1,22 +1,17 @@
 package com.cyberfox21.tinkoffmessanger.presentation
 
 import android.os.Bundle
-import android.view.Gravity
-import android.view.View
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
-import androidx.transition.Slide
-import androidx.transition.TransitionManager
 import com.cyberfox21.tinkoffmessanger.R
 import com.cyberfox21.tinkoffmessanger.databinding.ActivityMainBinding
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.ChannelsFragment
-import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.ChatFragment
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.people.PeopleFragment
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.profile.ProfileFragment
-import com.cyberfox21.tinkoffmessanger.presentation.fragments.profile.ProfileMode
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), NavigationHolder {
 
     private lateinit var binding: ActivityMainBinding
 
@@ -29,49 +24,69 @@ class MainActivity : AppCompatActivity() {
 
     private fun setBottomNavigationListeners() {
         binding.bottomNavigationView.setOnItemSelectedListener {
-            val fragment = when (it.itemId) {
-                R.id.channels -> {
-                    ChannelsFragment.newInstance()
-                }
-                R.id.people -> {
-                    PeopleFragment.newInstance()
-                }
-                R.id.profile -> {
-                    ProfileFragment.newInstance(ProfileMode.YOUR)
-                }
-                else -> throw RuntimeException("Unknown menu item ${it.itemId}")
-            }
-            changeFragment(fragment)
+            onNavigationItemSelected(it)
             true
         }
-        supportFragmentManager.registerFragmentLifecycleCallbacks(object :
-            FragmentManager.FragmentLifecycleCallbacks() {
-            override fun onFragmentViewCreated(
-                fm: FragmentManager,
-                f: Fragment,
-                v: View,
-                savedInstanceState: Bundle?
-            ) {
-                TransitionManager.beginDelayedTransition(
-                    binding.root,
-                    Slide(Gravity.BOTTOM).excludeTarget(R.id.main_fragment_container, true)
-                )
-                binding.bottomNavigationView.visibility = when (f) {
-                    is ChatFragment -> View.GONE
-                    is ProfileFragment -> {
-                        if (f.screenMode == ProfileMode.STRANGER) View.GONE
-                        else View.VISIBLE
-                    }
-                    else -> View.VISIBLE
-                }
-            }
-        }, false)
     }
 
-    private fun changeFragment(fragment: Fragment) {
+    private fun onNavigationItemSelected(item: MenuItem) {
+        when (item.itemId) {
+            R.id.channels -> {
+                ChannelsFragment.newInstance()
+                navigateFragment(
+                    ChannelsFragment.newInstance(),
+                    ChannelsFragment.CHANNELS_FRAGMENT_NAME
+                )
+            }
+            R.id.people -> {
+                navigateFragment(
+                    PeopleFragment.newInstance(),
+                    PeopleFragment.PEOPLE_FRAGMENT_NAME
+                )
+            }
+            R.id.profile -> {
+                navigateFragment(
+                    ProfileFragment.newInstanceYour(),
+                    ProfileFragment.PROFILE_FRAGMENT_NAME
+                )
+            }
+            else -> throw RuntimeException("Unknown menu item $item")
+        }
+    }
+
+    override fun showNavigation() {
+        binding.bottomNavigationView.isVisible = true
+    }
+
+    override fun hideNavigation() {
+        binding.bottomNavigationView.isVisible = false
+    }
+
+    override fun startFragment(fragment: Fragment, tag: String) {
         supportFragmentManager.beginTransaction()
-            .replace(R.id.main_fragment_container, fragment)
+            .replace(R.id.main_fragment_container, fragment, tag)
+            .addToBackStack(tag)
             .commit()
+        hideNavigation()
+    }
+
+    private fun navigateFragment(fragment: Fragment, tag: String) {
+        if (supportFragmentManager.findFragmentByTag(tag) == null) {
+            if (supportFragmentManager.backStackEntryCount > 0) supportFragmentManager.popBackStack()
+
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.main_fragment_container, fragment, tag)
+
+                .commit()
+        }
+    }
+
+    override fun onBackPressed() {
+        if (supportFragmentManager.backStackEntryCount >= 1) {
+            super.onBackPressed()
+        } else {
+            finish()
+        }
     }
 
 }

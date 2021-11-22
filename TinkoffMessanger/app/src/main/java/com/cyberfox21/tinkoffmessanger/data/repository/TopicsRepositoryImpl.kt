@@ -38,9 +38,7 @@ class TopicsRepositoryImpl(application: Application) : TopicsRepository {
             }.subscribeOn(Schedulers.io())
 
     override fun getTopics(channelId: Int): Flowable<List<Topic>> =
-        Flowable.concat(
-            getTopicsFromDB(channelId).filter { it.isNotEmpty() }.toFlowable(),
-            getTopicsFromNetwork(channelId).filter { it.isNotEmpty() }.toFlowable()
-        ).distinct()
+        getTopicsFromDB(channelId).toFlowable()
+            .switchIfEmpty(getTopicsFromNetwork(channelId).toFlowable())
 
 }

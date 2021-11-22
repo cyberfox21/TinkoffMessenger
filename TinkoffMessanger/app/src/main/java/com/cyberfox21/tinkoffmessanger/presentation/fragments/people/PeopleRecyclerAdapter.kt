@@ -14,7 +14,7 @@ class PeopleRecyclerAdapter : ListAdapter<User, UserViewHolder>(UserDIffUtilCall
     var onPersonClickListener: OnPersonClickListener? = null
 
     interface OnPersonClickListener {
-        fun onPersonClick()
+        fun onPersonClick(user: User)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserViewHolder {
@@ -32,7 +32,7 @@ class PeopleRecyclerAdapter : ListAdapter<User, UserViewHolder>(UserDIffUtilCall
             tvUserEmail.text = user.email
 //            online.visibility = getStatus(user.status)
             root.setOnClickListener {
-                onPersonClickListener?.onPersonClick()
+                onPersonClickListener?.onPersonClick(user)
             }
         }
     }

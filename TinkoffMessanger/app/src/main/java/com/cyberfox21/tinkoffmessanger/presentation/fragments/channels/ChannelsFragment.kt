@@ -1,14 +1,19 @@
 package com.cyberfox21.tinkoffmessanger.presentation.fragments.channels
 
+import android.app.SearchManager
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.widget.doAfterTextChanged
+import android.widget.ImageView
+import androidx.appcompat.widget.SearchView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.cyberfox21.tinkoffmessanger.R
 import com.cyberfox21.tinkoffmessanger.databinding.FragmentChannelsBinding
+import com.cyberfox21.tinkoffmessanger.presentation.NavigationHolder
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.ChatFragment
 import com.google.android.material.tabs.TabLayoutMediator
 
@@ -17,6 +22,8 @@ class ChannelsFragment : Fragment(), ListChannelsFragment.OnTopicSelected {
     private var _binding: FragmentChannelsBinding? = null
     private val binding: FragmentChannelsBinding
         get() = _binding ?: throw RuntimeException("FragmentChannelsBinding = null")
+
+    private lateinit var searchView: SearchView
 
     private lateinit var vpAdapter: ChannelsViewPagerAdapter
 
@@ -35,9 +42,25 @@ class ChannelsFragment : Fragment(), ListChannelsFragment.OnTopicSelected {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.d("ChannelsFragment", "onViewCreated()")
+        setupStatusBar()
+        setupNavigation()
         setupViewPager()
         setupTabLayout()
         setupSearchPanel()
+    }
+
+    private fun setupStatusBar() {
+        activity?.window?.statusBarColor =
+            ContextCompat.getColor(requireContext(), R.color.bottom_navigation_background)
+    }
+
+    private fun setupNavigation() {
+        (activity as NavigationHolder).showNavigation()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        setupNavigation()
     }
 
     override fun onDestroyView() {
@@ -60,33 +83,46 @@ class ChannelsFragment : Fragment(), ListChannelsFragment.OnTopicSelected {
     }
 
     private fun setupSearchPanel() {
-        binding.channelsSearchView.doAfterTextChanged {
-            val query = it?.toString() ?: ""
-            childFragmentManager.setFragmentResult(
-                SEARCH_QUERY,
-                Bundle().apply { putString(QUERY, query) })
+        binding.toolbarLayout.toolbar.setTitleTextColor(
+            ContextCompat.getColor(
+                requireContext(),
+                R.color.white
+            )
+        )
+        binding.toolbarLayout.toolbar.title = getString(R.string.channels)
+        val searchMenuItem = binding.toolbarLayout.toolbar.menu.findItem(R.id.actionSearch)
+        val searchManager = context?.getSystemService(Context.SEARCH_SERVICE) as SearchManager
+        searchView = searchMenuItem.actionView as SearchView
+        searchMenuItem.isVisible = true
+        searchView.apply {
+            findViewById<ImageView>(R.id.search_close_btn).setImageResource(R.drawable.ic_close)
+            setSearchableInfo(searchManager.getSearchableInfo(activity?.componentName))
+            setIconifiedByDefault(false)
+            setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+                override fun onQueryTextSubmit(query: String): Boolean {
+//                    DisplayUtils.hideKeyboard(activity)
+                    return true
+                }
+
+                override fun onQueryTextChange(newText: String): Boolean {
+//                    onQueryChanged(newText)
+                    return true
+                }
+
+            })
         }
     }
 
     override fun showMatchingChat(chnlName: String, topicName: String) {
-        requireActivity().supportFragmentManager.beginTransaction()
-            .addToBackStack(CHANNELS_FRAGMENT_NAME)
-            .add(
-                R.id.main_fragment_container,
-                ChatFragment.newInstance(chnlName, topicName)
-            )
-            .commit()
+        (requireActivity() as NavigationHolder).startFragment(
+            ChatFragment.newInstance(
+                chnlName,
+                topicName
+            ),
+            CHANNELS_FRAGMENT_NAME
+        )
     }
 
-    override fun onResume() {
-        super.onResume()
-        Log.d("ChannelsFragment", "onResume()")
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        Log.d("ChannelsFragment", "onDestroy()")
-    }
 
     companion object {
         const val CHANNELS_FRAGMENT_NAME = "channels_fragment"

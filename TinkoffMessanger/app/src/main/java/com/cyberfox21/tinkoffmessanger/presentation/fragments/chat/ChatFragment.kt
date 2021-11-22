@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -25,6 +26,7 @@ import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.delegate.adap
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.reactions.ReactionRecyclerAdapter
 import com.google.android.material.bottomsheet.BottomSheetDialog
 
+
 class ChatFragment : Fragment() {
 
     private lateinit var ctx: Context
@@ -35,7 +37,8 @@ class ChatFragment : Fragment() {
     private lateinit var bottomSheetDialog: BottomSheetDialog
 
     private var _binding: FragmentChatBinding? = null
-    private val binding get() = _binding ?: throw RuntimeException("FragmentChatBinding = null")
+    private val binding
+        get() = _binding ?: throw RuntimeException("FragmentChatBinding = null")
 
     private var _dialogLayoutBinding: BottomSheetDialogLayoutBinding? = null
     private val dialogLayoutBinding
@@ -92,6 +95,7 @@ class ChatFragment : Fragment() {
     }
 
     private fun setViewModel() {
+        configureToolbar()
         val chatViewModelFactory = ChatViewModelFactory(
             requireActivity().application,
             fragmentChannelName,
@@ -100,12 +104,37 @@ class ChatFragment : Fragment() {
         viewModel = ViewModelProvider(this, chatViewModelFactory)[ChatViewModel::class.java]
     }
 
+    private fun configureToolbar() {
+        binding.toolbarLayout.root.setBackgroundColor(
+            ContextCompat.getColor(
+                requireContext(),
+                R.color.green
+            )
+        )
+        binding.toolbarLayout.toolbar.setNavigationIcon(R.drawable.ic_back)
+        binding.toolbarLayout.toolbar.title = setChannel(fragmentChannelName)
+        binding.toolbarLayout.toolbar.setNavigationOnClickListener {
+            activity?.onBackPressed()
+        }
+    }
+
     private fun setupViews() {
-        binding.tvChatTopic.text = fragmentTopicName
+        setupStatusBar()
+        binding.tvTopicTitle.text = setTopic(fragmentTopicName)
         chatRecyclerAdapter.addDelegate(AlienMessageDelegateAdapter())
         chatRecyclerAdapter.addDelegate(MyMessageDelegateAdapter())
         chatRecyclerAdapter.addDelegate(DateDelegateAdapter())
+        binding.chatRecycler.setHasFixedSize(true)
         binding.chatRecycler.adapter = chatRecyclerAdapter
+    }
+
+    private fun setChannel(channel: String) = "#$channel"
+
+    private fun setTopic(topic: String) = "Topic: #$topic"
+
+    private fun setupStatusBar() {
+        activity?.window?.statusBarColor =
+            ContextCompat.getColor(requireContext(), R.color.green)
     }
 
     private fun addListeners() {
@@ -210,13 +239,6 @@ class ChatFragment : Fragment() {
             R.drawable.ic_send_btn
         }
     }
-
-//    private fun configureToolbar() {
-//        binding.toolbarLayout.toolbar.setNavigationIcon(R.drawable.ic_back)
-//        binding.toolbarLayout.toolbar.setNavigationOnClickListener {
-//            activity?.onBackPressed()
-//        }
-//    }
 
     companion object {
 
