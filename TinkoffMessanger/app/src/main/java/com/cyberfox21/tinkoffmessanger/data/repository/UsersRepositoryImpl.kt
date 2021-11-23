@@ -1,6 +1,7 @@
 package com.cyberfox21.tinkoffmessanger.data.repository
 
 import android.app.Application
+import android.content.Context
 import com.cyberfox21.tinkoffmessanger.data.api.ApiFactory
 import com.cyberfox21.tinkoffmessanger.data.database.AppDatabase
 import com.cyberfox21.tinkoffmessanger.data.mapToCurrentUserDBModel
@@ -13,12 +14,12 @@ import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 
-class UsersRepositoryImpl(application: Application) : UsersRepository {
+class UsersRepositoryImpl(context: Context) : UsersRepository {
 
     private val api = ApiFactory.api
 
     private val usersDao =
-        AppDatabase.getInstance(application, AppDatabase.USERS_DB_NAME).usersDao()
+        AppDatabase.getInstance(context, AppDatabase.USERS_DB_NAME).usersDao()
 
     private fun getMyUserFromDB() = usersDao.getMyUser().map {
         it.mapToUser()

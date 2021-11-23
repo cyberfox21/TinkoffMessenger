@@ -4,18 +4,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.cyberfox21.tinkoffmessanger.R
 import com.cyberfox21.tinkoffmessanger.databinding.FragmentProfileBinding
 import com.cyberfox21.tinkoffmessanger.domain.entity.User
-import com.cyberfox21.tinkoffmessanger.presentation.NavigationHolder
+import com.cyberfox21.tinkoffmessanger.presentation.fragments.profile.elm.*
+import vivid.money.elmslie.android.base.ElmFragment
+import vivid.money.elmslie.core.store.Store
 
-class ProfileFragment : Fragment() {
+class ProfileFragment : ElmFragment<ProfileEvent, ProfileEffect, ProfileState>() {
 
     private lateinit var screenMode: ProfileMode
     private lateinit var fragmentUser: User
@@ -24,7 +23,39 @@ class ProfileFragment : Fragment() {
     private val binding: FragmentProfileBinding
         get() = _binding ?: throw RuntimeException("FragmentProfileBinding = null")
 
-    private lateinit var profileViewModel: ProfileViewModel
+//  < ---------------------------------------- ELM --------------------------------------------->
+
+    private val actor by lazy { ProfileActor(requireContext()) }
+
+    override val initEvent: ProfileEvent = ProfileEvent.Ui.GetCurrentUser
+
+    override fun createStore(): Store<ProfileEvent, ProfileEffect, ProfileState> =
+        ProfileStoreFactory(actor).provide()
+
+    override fun render(state: ProfileState) {
+        with(binding) {
+            pbLoading.isVisible = state.isLoading
+            emptyLayout.errorLayout.isVisible = state.isEmptyState
+            btnLogout.isVisible = state.profileScreenMode == ProfileMode.YOUR
+            if (!state.isEmptyState) state.user?.let { bindUser(it) }
+            networkErrorLayout.errorLayout.isVisible = state.error != null
+        }
+    }
+
+    override fun handleEffect(effect: ProfileEffect) {
+        when (effect) {
+            is ProfileEffect.UserLoadError -> {
+                binding.emptyLayout.errorLayout.isVisible = false
+                binding.networkErrorLayout.errorLayout.isVisible = true
+            }
+            is ProfileEffect.UserEmpty -> {
+                binding.networkErrorLayout.errorLayout.isVisible = false
+                binding.emptyLayout.errorLayout.isVisible = true
+            }
+        }
+    }
+
+//  < ---------------------------------------- ELM --------------------------------------------->
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,6 +75,7 @@ class ProfileFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupStatusBar()
         launchRightMode()
+        addListeners()
     }
 
     override fun onDestroyView() {
@@ -69,16 +101,21 @@ class ProfileFragment : Fragment() {
             ContextCompat.getColor(requireContext(), R.color.bottom_navigation_background)
     }
 
-    private fun launchRightMode() {
-        if (screenMode == ProfileMode.STRANGER) {
-            configureToolbar()
-            binding.btnLogout.visibility = View.GONE
-            bindUser(fragmentUser)
-        } else {
-            binding.toolbarLayout.toolbar.isVisible = false
-            (activity as NavigationHolder).showNavigation()
-            setupViewModel()
+    private fun launchRightMode() = when (screenMode) {
+        ProfileMode.YOUR -> {
+            binding.btnLogout.isVisible = true
+            store.accept(ProfileEvent.Ui.GetCurrentUser)
         }
+        ProfileMode.STRANGER -> {
+            configureToolbar()
+            binding.btnLogout.isVisible = false
+            store.accept(ProfileEvent.Ui.GetSelectedUser(fragmentUser))
+        }
+    }
+
+    private fun bindUser(user: User) {
+        Glide.with(requireContext()).load(user.avatar).into(binding.ivProfilePhoto)
+        binding.tvProfileName.text = user.name
     }
 
     private fun configureToolbar() {
@@ -90,32 +127,8 @@ class ProfileFragment : Fragment() {
         }
     }
 
-    private fun setupViewModel() {
-        profileViewModel = ViewModelProvider(this)[ProfileViewModel::class.java]
-        profileViewModel.start()
-        profileViewModel.userLD.observe(viewLifecycleOwner) {
-            processProfileScreenState(it)
-        }
-    }
-
-    private fun processProfileScreenState(state: ProfileScreenState) = when (state) {
-        is ProfileScreenState.Result -> {
-            binding.pbLoading.isVisible = false
-            bindUser(state.user)
-            //binding.tvProfileStatus.
-        }
-        ProfileScreenState.Loading -> {
-            binding.pbLoading.isVisible = true
-        }
-        is ProfileScreenState.Error -> {
-            binding.pbLoading.isVisible = false
-            Toast.makeText(this.context, "${state.error.message}", Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    private fun bindUser(user: User) {
-        Glide.with(requireContext()).load(user.avatar).into(binding.ivProfilePhoto)
-        binding.tvProfileName.text = user.name
+    private fun addListeners() {
+        binding.networkErrorLayout.networkButton.setOnClickListener { launchRightMode() }
     }
 
     companion object {

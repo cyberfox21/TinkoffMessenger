@@ -1,6 +1,7 @@
 package com.cyberfox21.tinkoffmessanger.data.database
 
 import android.app.Application
+import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
@@ -43,7 +44,7 @@ abstract class AppDatabase : RoomDatabase() {
         const val USERS_DB_NAME = "users.db"
         private val LOCK = Any()
 
-        fun getInstance(application: Application, dbName: String): AppDatabase {
+        fun getInstance(context: Context, dbName: String): AppDatabase {
             INSTANCE?.let {
                 return it
             }
@@ -52,7 +53,7 @@ abstract class AppDatabase : RoomDatabase() {
                     return it
                 }
                 val db = Room.databaseBuilder(
-                    application,
+                    context,
                     AppDatabase::class.java,
                     dbName
                 ).build()

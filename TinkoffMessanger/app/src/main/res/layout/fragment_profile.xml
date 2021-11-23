@@ -15,6 +15,7 @@
 
     <ProgressBar
         android:id="@+id/pb_loading"
+        android:visibility="invisible"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -83,6 +84,28 @@
 
     </LinearLayout>
 
+    <include
+        android:id="@+id/network_error_layout"
+        layout="@layout/layout_error_network"
+        android:visibility="invisible"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/toolbarLayout" />
+
+    <include
+        android:id="@+id/empty_layout"
+        layout="@layout/layout_empty"
+        android:visibility="invisible"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/toolbarLayout" />
+
     <Button
         android:id="@+id/btn_logout"
         android:layout_width="wrap_content"
@@ -92,6 +115,7 @@
         android:paddingRight="@dimen/padding40dp"
         android:paddingBottom="@dimen/padding10dp"
         android:text="@string/log_out"
+        android:visibility="invisible"
         android:textColor="@color/white"
         android:theme="@style/THeme.BtnLogout"
         app:cornerRadius="@dimen/btn_logout_corner_radius"

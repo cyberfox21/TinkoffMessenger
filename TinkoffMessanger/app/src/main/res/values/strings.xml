@@ -22,4 +22,7 @@
     <string name="testing">Testing</string>
     <string name="expand_channel_to_see_topics">Expand channel to see topics</string>
     <string name="example_channels_search_hint">Channels…</string>
+    <string name="network_error">Network error.\nCheck internet connection</string>
+    <string name="empty_error">Тут ничего нет</string>
+    <string name="retry">Повторить</string>
 </resources>

@@ -79,6 +79,12 @@ dependencies {
     implementation "androidx.room:room-runtime:$roomVersion"
     annotationProcessor "androidx.room:room-compiler:$roomVersion"
     kapt "androidx.room:room-compiler:$roomVersion"
-    implementation("androidx.room:room-rxjava2:$roomVersion")
+    implementation "androidx.room:room-rxjava2:$roomVersion"
+
+    // Elmslie
+    implementation "com.github.vivid-money.elmslie:elmslie-core:$elmslieVersion"
+    implementation "com.github.vivid-money.elmslie:elmslie-android:$elmslieVersion"
+    implementation "com.github.vivid-money.elmslie:elmslie-rxjava-2:$elmslieVersion"
+
 
 }
