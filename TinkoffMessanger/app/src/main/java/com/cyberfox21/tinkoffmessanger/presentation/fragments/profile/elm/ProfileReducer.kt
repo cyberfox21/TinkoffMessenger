@@ -54,7 +54,7 @@ class ProfileReducer : DslReducer<ProfileEvent, ProfileState, ProfileEffect, Pro
                 }
                 commands { +ProfileCommand.LoadCurrentUser }
             }
-            is ProfileEvent.Ui.GetSelectedUser -> {
+            is ProfileEvent.Ui.GetSelectedUser -> { // сразу показываем результат
                 state {
                     copy(
                         user = event.user,

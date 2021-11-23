@@ -7,21 +7,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import com.cyberfox21.tinkoffmessanger.R
 import com.cyberfox21.tinkoffmessanger.databinding.FragmentPeopleBinding
 import com.cyberfox21.tinkoffmessanger.domain.entity.User
 import com.cyberfox21.tinkoffmessanger.presentation.NavigationHolder
+import com.cyberfox21.tinkoffmessanger.presentation.fragments.people.elm.*
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.profile.ProfileFragment
+import vivid.money.elmslie.android.base.ElmFragment
+import vivid.money.elmslie.core.store.Store
 
-class PeopleFragment : Fragment() {
-
-    private lateinit var viewModel: PeopleFragmentViewModel
+class PeopleFragment : ElmFragment<PeopleEvent, PeopleEffect, PeopleState>() {
 
     private lateinit var searchView: SearchView
 
@@ -30,6 +28,42 @@ class PeopleFragment : Fragment() {
         get() = _binding ?: throw RuntimeException("FragmentPeopleBinding = null")
 
     private val peopleRecyclerAdapter = PeopleRecyclerAdapter()
+
+//  < ---------------------------------------- ELM --------------------------------------------->
+
+    private val actor by lazy { PeopleActor(requireContext()) }
+
+    override val initEvent: PeopleEvent = PeopleEvent.Ui.GetUserList
+
+    override fun createStore(): Store<PeopleEvent, PeopleEffect, PeopleState> =
+        PeopleStoreFactory(actor).provide()
+
+    override fun render(state: PeopleState) {
+        with(binding) {
+            pbLoading.isVisible = state.isLoading
+            emptyLayout.errorLayout.isVisible = state.isEmptyState
+            peopleRecyclerView.isVisible = state.isEmptyState.not()
+            peopleRecyclerAdapter.submitList(state.users)
+            networkErrorLayout.errorLayout.isVisible = state.error != null
+        }
+    }
+
+    override fun handleEffect(effect: PeopleEffect) {
+        when (effect) {
+            is PeopleEffect.UserListLoadError -> {
+                binding.peopleRecyclerView.isVisible = false
+                binding.emptyLayout.errorLayout.isVisible = false
+                binding.networkErrorLayout.errorLayout.isVisible = true
+            }
+            is PeopleEffect.UsersListEmpty -> {
+                binding.peopleRecyclerView.isVisible = false
+                binding.networkErrorLayout.errorLayout.isVisible = false
+                binding.emptyLayout.errorLayout.isVisible = true
+            }
+        }
+    }
+
+//  < ---------------------------------------- ELM --------------------------------------------->
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -44,11 +78,9 @@ class PeopleFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupStatusBar()
         setupNavigation()
-        setViewModel()
         setupSearchPanel()
         setupRecyclerView()
         addListeners()
-        observeViewModel()
     }
 
     override fun onDestroyView() {
@@ -65,9 +97,6 @@ class PeopleFragment : Fragment() {
         (activity as NavigationHolder).showNavigation()
     }
 
-    private fun setViewModel() {
-        viewModel = ViewModelProvider(this)[PeopleFragmentViewModel::class.java]
-    }
 
     private fun setupSearchPanel() {
         binding.toolbarLayout.toolbar.setTitleTextColor(
@@ -105,6 +134,9 @@ class PeopleFragment : Fragment() {
     }
 
     private fun addListeners() {
+        binding.networkErrorLayout.networkButton.setOnClickListener {
+            store.accept(PeopleEvent.Ui.GetUserList)
+        }
         peopleRecyclerAdapter.onPersonClickListener =
             object : PeopleRecyclerAdapter.OnPersonClickListener {
                 override fun onPersonClick(user: User) {
@@ -122,27 +154,6 @@ class PeopleFragment : Fragment() {
         )
     }
 
-    private fun observeViewModel() {
-        viewModel.peopleScreenState.observe(viewLifecycleOwner, {
-            processPeopleScreenState(it)
-        })
-    }
-
-    private fun processPeopleScreenState(it: UsersScreenState) {
-        when (it) {
-            is UsersScreenState.Result -> {
-                peopleRecyclerAdapter.submitList(it.items)
-                binding.pbLoading.isVisible = false
-            }
-            UsersScreenState.Loading -> {
-                binding.pbLoading.isVisible = true
-            }
-            is UsersScreenState.Error -> {
-                Toast.makeText(this.context, "${it.error.message}", Toast.LENGTH_SHORT).show()
-                binding.pbLoading.isVisible = false
-            }
-        }
-    }
 
     companion object {
         const val PEOPLE_FRAGMENT_NAME = "people_fragment"
@@ -151,4 +162,5 @@ class PeopleFragment : Fragment() {
             return PeopleFragment()
         }
     }
+
 }

@@ -32,7 +32,7 @@
         <item name="iconTint">@color/white</item>
     </style>
 
-    <style name="THeme.BtnLogout" parent="Theme.MaterialComponents">
+    <style name="Theme.BtnLogout" parent="Theme.MaterialComponents">
         <item name="colorPrimary">@color/btn_logout_bg</item>
     </style>
 
