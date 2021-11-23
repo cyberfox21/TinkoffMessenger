@@ -7,20 +7,21 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.view.isVisible
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.ViewModelProvider
 import com.cyberfox21.tinkoffmessanger.databinding.FragmentListChannelsBinding
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.delegate.adapter.ChannelDelegateAdapter
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.delegate.adapter.MainChannelsRecyclerAdapter
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.delegate.adapter.TopicDelegateAdapter
+import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.elm.*
+import vivid.money.elmslie.android.base.ElmFragment
+import vivid.money.elmslie.core.store.Store
 
-class ListChannelsFragment : Fragment() {
+class ListChannelsFragment : ElmFragment<ChannelsEvent, ChannelsEffect, ChannelsState>() {
 
     private var selectedChannelName: String = ""
 
     private lateinit var fragmentCategory: Category
-    private lateinit var channelsViewModel: ChannelsViewModel
 
     private val mainAdapter = MainChannelsRecyclerAdapter()
 
@@ -33,6 +34,50 @@ class ListChannelsFragment : Fragment() {
     interface OnTopicSelected {
         fun showMatchingChat(topicName: String, channelName: String)
     }
+
+//  < ---------------------------------------- ELM --------------------------------------------->
+
+    private val actor by lazy { ChannelsActor(requireContext()) }
+
+    override val initEvent: ChannelsEvent = ChannelsEvent.Ui.GetChannelsList(
+        INITIAL_QUERY, Category.SUBSCRIBED
+    )
+
+    override fun createStore(): Store<ChannelsEvent, ChannelsEffect, ChannelsState> =
+        ChannelsStoreFactory(actor).provide()
+
+    override fun render(state: ChannelsState) {
+        with(binding) {
+            pbLoading.isVisible = state.isLoading
+            emptyLayout.errorLayout.isVisible = state.isEmptyState
+            networkErrorLayout.errorLayout.isVisible = state.error != null
+            categoryChannelsRecycler.isVisible = state.isEmptyState.not()
+            if (state.isEmptyState.not()) mainAdapter.submitList(state.channels)
+        }
+    }
+
+    override fun handleEffect(effect: ChannelsEffect) {
+        when (effect) {
+            ChannelsEffect.EmptyChannels -> {
+                binding.categoryChannelsRecycler.isVisible = false
+                binding.networkErrorLayout.errorLayout.isVisible = false
+                binding.emptyLayout.errorLayout.isVisible = true
+            }
+            is ChannelsEffect.ChannelsLoadError -> {
+                binding.categoryChannelsRecycler.isVisible = false
+                binding.emptyLayout.errorLayout.isVisible = false
+                binding.networkErrorLayout.errorLayout.isVisible = true
+            }
+            ChannelsEffect.EmptyTopics -> {
+                //TODO
+            }
+            is ChannelsEffect.TopicsLoadError -> {
+                //TODO
+            }
+        }
+    }
+
+//  < ---------------------------------------- ELM --------------------------------------------->
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,20 +95,13 @@ class ListChannelsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setViewModel()
         setupRecyclerView()
-        observeViewModel()
         addListeners()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        channelsViewModel.selectedChannelName = selectedChannelName
     }
 
     private fun parseArguments() {
@@ -73,12 +111,11 @@ class ListChannelsFragment : Fragment() {
         if (category != Category.SUBSCRIBED && category != Category.ALL)
             throw RuntimeException("Unknown category $category")
         fragmentCategory = category
+        launchRightTab()
     }
 
-    private fun setViewModel() {
-        Log.d("ListChannelsFragment", "setViewModel()")
-        channelsViewModel = ViewModelProvider(this)[ChannelsViewModel::class.java]
-        channelsViewModel.searchChannels(fragmentCategory, INITIAL_QUERY)
+    private fun launchRightTab() {
+        store.accept(ChannelsEvent.Ui.GetChannelsList(INITIAL_QUERY, fragmentCategory))
     }
 
     private fun setupRecyclerView() {
@@ -93,7 +130,9 @@ class ListChannelsFragment : Fragment() {
                 ) {
                     selectedChannelName =
                         if (selectedChannelName != channelName) channelName else ""
-                    channelsViewModel.updateTopics(channelId, isSelected)
+                    if (!isSelected) {
+                        store.accept(ChannelsEvent.Ui.UpdateTopics(channelId, isSelected))
+                    }
                 }
 
             }))
@@ -107,34 +146,19 @@ class ListChannelsFragment : Fragment() {
         binding.categoryChannelsRecycler.adapter = mainAdapter
     }
 
-    private fun observeViewModel() {
-        channelsViewModel.selectedChannelName?.let { selectedChannelName = it }
-        channelsViewModel.channelsScreenState.observe(viewLifecycleOwner, {
-            processChannelsScreenState(it)
-        })
-    }
-
-    private fun processChannelsScreenState(state: ChannelsScreenState) {
-        when (state) {
-            is ChannelsScreenState.Result -> {
-                mainAdapter.submitList(state.items)
-                binding.pbLoading.isVisible = false
-            }
-            ChannelsScreenState.Loading -> binding.pbLoading.isVisible = true
-            is ChannelsScreenState.Error -> {
-                Toast.makeText(this.context, "${state.error.message}", Toast.LENGTH_SHORT).show()
-                binding.pbLoading.isVisible = false
-            }
-        }
-    }
-
     private fun addListeners() {
         setFragmentResultListener(
             ChannelsFragment.SEARCH_QUERY
         ) { key, bundle ->
-            channelsViewModel.searchChannels(
-                fragmentCategory, bundle.getString(key) ?: ""
+            store.accept(
+                ChannelsEvent.Ui.GetChannelsList(
+                    bundle.getString(key) ?: "",
+                    fragmentCategory
+                )
             )
+        }
+        binding.networkErrorLayout.networkButton.setOnClickListener {
+            store.accept(ChannelsEvent.Ui.GetChannelsList(INITIAL_QUERY, fragmentCategory))
         }
     }
 
@@ -155,5 +179,6 @@ class ListChannelsFragment : Fragment() {
             }
         }
     }
+
 
 }

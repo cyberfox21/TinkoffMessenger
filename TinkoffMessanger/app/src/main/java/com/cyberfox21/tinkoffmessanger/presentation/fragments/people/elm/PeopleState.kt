@@ -9,5 +9,5 @@ data class PeopleState(
     val users: List<User>? = null,
     val isEmptyState: Boolean = false,
     val isLoading: Boolean = false,
-    val error: Throwable? = null,
+    val error: Throwable? = null
 ) : Parcelable

@@ -1,6 +1,5 @@
 package com.cyberfox21.tinkoffmessanger.data.repository
 
-import android.app.Application
 import android.content.Context
 import com.cyberfox21.tinkoffmessanger.data.api.ApiFactory
 import com.cyberfox21.tinkoffmessanger.data.database.AppDatabase
@@ -11,12 +10,12 @@ import com.cyberfox21.tinkoffmessanger.domain.repository.TopicsRepository
 import io.reactivex.Flowable
 import io.reactivex.schedulers.Schedulers
 
-class TopicsRepositoryImpl(application: Application) : TopicsRepository {
+class TopicsRepositoryImpl(context: Context) : TopicsRepository {
 
     private val api = ApiFactory.api
 
     private val topicsDao =
-        AppDatabase.getInstance(application, AppDatabase.TOPICS_DB_NAME).topicsDao()
+        AppDatabase.getInstance(context, AppDatabase.TOPICS_DB_NAME).topicsDao()
 
     private fun getTopicsFromDB(channelId: Int) =
         topicsDao.getTopicsListForChannel(channelId).map { dbModels ->
@@ -38,8 +37,9 @@ class TopicsRepositoryImpl(application: Application) : TopicsRepository {
                 )
             }.subscribeOn(Schedulers.io())
 
-    override fun getTopics(channelId: Int): Flowable<List<Topic>> =
-        getTopicsFromDB(channelId).toFlowable()
-            .switchIfEmpty(getTopicsFromNetwork(channelId).toFlowable())
-
+    override fun getTopics(channelId: Int): Flowable<List<Topic>> {
+//        return getTopicsFromDB(channelId).toFlowable()
+//            .switchIfEmpty(getTopicsFromNetwork(channelId).toFlowable())
+        return getTopicsFromNetwork(channelId).toFlowable()
+    }
 }

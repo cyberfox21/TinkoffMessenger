@@ -1,6 +1,6 @@
 package com.cyberfox21.tinkoffmessanger.data.repository
 
-import android.app.Application
+import android.content.Context
 import com.cyberfox21.tinkoffmessanger.data.api.ApiFactory
 import com.cyberfox21.tinkoffmessanger.data.database.AppDatabase
 import com.cyberfox21.tinkoffmessanger.data.mapToChannel
@@ -13,15 +13,15 @@ import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 
-class ChannelsRepositoryImpl(application: Application) : ChannelsRepository {
+class ChannelsRepositoryImpl(context: Context) : ChannelsRepository {
 
     private val api = ApiFactory.api
 
     private val channelsDao =
-        AppDatabase.getInstance(application, AppDatabase.CHANNELS_DB_NAME).allChannelsDao()
+        AppDatabase.getInstance(context, AppDatabase.CHANNELS_DB_NAME).allChannelsDao()
 
     private val subscribedChannelsDao =
-        AppDatabase.getInstance(application, AppDatabase.SUBSCRIBED_CHANNELS_DB_NAME)
+        AppDatabase.getInstance(context, AppDatabase.SUBSCRIBED_CHANNELS_DB_NAME)
             .subscribedChannelsDao()
 
     private fun getAllChannelsFromDB(): Single<List<Channel>> =
@@ -69,16 +69,22 @@ class ChannelsRepositoryImpl(application: Application) : ChannelsRepository {
         }.subscribeOn(Schedulers.io())
     }
 
-    private fun getChannelsList(): Observable<List<Channel>> = Observable.concat(
-        getAllChannelsFromDB().toObservable(),
-        getAllChannelsFromNetwork().toObservable()
-    ).distinct()
+    private fun getChannelsList(): Observable<List<Channel>> {
+//        return Observable.concat(
+//            getAllChannelsFromDB().toObservable(),
+//            getAllChannelsFromNetwork().toObservable()
+//        ).distinct()
+        return getAllChannelsFromNetwork().toObservable()
+    }
 
 
-    private fun getSubscribedChannelsList(): Observable<List<Channel>> = Observable.concat(
-        getSubscribedFromDB().toObservable(),
-        getSubscribedFromNetwork().toObservable()
-    ).distinct()
+    private fun getSubscribedChannelsList(): Observable<List<Channel>> {
+//        return Observable.concat(
+//            getSubscribedFromDB().toObservable(),
+//            getSubscribedFromNetwork().toObservable()
+//        ).distinct()
+        return getSubscribedFromNetwork().toObservable()
+    }
 
     override fun searchChannels(
         searchQuery: String,
@@ -89,5 +95,6 @@ class ChannelsRepositoryImpl(application: Application) : ChannelsRepository {
             Category.ALL -> getChannelsList()
         }
     }
-
 }
+
+
