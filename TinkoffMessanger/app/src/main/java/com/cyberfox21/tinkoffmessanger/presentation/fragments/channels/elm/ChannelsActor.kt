@@ -33,7 +33,8 @@ class ChannelsActor(context: Context) : ActorCompat<ChannelsCommand, ChannelsEve
                         { topics ->
                             ChannelsEvent.Internal.TopicsLoaded(
                                 topics,
-                                command.channelId
+                                command.channelId,
+                                command.isSelected
                             )
                         },
                         { error -> ChannelsEvent.Internal.TopicsLoadError(error) }

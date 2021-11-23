@@ -1,14 +1,11 @@
 package com.cyberfox21.tinkoffmessanger.presentation.fragments.channels
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.setFragmentResultListener
-import androidx.lifecycle.ViewModelProvider
 import com.cyberfox21.tinkoffmessanger.databinding.FragmentListChannelsBinding
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.delegate.adapter.ChannelDelegateAdapter
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.delegate.adapter.MainChannelsRecyclerAdapter
@@ -52,7 +49,7 @@ class ListChannelsFragment : ElmFragment<ChannelsEvent, ChannelsEffect, Channels
             emptyLayout.errorLayout.isVisible = state.isEmptyState
             networkErrorLayout.errorLayout.isVisible = state.error != null
             categoryChannelsRecycler.isVisible = state.isEmptyState.not()
-            if (state.isEmptyState.not()) mainAdapter.submitList(state.channels)
+            mainAdapter.submitList(state.delegateItems)
         }
     }
 
@@ -73,6 +70,9 @@ class ListChannelsFragment : ElmFragment<ChannelsEvent, ChannelsEffect, Channels
             }
             is ChannelsEffect.TopicsLoadError -> {
                 //TODO
+            }
+            is ChannelsEffect.RefrashTopics -> {
+                mainAdapter.submitList(effect.items)
             }
         }
     }

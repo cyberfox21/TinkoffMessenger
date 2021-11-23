@@ -16,7 +16,7 @@ class ChannelsReducer :
                 if (event.channels.isEmpty()) {
                     state {
                         copy(
-                            channels = listOf(),
+                            delegateItems = listOf(),
                             isEmptyState = true,
                             isLoading = false,
                             error = null
@@ -26,7 +26,8 @@ class ChannelsReducer :
                 } else {
                     state {
                         copy(
-                            channels = getChannelDelegateItemsList(event.channels),
+                            delegateItems = getChannelDelegateItemsList(event.channels),
+                            delegateChannels = getChannelDelegateItemsList(event.channels),
                             isEmptyState = false,
                             isLoading = false,
                             error = null
@@ -42,21 +43,34 @@ class ChannelsReducer :
                 if (event.topics.isEmpty()) {
                     state {
                         copy(
+                            delegateItems = state.delegateChannels,
                             isLoading = false,
                             error = null
                         )
                     }
-                    effects { ChannelsEffect.EmptyChannels }
                 } else {
                     state {
                         copy(
-                            channels = getDelegateItemsList(
-                                state.channels,
+                            delegateItems = getDelegateItemsList(
+                                state.delegateItems,
+                                state.delegateChannels,
                                 event.topics,
-                                event.channelId
+                                event.channelId,
+                                event.isSelected
                             ),
                             isLoading = false,
                             error = null
+                        )
+                    }
+                    effects {
+                        ChannelsEffect.RefrashTopics(
+                            getDelegateItemsList(
+                                state.delegateItems,
+                                state.delegateChannels,
+                                event.topics,
+                                event.channelId,
+                                event.isSelected
+                            )
                         )
                     }
                 }
@@ -70,8 +84,12 @@ class ChannelsReducer :
                 commands { +ChannelsCommand.GetChannelsList(event.searchQuery, event.category) }
             }
             is ChannelsEvent.Ui.UpdateTopics -> {
-                state { copy(isLoading = true) }
-                commands { +ChannelsCommand.GetTopicsList(event.channelId) }
+                if (!event.isSelected) {
+                    state { copy(isLoading = true) }
+                    commands { +ChannelsCommand.GetTopicsList(event.channelId, event.isSelected) }
+                } else {
+                    state { copy(isLoading = false, delegateItems = state.delegateChannels) }
+                }
             }
         }
     }
@@ -84,9 +102,14 @@ class ChannelsReducer :
 
     private fun getDelegateItemsList(
         delegateItems: List<DelegateItem>,
+        delegateChannels: List<ChannelDelegateItem>,
         topics: List<Topic>,
-        channelId: Int
+        channelId: Int,
+        isSelected: Boolean
     ): List<DelegateItem> {
+        if (isSelected) {
+            return delegateChannels
+        }
         val delegateItemsList = delegateItems.toMutableList()
         val elementPosition =
             delegateItemsList.indexOfFirst { it is ChannelDelegateItem && it.id == channelId }
