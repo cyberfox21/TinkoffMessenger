@@ -86,5 +86,7 @@ dependencies {
     implementation "com.github.vivid-money.elmslie:elmslie-android:$elmslieVersion"
     implementation "com.github.vivid-money.elmslie:elmslie-rxjava-2:$elmslieVersion"
 
+    // Shimmer
+    implementation "com.facebook.shimmer:shimmer:$shimmerVersion"
 
 }

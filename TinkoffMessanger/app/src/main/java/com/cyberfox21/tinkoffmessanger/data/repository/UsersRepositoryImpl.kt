@@ -1,6 +1,5 @@
 package com.cyberfox21.tinkoffmessanger.data.repository
 
-import android.app.Application
 import android.content.Context
 import com.cyberfox21.tinkoffmessanger.data.api.ApiFactory
 import com.cyberfox21.tinkoffmessanger.data.database.AppDatabase
@@ -66,10 +65,8 @@ class UsersRepositoryImpl(context: Context) : UsersRepository {
         return getMyUserFromDB().switchIfEmpty(getMyUserFromNetwork()).toFlowable()
     }
 
-
     override fun getUser(id: Int): Flowable<User> =
         getUserFromDB(id).switchIfEmpty(getUserFromNetwork(id)).toFlowable()
-
 
     override fun getUsersList(): Observable<List<User>> =
         Observable.concat(

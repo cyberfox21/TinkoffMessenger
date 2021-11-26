@@ -27,6 +27,7 @@
         <item name="colorPrimary">@color/white</item>
         <item name="colorOnPrimary">@color/white</item>
         <item name="searchIcon">@null</item>
+        <item name="android:textColor">@color/white</item>
         <item name="searchHintIcon">@null</item>
         <item name="queryHint">@string/example_channels_search_hint</item>
         <item name="iconTint">@color/white</item>

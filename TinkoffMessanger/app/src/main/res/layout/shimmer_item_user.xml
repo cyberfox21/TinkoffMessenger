@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/padding16dp">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/shimmer_iv_user_avatar"
+        android:layout_width="@dimen/width48dp"
+        android:layout_height="@dimen/height48dp"
+        android:src="@color/gray"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/shimmer_tv_user_name"
+        android:layout_width="@dimen/width90dp"
+        android:layout_height="@dimen/height20dp"
+        android:layout_marginStart="@dimen/margin10dp"
+        android:background="@drawable/circle"
+        app:layout_constraintStart_toEndOf="@+id/shimmer_iv_user_avatar"
+        app:layout_constraintTop_toTopOf="@+id/shimmer_iv_user_avatar" />
+
+    <TextView
+        android:id="@+id/shimmer_tv_user_email"
+        android:layout_width="@dimen/width180dp"
+        android:layout_height="@dimen/height20dp"
+        android:layout_marginStart="@dimen/margin10dp"
+        android:background="@drawable/circle"
+        android:textColor="@color/text_secondary"
+        app:layout_constraintBottom_toBottomOf="@+id/shimmer_iv_user_avatar"
+        app:layout_constraintStart_toEndOf="@+id/shimmer_iv_user_avatar" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

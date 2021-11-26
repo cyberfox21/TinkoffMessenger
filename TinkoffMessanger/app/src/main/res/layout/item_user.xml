@@ -14,16 +14,6 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:src="@drawable/ed" />
 
-    <!--    <de.hdodenhof.circleimageview.CircleImageView-->
-    <!--        android:id="@+id/online"-->
-    <!--        android:layout_width="@dimen/user_avatar_dimension"-->
-    <!--        android:layout_height="@dimen/user_avatar_dimension"-->
-    <!--        android:layout_margin="@dimen/margin2dp"-->
-    <!--        android:background="@drawable/circle"-->
-    <!--        android:src="@drawable/ic_online"-->
-    <!--        app:layout_constraintBottom_toBottomOf="@+id/iv_user_avatar"-->
-    <!--        app:layout_constraintEnd_toEndOf="@+id/iv_user_avatar" />-->
-
     <TextView
         android:id="@+id/tv_user_name"
         android:layout_width="wrap_content"

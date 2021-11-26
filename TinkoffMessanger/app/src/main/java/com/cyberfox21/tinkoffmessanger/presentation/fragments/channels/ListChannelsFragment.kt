@@ -45,10 +45,10 @@ class ListChannelsFragment : ElmFragment<ChannelsEvent, ChannelsEffect, Channels
 
     override fun render(state: ChannelsState) {
         with(binding) {
-            pbLoading.isVisible = state.isLoading
+            channelsShimmerLayout.shimmerViewContainer.isVisible = state.isLoading
             emptyLayout.errorLayout.isVisible = state.isEmptyState
             networkErrorLayout.errorLayout.isVisible = state.error != null
-            categoryChannelsRecycler.isVisible = state.isEmptyState.not()
+            categoryChannelsRecycler.isVisible = state.isEmptyState.not() && state.isLoading.not()
             mainAdapter.submitList(state.delegateItems)
         }
     }

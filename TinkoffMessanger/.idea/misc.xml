@@ -1,62 +1,181 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="DesignSurface">
-    <option name="filePathToZoomLevelMap">
-      <map>
-        <entry key="..\:/Users/shkol/hw_2/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.26666666666666666" />
-        <entry key="..\:/Users/shkol/hw_2/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/drawable/circle_image_view.xml" value="0.29322916666666665" />
-        <entry key="..\:/Users/shkol/hw_2/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/drawable/custom_emoji_view_bg.xml" value="0.67" />
-        <entry key="..\:/Users/shkol/hw_2/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/drawable/ic_launcher_background.xml" value="0.26666666666666666" />
-        <entry key="..\:/Users/shkol/hw_2/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/layout-v23/emoji_message_viewgroup.xml" value="0.28125" />
-        <entry key="..\:/Users/shkol/hw_2/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/layout/activity_main.xml" value="0.22" />
-        <entry key="..\:/Users/shkol/hw_2/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/layout/custom_emoji_view.xml" value="0.1" />
-        <entry key="..\:/Users/shkol/hw_2/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/layout/emoji_message_viewgroup.xml" value="0.22" />
-        <entry key="..\:/Users/shkol/hw_2/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/layout/flexboxlayout_with_add_button.xml" value="0.1" />
-        <entry key="..\:/Users/shkol/hw_3/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/drawable-anydpi/ic_channels.xml" value="0.19375" />
-        <entry key="..\:/Users/shkol/hw_3/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/drawable-anydpi/ic_people.xml" value="0.30416666666666664" />
-        <entry key="..\:/Users/shkol/hw_3/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/drawable-anydpi/ic_profile.xml" value="0.19375" />
-        <entry key="..\:/Users/shkol/hw_3/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/drawable-v24/bottom_nav.xml" value="0.1" />
-        <entry key="..\:/Users/shkol/hw_3/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/drawable-xxhdpi/ic_back.xml" value="0.1" />
-        <entry key="..\:/Users/shkol/hw_3/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/drawable-xxhdpi/ic_close.xml" value="0.11388888888888889" />
-        <entry key="..\:/Users/shkol/hw_3/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/drawable-xxhdpi/ic_search.xml" value="0.16111111111111112" />
-        <entry key="..\:/Users/shkol/hw_3/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/drawable/btn_logout_bg.xml" value="0.3828125" />
-        <entry key="..\:/Users/shkol/hw_3/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/drawable/circle.xml" value="0.28489583333333335" />
-        <entry key="..\:/Users/shkol/hw_3/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/drawable/custom_emoji_view_bg.xml" value="0.1824074074074074" />
-        <entry key="..\:/Users/shkol/hw_3/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/drawable/imageview_profile_circle_radius.xml" value="0.3828125" />
-        <entry key="..\:/Users/shkol/hw_3/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/drawable/item_topic.xml" value="0.3828125" />
-        <entry key="..\:/Users/shkol/hw_3/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/drawable/my_message_bg.xml" value="0.3828125" />
-        <entry key="..\:/Users/shkol/hw_3/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/layout/activity_chat.xml" value="0.35135135135135137" />
-        <entry key="..\:/Users/shkol/hw_3/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/layout/activity_chat_.xml" value="0.20520833333333333" />
-        <entry key="..\:/Users/shkol/hw_3/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/layout/activity_main.xml" value="0.2" />
-        <entry key="..\:/Users/shkol/hw_3/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/layout/activity_test.xml" value="0.33" />
-        <entry key="..\:/Users/shkol/hw_3/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/layout/bottom_sheet_dialog_layout.xml" value="0.1" />
-        <entry key="..\:/Users/shkol/hw_3/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/layout/date_item_decoration.xml" value="0.1" />
-        <entry key="..\:/Users/shkol/hw_3/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/layout/emoji_message_viewgroup.xml" value="0.20520833333333333" />
-        <entry key="..\:/Users/shkol/hw_3/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/layout/flexboxlayout_with_add_button.xml" value="0.1693840579710145" />
-        <entry key="..\:/Users/shkol/hw_3/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/layout/fragment_channels.xml" value="0.18" />
-        <entry key="..\:/Users/shkol/hw_3/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/layout/fragment_chat.xml" value="0.1" />
-        <entry key="..\:/Users/shkol/hw_3/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/layout/fragment_list_channels.xml" value="0.33" />
-        <entry key="..\:/Users/shkol/hw_3/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/layout/fragment_people.xml" value="0.1" />
-        <entry key="..\:/Users/shkol/hw_3/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/layout/fragment_profile.xml" value="0.25" />
-        <entry key="..\:/Users/shkol/hw_3/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/layout/item_channel.xml" value="0.2" />
-        <entry key="..\:/Users/shkol/hw_3/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/layout/item_emoji.xml" value="0.5" />
-        <entry key="..\:/Users/shkol/hw_3/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/layout/item_topic.xml" value="0.33" />
-        <entry key="..\:/Users/shkol/hw_3/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/layout/item_user.xml" value="0.1" />
-        <entry key="..\:/Users/shkol/hw_3/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/layout/layout_empty.xml" value="0.67" />
-        <entry key="..\:/Users/shkol/hw_3/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/layout/layout_error.xml" value="0.30520833333333336" />
-        <entry key="..\:/Users/shkol/hw_3/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/layout/my_message_viewgroup.xml" value="0.5" />
-        <entry key="..\:/Users/shkol/hw_3/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/layout/search_view.xml" value="0.1" />
-        <entry key="..\:/Users/shkol/hw_3/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/layout/toolbar.xml" value="0.5" />
-        <entry key="..\:/Users/shkol/hw_3/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/menu/back_menu.xml" value="0.24947916666666667" />
-        <entry key="..\:/Users/shkol/hw_3/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/menu/bottom_navigation_menu.xml" value="0.33" />
-        <entry key="..\:/Users/shkol/hw_3/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/menu/items_list.xml" value="0.14722222222222223" />
-      </map>
-    </option>
-  </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" project-jdk-name="1.8" project-jdk-type="JavaSDK">
-    <output url="file://$PROJECT_DIR$/build/classes" />
-  </component>
-  <component name="ProjectType">
-    <option name="id" value="Android" />
-  </component>
+    <component name="DesignSurface">
+        <option name="filePathToZoomLevelMap">
+            <map>
+                <entry
+                    key="..\:/Users/shkol/hw_2/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/drawable-v24/ic_launcher_foreground.xml"
+                    value="0.26666666666666666" />
+                <entry
+                    key="..\:/Users/shkol/hw_2/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/drawable/circle_image_view.xml"
+                    value="0.29322916666666665" />
+                <entry
+                    key="..\:/Users/shkol/hw_2/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/drawable/custom_emoji_view_bg.xml"
+                    value="0.67" />
+                <entry
+                    key="..\:/Users/shkol/hw_2/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/drawable/ic_launcher_background.xml"
+                    value="0.26666666666666666" />
+                <entry
+                    key="..\:/Users/shkol/hw_2/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/layout-v23/emoji_message_viewgroup.xml"
+                    value="0.28125" />
+                <entry
+                    key="..\:/Users/shkol/hw_2/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/layout/activity_main.xml"
+                    value="0.22" />
+                <entry
+                    key="..\:/Users/shkol/hw_2/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/layout/custom_emoji_view.xml"
+                    value="0.1" />
+                <entry
+                    key="..\:/Users/shkol/hw_2/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/layout/emoji_message_viewgroup.xml"
+                    value="0.22" />
+                <entry
+                    key="..\:/Users/shkol/hw_2/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/layout/flexboxlayout_with_add_button.xml"
+                    value="0.1" />
+                <entry
+                    key="..\:/Users/shkol/hw_3/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/drawable-anydpi/ic_channels.xml"
+                    value="0.19375" />
+                <entry
+                    key="..\:/Users/shkol/hw_3/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/drawable-anydpi/ic_people.xml"
+                    value="0.30416666666666664" />
+                <entry
+                    key="..\:/Users/shkol/hw_3/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/drawable-anydpi/ic_profile.xml"
+                    value="0.19375" />
+                <entry
+                    key="..\:/Users/shkol/hw_3/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/drawable-v24/bottom_nav.xml"
+                    value="0.1" />
+                <entry
+                    key="..\:/Users/shkol/hw_3/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/drawable-xxhdpi/ic_back.xml"
+                    value="0.1" />
+                <entry
+                    key="..\:/Users/shkol/hw_3/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/drawable-xxhdpi/ic_close.xml"
+                    value="0.11388888888888889" />
+                <entry
+                    key="..\:/Users/shkol/hw_3/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/drawable-xxhdpi/ic_search.xml"
+                    value="0.16111111111111112" />
+                <entry
+                    key="..\:/Users/shkol/hw_3/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/drawable/btn_logout_bg.xml"
+                    value="0.3828125" />
+                <entry
+                    key="..\:/Users/shkol/hw_3/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/drawable/circle.xml"
+                    value="0.28489583333333335" />
+                <entry
+                    key="..\:/Users/shkol/hw_3/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/drawable/custom_emoji_view_bg.xml"
+                    value="0.1824074074074074" />
+                <entry
+                    key="..\:/Users/shkol/hw_3/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/drawable/imageview_profile_circle_radius.xml"
+                    value="0.3828125" />
+                <entry
+                    key="..\:/Users/shkol/hw_3/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/drawable/item_topic.xml"
+                    value="0.3828125" />
+                <entry
+                    key="..\:/Users/shkol/hw_3/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/drawable/my_message_bg.xml"
+                    value="0.3828125" />
+                <entry
+                    key="..\:/Users/shkol/hw_3/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/layout-land/fragment_profile.xml"
+                    value="0.2758860319666435" />
+                <entry
+                    key="..\:/Users/shkol/hw_3/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/layout-land/shimmer_layout_profile.xml"
+                    value="0.18" />
+                <entry
+                    key="..\:/Users/shkol/hw_3/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/layout/activity_chat.xml"
+                    value="0.35135135135135137" />
+                <entry
+                    key="..\:/Users/shkol/hw_3/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/layout/activity_chat_.xml"
+                    value="0.20520833333333333" />
+                <entry
+                    key="..\:/Users/shkol/hw_3/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/layout/activity_main.xml"
+                    value="0.2" />
+                <entry
+                    key="..\:/Users/shkol/hw_3/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/layout/activity_test.xml"
+                    value="0.33" />
+                <entry
+                    key="..\:/Users/shkol/hw_3/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/layout/bottom_sheet_dialog_layout.xml"
+                    value="0.1" />
+                <entry
+                    key="..\:/Users/shkol/hw_3/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/layout/date_item_decoration.xml"
+                    value="0.1" />
+                <entry
+                    key="..\:/Users/shkol/hw_3/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/layout/emoji_message_viewgroup.xml"
+                    value="0.20520833333333333" />
+                <entry
+                    key="..\:/Users/shkol/hw_3/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/layout/flexboxlayout_with_add_button.xml"
+                    value="0.1693840579710145" />
+                <entry
+                    key="..\:/Users/shkol/hw_3/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/layout/fragment_channels.xml"
+                    value="0.18" />
+                <entry
+                    key="..\:/Users/shkol/hw_3/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/layout/fragment_chat.xml"
+                    value="0.1" />
+                <entry
+                    key="..\:/Users/shkol/hw_3/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/layout/fragment_list_channels.xml"
+                    value="0.25" />
+                <entry
+                    key="..\:/Users/shkol/hw_3/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/layout/fragment_people.xml"
+                    value="0.25" />
+                <entry
+                    key="..\:/Users/shkol/hw_3/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/layout/fragment_profile.xml"
+                    value="0.25" />
+                <entry
+                    key="..\:/Users/shkol/hw_3/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/layout/item_channel.xml"
+                    value="0.2" />
+                <entry
+                    key="..\:/Users/shkol/hw_3/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/layout/item_emoji.xml"
+                    value="0.5" />
+                <entry
+                    key="..\:/Users/shkol/hw_3/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/layout/item_topic.xml"
+                    value="0.33" />
+                <entry
+                    key="..\:/Users/shkol/hw_3/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/layout/item_user.xml"
+                    value="0.5" />
+                <entry
+                    key="..\:/Users/shkol/hw_3/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/layout/layout_empty.xml"
+                    value="0.67" />
+                <entry
+                    key="..\:/Users/shkol/hw_3/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/layout/layout_error.xml"
+                    value="0.30520833333333336" />
+                <entry
+                    key="..\:/Users/shkol/hw_3/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/layout/layout_error_network.xml"
+                    value="0.1" />
+                <entry
+                    key="..\:/Users/shkol/hw_3/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/layout/my_message_viewgroup.xml"
+                    value="0.5" />
+                <entry
+                    key="..\:/Users/shkol/hw_3/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/layout/search_view.xml"
+                    value="0.1" />
+                <entry
+                    key="..\:/Users/shkol/hw_3/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/layout/shimmer_item_channel.xml"
+                    value="0.25" />
+                <entry
+                    key="..\:/Users/shkol/hw_3/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/layout/shimmer_item_user.xml"
+                    value="0.18" />
+                <entry
+                    key="..\:/Users/shkol/hw_3/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/layout/shimmer_layout_channels.xml"
+                    value="0.2682291666666667" />
+                <entry
+                    key="..\:/Users/shkol/hw_3/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/layout/shimmer_layout_people.xml"
+                    value="0.12" />
+                <entry
+                    key="..\:/Users/shkol/hw_3/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/layout/shimmer_layout_profile.xml"
+                    value="0.1" />
+                <entry
+                    key="..\:/Users/shkol/hw_3/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/layout/toolbar.xml"
+                    value="0.25" />
+                <entry
+                    key="..\:/Users/shkol/hw_3/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/menu/back_menu.xml"
+                    value="0.24947916666666667" />
+                <entry
+                    key="..\:/Users/shkol/hw_3/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/menu/bottom_navigation_menu.xml"
+                    value="0.33" />
+                <entry
+                    key="..\:/Users/shkol/hw_3/tfs-android-fall-2021/TinkoffMessanger/app/src/main/res/menu/items_list.xml"
+                    value="0.14722222222222223" />
+            </map>
+        </option>
+    </component>
+    <component name="ProjectRootManager" languageLevel="JDK_11" project-jdk-name="1.8" project-jdk-type="JavaSDK"
+        version="2">
+        <output url="file://$PROJECT_DIR$/build/classes" />
+    </component>
+    <component name="ProjectType">
+        <option name="id" value="Android" />
+    </component>
 </project>

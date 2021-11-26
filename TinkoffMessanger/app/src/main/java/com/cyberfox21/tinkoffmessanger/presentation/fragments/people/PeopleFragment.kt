@@ -40,7 +40,7 @@ class PeopleFragment : ElmFragment<PeopleEvent, PeopleEffect, PeopleState>() {
 
     override fun render(state: PeopleState) {
         with(binding) {
-            pbLoading.isVisible = state.isLoading
+            shimmerLayoutPeople.shimmerViewContainer.isVisible = state.isLoading
             emptyLayout.errorLayout.isVisible = state.isEmptyState
             peopleRecyclerView.isVisible = state.isEmptyState.not()
             peopleRecyclerAdapter.submitList(state.users)

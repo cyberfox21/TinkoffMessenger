@@ -6,4 +6,5 @@
     android:layout_height="wrap_content"
     android:background="@color/bottom_navigation_background"
     app:collapseIcon="@drawable/ic_back"
-    app:menu="@menu/items_list" />
+    app:menu="@menu/items_list"
+    app:titleTextColor="@color/white" />

@@ -20,31 +20,38 @@
         layout="@layout/shimmer_layout_profile"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbarLayout" />
 
+
+    <ImageView
+        android:id="@+id/iv_profile_photo"
+        android:layout_width="@dimen/profile_photo_dimension"
+        android:layout_height="@dimen/profile_photo_dimension"
+        android:layout_gravity="center"
+        android:background="@drawable/imageview_profile_circle_radius"
+        android:contentDescription="@string/profile_photo"
+        android:maxWidth="@dimen/profile_photo_dimension"
+        android:maxHeight="@dimen/profile_photo_dimension"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/linearLayout3"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbarLayout"
+        tools:src="@drawable/ed" />
+
     <LinearLayout
-        android:id="@+id/linearLayout2"
-        android:layout_width="match_parent"
+        android:id="@+id/linearLayout3"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@+id/btn_logout"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_profile_photo"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <ImageView
-            android:id="@+id/iv_profile_photo"
-            android:layout_width="@dimen/profile_photo_dimension"
-            android:layout_height="@dimen/profile_photo_dimension"
-            android:layout_gravity="center"
-            android:background="@drawable/imageview_profile_circle_radius"
-            android:contentDescription="@string/profile_photo"
-            android:maxWidth="@dimen/profile_photo_dimension"
-            android:maxHeight="@dimen/profile_photo_dimension"
-            tools:src="@drawable/ed" />
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/iv_profile_photo"
+        app:layout_constraintTop_toTopOf="@+id/iv_profile_photo">
 
         <TextView
             android:id="@+id/tv_profile_name"
@@ -84,6 +91,22 @@
 
         </LinearLayout>
 
+        <Button
+            android:id="@+id/btn_logout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/margin20dp"
+            android:paddingLeft="@dimen/padding40dp"
+            android:paddingTop="@dimen/padding10dp"
+            android:paddingRight="@dimen/padding40dp"
+            android:paddingBottom="@dimen/padding10dp"
+            android:text="@string/log_out"
+            android:textColor="@color/white"
+            android:theme="@style/Theme.BtnLogout"
+            android:visibility="visible"
+            app:cornerRadius="@dimen/btn_logout_corner_radius" />
+
     </LinearLayout>
 
     <include
@@ -108,22 +131,5 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/toolbarLayout" />
 
-    <Button
-        android:id="@+id/btn_logout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingLeft="@dimen/padding40dp"
-        android:paddingTop="@dimen/padding10dp"
-        android:paddingRight="@dimen/padding40dp"
-        android:paddingBottom="@dimen/padding10dp"
-        android:text="@string/log_out"
-        android:textColor="@color/white"
-        android:theme="@style/Theme.BtnLogout"
-        android:visibility="invisible"
-        app:cornerRadius="@dimen/btn_logout_corner_radius"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout2" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

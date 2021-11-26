@@ -25,4 +25,5 @@
     <string name="network_error">Network error.\nCheck internet connection</string>
     <string name="empty_error">Тут ничего нет</string>
     <string name="retry">Повторить</string>
+    <string name="logout_button">logout button</string>
 </resources>

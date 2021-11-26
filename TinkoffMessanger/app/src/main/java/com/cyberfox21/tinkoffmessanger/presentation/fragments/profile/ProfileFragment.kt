@@ -34,9 +34,12 @@ class ProfileFragment : ElmFragment<ProfileEvent, ProfileEffect, ProfileState>()
 
     override fun render(state: ProfileState) {
         with(binding) {
-            pbLoading.isVisible = state.isLoading
+            shimmerLayoutProfile.shimmerViewContainer.isVisible = state.isLoading
             emptyLayout.errorLayout.isVisible = state.isEmptyState
-            btnLogout.isVisible = state.profileScreenMode == ProfileMode.YOUR
+            binding.btnLogout.isVisible =
+                screenMode == ProfileMode.YOUR &&
+                        state.error == null &&
+                        binding.shimmerLayoutProfile.shimmerViewContainer.isVisible.not()
             if (!state.isEmptyState) state.user?.let { bindUser(it) }
             networkErrorLayout.errorLayout.isVisible = state.error != null
         }
@@ -103,8 +106,11 @@ class ProfileFragment : ElmFragment<ProfileEvent, ProfileEffect, ProfileState>()
 
     private fun launchRightMode() = when (screenMode) {
         ProfileMode.YOUR -> {
-            binding.btnLogout.isVisible = true
             store.accept(ProfileEvent.Ui.GetCurrentUser)
+            binding.btnLogout.isVisible =
+                screenMode == ProfileMode.YOUR &&
+                        store.currentState.error == null &&
+                        binding.shimmerLayoutProfile.shimmerViewContainer.isVisible.not()
         }
         ProfileMode.STRANGER -> {
             configureToolbar()
