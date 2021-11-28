@@ -49,4 +49,6 @@ ext {
     elmslieVersion = "1.2.0"
 
     shimmerVersion = "0.5.0"
+
+    dagger2Version = '2.40.2'
 }

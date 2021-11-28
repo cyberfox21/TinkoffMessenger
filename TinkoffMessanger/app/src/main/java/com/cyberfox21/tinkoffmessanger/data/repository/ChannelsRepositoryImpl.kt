@@ -31,7 +31,6 @@ class ChannelsRepositoryImpl(context: Context) : ChannelsRepository {
             }
         }.subscribeOn(Schedulers.io())
 
-
     // todo check internet is available
     private fun getAllChannelsFromNetwork(): Single<List<Channel>> =
         api.getChannels().map { response ->
@@ -76,7 +75,6 @@ class ChannelsRepositoryImpl(context: Context) : ChannelsRepository {
 //        ).distinct()
         return getAllChannelsFromNetwork().toObservable()
     }
-
 
     private fun getSubscribedChannelsList(): Observable<List<Channel>> {
 //        return Observable.concat(
