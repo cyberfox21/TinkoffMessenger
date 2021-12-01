@@ -1,10 +1,8 @@
-package com.cyberfox21.tinkoffmessanger.di
+package com.cyberfox21.tinkoffmessanger.di.module
 
-import com.cyberfox21.tinkoffmessanger.domain.usecase.GetMyUserUseCase
-import com.cyberfox21.tinkoffmessanger.domain.usecase.GetTopicsUseCase
-import com.cyberfox21.tinkoffmessanger.domain.usecase.GetUsersListUseCase
-import com.cyberfox21.tinkoffmessanger.domain.usecase.SearchChannelsUseCase
+import com.cyberfox21.tinkoffmessanger.domain.usecase.*
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.elm.ChannelsActor
+import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.elm.ChatActor
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.people.elm.PeopleActor
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.profile.elm.ProfileActor
 import dagger.Module
@@ -27,7 +25,21 @@ class ActorModule {
         getTopicsUseCase: GetTopicsUseCase
     ): ChannelsActor = ChannelsActor(searchChannelsUseCase, getTopicsUseCase)
 
-//    @Provides
-//    fun provideChatActor(getMyUserUseCase : GetMyUserUseCase) : ChatActor = ChatActor(getMyUserUseCase)
+    @Provides
+    fun provideChatActor(
+        getMessageListUseCase: GetMessageListUseCase,
+        addMessageUseCase: AddMessageUseCase,
+        getReactionListUseCase: GetReactionListUseCase,
+        addReactionUseCase: AddReactionUseCase,
+        deleteReactionUseCase: DeleteReactionUseCase,
+        getMyUserUseCase: GetMyUserUseCase
+    ): ChatActor = ChatActor(
+        getMessageListUseCase,
+        addMessageUseCase,
+        getReactionListUseCase,
+        addReactionUseCase,
+        deleteReactionUseCase,
+        getMyUserUseCase
+    )
 
 }

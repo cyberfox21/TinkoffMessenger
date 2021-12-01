@@ -1,4 +1,4 @@
-package com.cyberfox21.tinkoffmessanger.di
+package com.cyberfox21.tinkoffmessanger.di.module
 
 import com.cyberfox21.tinkoffmessanger.data.repository.*
 import com.cyberfox21.tinkoffmessanger.domain.repository.*

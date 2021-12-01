@@ -8,7 +8,6 @@ import androidx.fragment.app.Fragment
 import com.cyberfox21.tinkoffmessanger.App
 import com.cyberfox21.tinkoffmessanger.R
 import com.cyberfox21.tinkoffmessanger.databinding.ActivityMainBinding
-import com.cyberfox21.tinkoffmessanger.di.ApplicationComponent
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.ChannelsFragment
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.people.PeopleFragment
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.profile.ProfileFragment
@@ -78,7 +77,8 @@ class MainActivity : AppCompatActivity(), NavigationHolder {
 
     private fun navigateFragment(fragment: Fragment, tag: String) {
         if (supportFragmentManager.findFragmentByTag(tag) == null) {
-            if (supportFragmentManager.backStackEntryCount > 0) supportFragmentManager.popBackStack()
+            if (supportFragmentManager.backStackEntryCount > 0)
+                supportFragmentManager.popBackStack()
 
             supportFragmentManager.beginTransaction()
                 .replace(R.id.main_fragment_container, fragment, tag)

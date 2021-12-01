@@ -1,9 +1,10 @@
-package com.cyberfox21.tinkoffmessanger.di
+package com.cyberfox21.tinkoffmessanger.di.module
 
 import android.content.Context
 import androidx.room.Room
 import com.cyberfox21.tinkoffmessanger.data.database.AppDatabase
 import com.cyberfox21.tinkoffmessanger.data.database.dao.*
+import com.cyberfox21.tinkoffmessanger.di.ApplicationScope
 import dagger.Module
 import dagger.Provides
 

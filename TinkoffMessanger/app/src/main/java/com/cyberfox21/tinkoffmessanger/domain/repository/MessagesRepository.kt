@@ -13,5 +13,5 @@ interface MessagesRepository {
         topicName: String
     ): Observable<List<Message>>
 
-    fun addMessage(channelName: String, topicName: String, text: String): Completable
+    fun addMessage(channelName: String, topicName: String, msg: Message): Completable
 }

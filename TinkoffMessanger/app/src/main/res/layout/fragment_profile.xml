@@ -95,7 +95,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/toolbarLayout" />
+        app:layout_constraintTop_toBottomOf="@+id/toolbarLayout" />
 
     <include
         android:id="@+id/empty_layout"
@@ -106,7 +106,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/toolbarLayout" />
+        app:layout_constraintTop_toBottomOf="@+id/toolbarLayout" />
 
     <Button
         android:id="@+id/btn_logout"

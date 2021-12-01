@@ -11,25 +11,27 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import com.cyberfox21.tinkoffmessanger.R
 import com.cyberfox21.tinkoffmessanger.databinding.BottomSheetDialogLayoutBinding
 import com.cyberfox21.tinkoffmessanger.databinding.FragmentChatBinding
 import com.cyberfox21.tinkoffmessanger.domain.entity.Message
 import com.cyberfox21.tinkoffmessanger.domain.entity.Reaction
+import com.cyberfox21.tinkoffmessanger.presentation.MainActivity
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.delegate.adapter.AlienMessageDelegateAdapter
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.delegate.adapter.DateDelegateAdapter
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.delegate.adapter.MainChatRecyclerAdapter
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.delegate.adapter.MyMessageDelegateAdapter
+import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.elm.*
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.reactions.ReactionRecyclerAdapter
+import com.cyberfox21.tinkoffmessanger.presentation.toDelegateChatItemsList
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import vivid.money.elmslie.android.base.ElmFragment
+import vivid.money.elmslie.core.store.Store
+import javax.inject.Inject
 
 
-class ChatFragment : Fragment() {
-
-    private lateinit var ctx: Context
+class ChatFragment : ElmFragment<ChatEvent, ChatEffect, ChatState>() {
 
     private lateinit var fragmentChannelName: String
     private lateinit var fragmentTopicName: String
@@ -45,20 +47,75 @@ class ChatFragment : Fragment() {
         get() = _dialogLayoutBinding
             ?: throw RuntimeException("BottomSheetDialogLayoutBinding = null")
 
-
-    private lateinit var viewModel: ChatViewModel
-
     private val chatRecyclerAdapter = MainChatRecyclerAdapter()
     private val reactionRecyclerAdapter = ReactionRecyclerAdapter()
 
+//  < ---------------------------------------- ELM --------------------------------------------->
+
+    @Inject
+    internal lateinit var actor: ChatActor
+
+    override val initEvent: ChatEvent = ChatEvent.Ui.GetReactionList
+
+    override fun createStore(): Store<ChatEvent, ChatEffect, ChatState> =
+        ChatStoreFactory(actor).provide()
+
+    override fun render(state: ChatState) {
+        with(binding) {
+            pbLoading.isVisible = state.isMessagesLoading
+            emptyLayout.errorLayout.isVisible =
+                state.isEmptyMessageList && state.messages.isEmpty() && state.isMessagesLoading.not()
+            if (state.messages.isNotEmpty() && state.isEmptyMessageList.not()) {
+                chatRecycler.isVisible = true
+                // todo get current user id
+                chatRecyclerAdapter.submitList(
+                    state.messages.toDelegateChatItemsList(
+                        UNDEFINED_USER_ID
+                    )
+                )
+            }
+            networkErrorLayout.errorLayout.isVisible =
+                state.messageError != null && state.isMessagesLoading.not()
+        }
+        dialogLayoutBinding.pbLoading.isVisible = state.isReactionsLoading
+        dialogLayoutBinding.emojiRecycler.isVisible = state.isEmptyReactionList.not()
+        reactionRecyclerAdapter.submitList(state.reactions)
+    }
+
+    override fun handleEffect(effect: ChatEffect) {
+        when (effect) {
+            ChatEffect.EmptyMessageList -> {
+                binding.chatRecycler.isVisible = false
+                binding.emptyLayout.errorLayout.isVisible = true
+                binding.networkErrorLayout.errorLayout.isVisible = false
+            }
+            is ChatEffect.MessagesLoadError -> {
+                binding.chatRecycler.isVisible = false
+                binding.emptyLayout.errorLayout.isVisible = false
+                binding.networkErrorLayout.errorLayout.isVisible = true
+            }
+            ChatEffect.EmptyReactionList -> TODO()
+            is ChatEffect.ReactionsLoadError -> TODO()
+        }
+    }
+
+//  < ---------------------------------------- ELM --------------------------------------------->
+
     override fun onAttach(context: Context) {
+        (activity as MainActivity).component.injectChatFragment(this)
         super.onAttach(context)
-        ctx = context
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         parseArguments()
+        setActorFields()
+        getReactionList()
+    }
+
+    private fun getReactionList() {
+        store.accept(ChatEvent.Ui.GetMessages)
+        store.accept(ChatEvent.Ui.GetReactionList)
     }
 
     override fun onCreateView(
@@ -72,16 +129,21 @@ class ChatFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setViewModel()
+        configureToolbar()
+        configureBottomNavigation()
         setupViews()
         addListeners()
-        observeViewModel()
         setBottomSheetDialog()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        store.stop()
     }
 
     private fun parseArguments() {
@@ -94,14 +156,9 @@ class ChatFragment : Fragment() {
         channel?.let { fragmentChannelName = it }
     }
 
-    private fun setViewModel() {
-        configureToolbar()
-        val chatViewModelFactory = ChatViewModelFactory(
-            requireActivity().application,
-            fragmentChannelName,
-            fragmentTopicName
-        )
-        viewModel = ViewModelProvider(this, chatViewModelFactory)[ChatViewModel::class.java]
+    private fun setActorFields() {
+        actor.channelName = fragmentChannelName
+        actor.topicName = fragmentTopicName
     }
 
     private fun configureToolbar() {
@@ -116,6 +173,10 @@ class ChatFragment : Fragment() {
         binding.toolbarLayout.toolbar.setNavigationOnClickListener {
             activity?.onBackPressed()
         }
+    }
+
+    private fun configureBottomNavigation() {
+        (activity as MainActivity).hideNavigation()
     }
 
     private fun setupViews() {
@@ -140,7 +201,7 @@ class ChatFragment : Fragment() {
     private fun addListeners() {
         with(binding) {
             imageBtnSend.setOnClickListener {
-                viewModel.sendMessage(binding.etMessageField.text)
+//                viewModel.sendMessage(binding.etMessageField.text)
             }
             etMessageField.addTextChangedListener(object : TextWatcher {
                 override fun beforeTextChanged(
@@ -166,18 +227,19 @@ class ChatFragment : Fragment() {
 //            }
     }
 
-    private fun observeViewModel() {
-        viewModel.reactionsListStateLD.observe(
-            viewLifecycleOwner,
-            { processedReactionsListState(it) })
-        viewModel.chatScreenStateLD.observe(viewLifecycleOwner, { processedChatScreenState(it) })
-    }
+//    private fun observeViewModel() {
+//        viewModel.reactionsListStateLD.observe(
+//            viewLifecycleOwner,
+//            { processedReactionsListState(it) })
+//        viewModel.chatScreenStateLD.observe(viewLifecycleOwner, { processedChatScreenState(it) })
+//    }
 
     private fun setBottomSheetDialog() {
-        bottomSheetDialog = BottomSheetDialog(ctx)
+        bottomSheetDialog = BottomSheetDialog((activity as MainActivity).applicationContext)
         _dialogLayoutBinding = BottomSheetDialogLayoutBinding.inflate(layoutInflater)
         bottomSheetDialog.setContentView(dialogLayoutBinding.root)
-        dialogLayoutBinding.emojiRecycler.layoutManager = GridLayoutManager(ctx, 6)
+        dialogLayoutBinding.emojiRecycler.layoutManager =
+            GridLayoutManager((activity as MainActivity).applicationContext, 6)
         dialogLayoutBinding.emojiRecycler.adapter = reactionRecyclerAdapter
     }
 
@@ -193,44 +255,6 @@ class ChatFragment : Fragment() {
         bottomSheetDialog.show()
     }
 
-    private fun processedReactionsListState(it: ReactionsListState) {
-        when (it) {
-            is ReactionsListState.Result -> {
-                dialogLayoutBinding.pbLoading.isVisible = false
-                reactionRecyclerAdapter.submitList(it.items)
-            }
-            ReactionsListState.Loading -> dialogLayoutBinding.pbLoading.isVisible = true
-            is ReactionsListState.Error -> {
-                Log.d("ReactionsListState", "${it.error.message}")
-                dialogLayoutBinding.pbLoading.isVisible = false
-                Toast.makeText(
-                    this.context,
-                    "ReactionsListState ${it.error.message}",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-        }
-    }
-
-    private fun processedChatScreenState(it: ChatScreenState) {
-        when (it) {
-            is ChatScreenState.Result -> {
-                binding.pbLoading.isVisible = false
-                chatRecyclerAdapter.submitList(it.items)
-            }
-            ChatScreenState.Loading -> binding.pbLoading.isVisible = true
-            is ChatScreenState.Error -> {
-                binding.pbLoading.isVisible = false
-                Log.d("ChatScreenState", "${it.error.message}")
-                Toast.makeText(
-                    this.context,
-                    "ChatScreenState ${it.error.message}",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-        }
-    }
-
     private fun getImageBtnResource(count: Int): Int = when (count) {
         0 -> {
             R.drawable.ic_attach_btn
@@ -244,6 +268,8 @@ class ChatFragment : Fragment() {
 
         const val CHANNEL_EXTRA = "channel_extra"
         const val TOPIC_EXTRA = "topic_extra"
+
+        const val UNDEFINED_USER_ID = -1
 
         fun newInstance(channelName: String, topic: String): ChatFragment {
             return ChatFragment().apply {

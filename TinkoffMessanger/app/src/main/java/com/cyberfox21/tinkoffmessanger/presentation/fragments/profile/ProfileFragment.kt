@@ -116,16 +116,30 @@ class ProfileFragment() : ElmFragment<ProfileEvent, ProfileEffect, ProfileState>
     private fun launchRightMode() = when (screenMode) {
         ProfileMode.YOUR -> {
             store.accept(ProfileEvent.Ui.GetCurrentUser)
+            showBottomNavigation()
             binding.btnLogout.isVisible =
                 screenMode == ProfileMode.YOUR &&
                         store.currentState.error == null &&
                         binding.shimmerLayoutProfile.shimmerViewContainer.isVisible.not()
         }
         ProfileMode.STRANGER -> {
+            hideBottomNavigation()
             configureToolbar()
             binding.btnLogout.isVisible = false
-            store.accept(ProfileEvent.Ui.GetSelectedUser(fragmentUser))
+            getSelectedUser()
         }
+    }
+
+    private fun hideBottomNavigation() {
+        (activity as MainActivity).hideNavigation()
+    }
+
+    private fun showBottomNavigation() {
+        (activity as MainActivity).showNavigation()
+    }
+
+    private fun getSelectedUser() {
+        store.accept(ProfileEvent.Ui.GetSelectedUser(fragmentUser))
     }
 
     private fun bindUser(user: User) {

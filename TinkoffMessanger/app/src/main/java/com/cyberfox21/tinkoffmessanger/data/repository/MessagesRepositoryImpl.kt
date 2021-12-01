@@ -68,11 +68,11 @@ class MessagesRepositoryImpl @Inject constructor(
         ).subscribeOn(Schedulers.io())
     }
 
-    override fun addMessage(channelName: String, topicName: String, text: String): Completable {
+    override fun addMessage(channelName: String, topicName: String, msg: Message): Completable {
         return api.sendMessageToChannel(
             channel = channelName,
             topic = topicName,
-            content = text
+            content = msg.message
         ).subscribeOn(Schedulers.io())
     }
 

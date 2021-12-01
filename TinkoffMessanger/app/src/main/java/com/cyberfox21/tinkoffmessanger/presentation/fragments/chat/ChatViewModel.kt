@@ -39,16 +39,16 @@ class ChatViewModel(
 //    private val deleteReactionUseCase = DeleteReactionUseCase(reactionsRepository)
 //
 //    private val getMyUserUseCase = GetMyUserUseCase(usersRepository)
-
-    private var numBefore: Int = 100
-    private var numAfter: Int = 0
-
-    private val compositeDisposable = CompositeDisposable()
-
-    private var selectedChannelName: String? = null
-
-    private val messageBehaviorSubject: BehaviorSubject<String> = BehaviorSubject.create()
-
+//
+//    private var numBefore: Int = 100
+//    private var numAfter: Int = 0
+//
+//    private val compositeDisposable = CompositeDisposable()
+//
+//    private var selectedChannelName: String? = null
+//
+//    private val messageBehaviorSubject: BehaviorSubject<String> = BehaviorSubject.create()
+//
 //    private var messageObserver: Observable<List<Message>> = getMessageListUseCase(
 //        numBefore = numBefore,
 //        numAfter = numAfter,
@@ -56,22 +56,22 @@ class ChatViewModel(
 //        topicName = topicName
 //    )
 //    private val reactionsObserver: Observable<List<Reaction>> = getReactionListUseCase()
-
-    private var _chatScreenStateLD = MutableLiveData<ChatScreenState>()
-    val chatScreenStateLD: LiveData<ChatScreenState>
-        get() = _chatScreenStateLD
-
-    private var _reactionsListStateLD = MutableLiveData<ReactionsListState>()
-    val reactionsListStateLD: LiveData<ReactionsListState>
-        get() = _reactionsListStateLD
-
-
-    init {
-        subscribeToGiveMessages()
-        subscribeToGiveReactionList()
-    }
-
-    private fun subscribeToGiveReactionList() {
+//
+//    private var _chatScreenStateLD = MutableLiveData<ChatScreenState>()
+//    val chatScreenStateLD: LiveData<ChatScreenState>
+//        get() = _chatScreenStateLD
+//
+//    private var _reactionsListStateLD = MutableLiveData<ReactionsListState>()
+//    val reactionsListStateLD: LiveData<ReactionsListState>
+//        get() = _reactionsListStateLD
+//
+//
+//    init {
+//        subscribeToGiveMessages()
+//        subscribeToGiveReactionList()
+//    }
+//
+//    private fun subscribeToGiveReactionList() {
 //        reactionsObserver
 //            .subscribeOn(Schedulers.io())
 //            .doOnNext { _reactionsListStateLD.postValue(ReactionsListState.Loading) }
@@ -80,9 +80,9 @@ class ChatViewModel(
 //                onNext = { _reactionsListStateLD.value = ReactionsListState.Result(it) },
 //                onError = { _reactionsListStateLD.value = ReactionsListState.Error(it) }
 //            ).addTo(compositeDisposable)
-    }
-
-    private fun subscribeToGiveMessages() {
+//    }
+//
+//    private fun subscribeToGiveMessages() {
 //        getMyUserUseCase()
 //            .doOnNext { _chatScreenStateLD.postValue(ChatScreenState.Loading) }
 //            .subscribeBy(
@@ -103,18 +103,18 @@ class ChatViewModel(
 //                    _chatScreenStateLD.value = ChatScreenState.Error(it)
 //                }
 //            ).addTo(compositeDisposable)
-
-
-    }
-
-    fun sendMessage(text: Editable) {
+//
+//
+//    }
+//
+//    fun sendMessage(text: Editable) {
 //        addMessageUseCase(channelName = channelName, topicName = topicName, text.toString())
 //            .subscribeBy(
 //                onComplete = { Log.d("ChatViewModel", "Sending message successfully") },
 //                onError = { Log.d("ChatViewModel", "Sending message with error ${it.message}") }
 //            ).addTo(compositeDisposable)
-    }
-
+//    }
+//
 //
 //    fun addEmoji(message: Message, emoji: String) {
 //        addReactionUseCase()
@@ -123,9 +123,9 @@ class ChatViewModel(
 //    fun deleteEmoji(){
 //        deleteReactionUseCase()
 //    }
-
-    override fun onCleared() {
-        compositeDisposable.dispose()
-    }
+//
+//    override fun onCleared() {
+//        compositeDisposable.dispose()
+//    }
 
 }

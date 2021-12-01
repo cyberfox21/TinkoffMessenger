@@ -1,7 +1,9 @@
 package com.cyberfox21.tinkoffmessanger.di
 
 import android.content.Context
+import com.cyberfox21.tinkoffmessanger.di.module.*
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.ListChannelsFragment
+import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.ChatFragment
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.people.PeopleFragment
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.profile.ProfileFragment
 import dagger.BindsInstance
@@ -27,5 +29,6 @@ interface ApplicationComponent {
     fun injectProfileFragment(profileFragment: ProfileFragment)
     fun injectPeopleFragment(peopleFragment: PeopleFragment)
     fun injectChannelsFragment(listChannelsFragment: ListChannelsFragment)
-//    fun injectChatFragment(chatFragment: ChatFragment)
+    fun injectChatFragment(chatFragment: ChatFragment)
+
 }
