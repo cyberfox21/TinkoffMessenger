@@ -1,10 +1,8 @@
 package com.cyberfox21.tinkoffmessanger.data.repository
 
-import android.app.Application
-import android.content.Context
-import com.cyberfox21.tinkoffmessanger.data.api.ApiFactory
+import com.cyberfox21.tinkoffmessanger.data.api.Api
 import com.cyberfox21.tinkoffmessanger.data.api.Narrow
-import com.cyberfox21.tinkoffmessanger.data.database.AppDatabase
+import com.cyberfox21.tinkoffmessanger.data.database.dao.MessagesDao
 import com.cyberfox21.tinkoffmessanger.data.mapToMessage
 import com.cyberfox21.tinkoffmessanger.data.mapToMessageDBModel
 import com.cyberfox21.tinkoffmessanger.domain.entity.Message
@@ -15,13 +13,12 @@ import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import javax.inject.Inject
 
-class MessageRepositoryImpl(application: Application) : MessagesRepository {
-
-    private val api = ApiFactory.api
-
-    private val messagesDao =
-        AppDatabase.getInstance(application, AppDatabase.MESSAGES_DB_NAME).messagesDao()
+class MessagesRepositoryImpl @Inject constructor(
+    private val api: Api,
+    private val messagesDao: MessagesDao
+) : MessagesRepository {
 
     private fun getMessagesFromDB(topicName: String) =
         messagesDao.getMessageList(topicName).map { dbModels ->

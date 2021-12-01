@@ -1,8 +1,8 @@
 package com.cyberfox21.tinkoffmessanger.data.repository
 
-import android.content.Context
-import com.cyberfox21.tinkoffmessanger.data.api.ApiFactory
-import com.cyberfox21.tinkoffmessanger.data.database.AppDatabase
+import com.cyberfox21.tinkoffmessanger.data.api.Api
+import com.cyberfox21.tinkoffmessanger.data.database.dao.AllChannelsDao
+import com.cyberfox21.tinkoffmessanger.data.database.dao.SubscribedChannelsDao
 import com.cyberfox21.tinkoffmessanger.data.mapToChannel
 import com.cyberfox21.tinkoffmessanger.data.mapToChannelDBModel
 import com.cyberfox21.tinkoffmessanger.data.mapToSubscribedChannelDBModel
@@ -12,17 +12,13 @@ import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.Category
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
+import javax.inject.Inject
 
-class ChannelsRepositoryImpl(context: Context) : ChannelsRepository {
-
-    private val api = ApiFactory.api
-
-    private val channelsDao =
-        AppDatabase.getInstance(context, AppDatabase.CHANNELS_DB_NAME).allChannelsDao()
-
-    private val subscribedChannelsDao =
-        AppDatabase.getInstance(context, AppDatabase.SUBSCRIBED_CHANNELS_DB_NAME)
-            .subscribedChannelsDao()
+class ChannelsRepositoryImpl @Inject constructor(
+    private val api: Api,
+    private val channelsDao: AllChannelsDao,
+    private val subscribedChannelsDao: SubscribedChannelsDao
+) : ChannelsRepository {
 
     private fun getAllChannelsFromDB(): Single<List<Channel>> =
         channelsDao.getAllChannelsList().map { dbModels ->

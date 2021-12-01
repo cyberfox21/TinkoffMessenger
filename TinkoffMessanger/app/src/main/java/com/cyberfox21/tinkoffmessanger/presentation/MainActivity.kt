@@ -5,13 +5,19 @@ import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import com.cyberfox21.tinkoffmessanger.App
 import com.cyberfox21.tinkoffmessanger.R
 import com.cyberfox21.tinkoffmessanger.databinding.ActivityMainBinding
+import com.cyberfox21.tinkoffmessanger.di.ApplicationComponent
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.ChannelsFragment
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.people.PeopleFragment
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.profile.ProfileFragment
 
 class MainActivity : AppCompatActivity(), NavigationHolder {
+
+    val component by lazy {
+        (application as App).component
+    }
 
     private lateinit var binding: ActivityMainBinding
 

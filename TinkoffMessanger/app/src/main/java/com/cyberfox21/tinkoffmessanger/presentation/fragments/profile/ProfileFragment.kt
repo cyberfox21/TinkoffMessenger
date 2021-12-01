@@ -1,5 +1,6 @@
 package com.cyberfox21.tinkoffmessanger.presentation.fragments.profile
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,11 +11,13 @@ import com.bumptech.glide.Glide
 import com.cyberfox21.tinkoffmessanger.R
 import com.cyberfox21.tinkoffmessanger.databinding.FragmentProfileBinding
 import com.cyberfox21.tinkoffmessanger.domain.entity.User
+import com.cyberfox21.tinkoffmessanger.presentation.MainActivity
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.profile.elm.*
 import vivid.money.elmslie.android.base.ElmFragment
 import vivid.money.elmslie.core.store.Store
+import javax.inject.Inject
 
-class ProfileFragment : ElmFragment<ProfileEvent, ProfileEffect, ProfileState>() {
+class ProfileFragment() : ElmFragment<ProfileEvent, ProfileEffect, ProfileState>() {
 
     private lateinit var screenMode: ProfileMode
     private lateinit var fragmentUser: User
@@ -25,7 +28,8 @@ class ProfileFragment : ElmFragment<ProfileEvent, ProfileEffect, ProfileState>()
 
 //  < ---------------------------------------- ELM --------------------------------------------->
 
-    private val actor by lazy { ProfileActor(requireContext()) }
+    @Inject
+    internal lateinit var actor: ProfileActor
 
     override val initEvent: ProfileEvent = ProfileEvent.Ui.GetCurrentUser
 
@@ -59,6 +63,11 @@ class ProfileFragment : ElmFragment<ProfileEvent, ProfileEffect, ProfileState>()
     }
 
 //  < ---------------------------------------- ELM --------------------------------------------->
+
+    override fun onAttach(context: Context) {
+        (activity as MainActivity).component.injectProfileFragment(this)
+        super.onAttach(context)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

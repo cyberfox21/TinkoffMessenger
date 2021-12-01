@@ -1,8 +1,9 @@
 package com.cyberfox21.tinkoffmessanger.domain.usecase
 
 import com.cyberfox21.tinkoffmessanger.domain.repository.MessagesRepository
+import javax.inject.Inject
 
-class AddMessageUseCase(private val repository: MessagesRepository) {
+class AddMessageUseCase @Inject constructor(private val repository: MessagesRepository) {
     operator fun invoke(channelName: String, topicName: String, text: String) =
         repository.addMessage(
             channelName = channelName,

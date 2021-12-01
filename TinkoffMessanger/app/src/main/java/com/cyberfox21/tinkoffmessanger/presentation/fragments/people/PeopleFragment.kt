@@ -13,11 +13,13 @@ import androidx.core.view.isVisible
 import com.cyberfox21.tinkoffmessanger.R
 import com.cyberfox21.tinkoffmessanger.databinding.FragmentPeopleBinding
 import com.cyberfox21.tinkoffmessanger.domain.entity.User
+import com.cyberfox21.tinkoffmessanger.presentation.MainActivity
 import com.cyberfox21.tinkoffmessanger.presentation.NavigationHolder
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.people.elm.*
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.profile.ProfileFragment
 import vivid.money.elmslie.android.base.ElmFragment
 import vivid.money.elmslie.core.store.Store
+import javax.inject.Inject
 
 class PeopleFragment : ElmFragment<PeopleEvent, PeopleEffect, PeopleState>() {
 
@@ -31,7 +33,8 @@ class PeopleFragment : ElmFragment<PeopleEvent, PeopleEffect, PeopleState>() {
 
 //  < ---------------------------------------- ELM --------------------------------------------->
 
-    private val actor by lazy { PeopleActor(requireContext()) }
+    @Inject
+    internal lateinit var actor: PeopleActor
 
     override val initEvent: PeopleEvent = PeopleEvent.Ui.GetUserList
 
@@ -64,6 +67,11 @@ class PeopleFragment : ElmFragment<PeopleEvent, PeopleEffect, PeopleState>() {
     }
 
 //  < ---------------------------------------- ELM --------------------------------------------->
+
+    override fun onAttach(context: Context) {
+        (activity as MainActivity).component.injectPeopleFragment(this)
+        super.onAttach(context)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,

@@ -1,19 +1,12 @@
 package com.cyberfox21.tinkoffmessanger
 
 import android.app.Application
-import android.content.Context
+import com.cyberfox21.tinkoffmessanger.di.DaggerApplicationComponent
 
-class App: Application() {
+class App : Application() {
 
-    var context: Context? = null
-
-    override fun onCreate() {
-        super.onCreate()
-        context = applicationContext
-    }
-
-    fun context() : Context {
-        return applicationContext
+    val component by lazy {
+        DaggerApplicationComponent.factory().create(this)
     }
 
 }

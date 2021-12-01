@@ -1,21 +1,19 @@
 package com.cyberfox21.tinkoffmessanger.data.repository
 
-import android.content.Context
-import com.cyberfox21.tinkoffmessanger.data.api.ApiFactory
-import com.cyberfox21.tinkoffmessanger.data.database.AppDatabase
+import com.cyberfox21.tinkoffmessanger.data.api.Api
+import com.cyberfox21.tinkoffmessanger.data.database.dao.TopicsDao
 import com.cyberfox21.tinkoffmessanger.data.mapToTopic
 import com.cyberfox21.tinkoffmessanger.data.mapToTopicDBModel
 import com.cyberfox21.tinkoffmessanger.domain.entity.Topic
 import com.cyberfox21.tinkoffmessanger.domain.repository.TopicsRepository
 import io.reactivex.Flowable
 import io.reactivex.schedulers.Schedulers
+import javax.inject.Inject
 
-class TopicsRepositoryImpl(context: Context) : TopicsRepository {
-
-    private val api = ApiFactory.api
-
-    private val topicsDao =
-        AppDatabase.getInstance(context, AppDatabase.TOPICS_DB_NAME).topicsDao()
+class TopicsRepositoryImpl @Inject constructor(
+    private val api: Api,
+    private val topicsDao: TopicsDao
+) : TopicsRepository {
 
     private fun getTopicsFromDB(channelId: Int) =
         topicsDao.getTopicsListForChannel(channelId).map { dbModels ->

@@ -1,5 +1,6 @@
 package com.cyberfox21.tinkoffmessanger.presentation.fragments.channels
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -7,12 +8,14 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.setFragmentResultListener
 import com.cyberfox21.tinkoffmessanger.databinding.FragmentListChannelsBinding
+import com.cyberfox21.tinkoffmessanger.presentation.MainActivity
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.delegate.adapter.ChannelDelegateAdapter
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.delegate.adapter.MainChannelsRecyclerAdapter
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.delegate.adapter.TopicDelegateAdapter
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.elm.*
 import vivid.money.elmslie.android.base.ElmFragment
 import vivid.money.elmslie.core.store.Store
+import javax.inject.Inject
 
 class ListChannelsFragment : ElmFragment<ChannelsEvent, ChannelsEffect, ChannelsState>() {
 
@@ -34,7 +37,8 @@ class ListChannelsFragment : ElmFragment<ChannelsEvent, ChannelsEffect, Channels
 
 //  < ---------------------------------------- ELM --------------------------------------------->
 
-    private val actor by lazy { ChannelsActor(requireContext()) }
+    @Inject
+    internal lateinit var actor: ChannelsActor
 
     override val initEvent: ChannelsEvent = ChannelsEvent.Ui.GetChannelsList(
         INITIAL_QUERY, Category.SUBSCRIBED
@@ -78,6 +82,11 @@ class ListChannelsFragment : ElmFragment<ChannelsEvent, ChannelsEffect, Channels
     }
 
 //  < ---------------------------------------- ELM --------------------------------------------->
+
+    override fun onAttach(context: Context) {
+        (activity as MainActivity).component.injectChannelsFragment(this)
+        super.onAttach(context)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -4,8 +4,9 @@ import com.cyberfox21.tinkoffmessanger.domain.entity.Channel
 import com.cyberfox21.tinkoffmessanger.domain.repository.ChannelsRepository
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.Category
 import io.reactivex.Observable
+import javax.inject.Inject
 
-class SearchChannelsUseCase(private val repository: ChannelsRepository) {
+class SearchChannelsUseCase @Inject constructor(private val repository: ChannelsRepository) {
     operator fun invoke(searchQuery: String, category: Category): Observable<List<Channel>> {
         val channels = repository.searchChannels(searchQuery, category)
             .map { channels ->

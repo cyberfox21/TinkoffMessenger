@@ -1,10 +1,7 @@
 package com.cyberfox21.tinkoffmessanger.data.repository
 
-import android.app.Application
-import android.content.Context
-import com.cyberfox21.tinkoffmessanger.data.api.ApiFactory
-import com.cyberfox21.tinkoffmessanger.data.database.AppDatabase
-import com.cyberfox21.tinkoffmessanger.data.database.AppDatabase.Companion.REACTION_LIST_DB_NAME
+import com.cyberfox21.tinkoffmessanger.data.api.Api
+import com.cyberfox21.tinkoffmessanger.data.database.dao.ReactionListDao
 import com.cyberfox21.tinkoffmessanger.data.mapToReactionForReactionList
 import com.cyberfox21.tinkoffmessanger.data.mapToReactionListDBModel
 import com.cyberfox21.tinkoffmessanger.domain.entity.Reaction
@@ -14,13 +11,12 @@ import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
+import javax.inject.Inject
 
-class ReactionRepositoryImpl(application: Application) : ReactionsRepository {
-
-    private val api = ApiFactory.api
-
-    private val reactionListDao =
-        AppDatabase.getInstance(application, REACTION_LIST_DB_NAME).reactionListDao()
+class ReactionsRepositoryImpl @Inject constructor(
+    private val api: Api,
+    private val reactionListDao: ReactionListDao
+) : ReactionsRepository {
 
     private fun getReactionListFromDB(): Single<List<Reaction>> =
         reactionListDao.getReactionList().map { list ->
