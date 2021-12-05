@@ -86,6 +86,7 @@ class ProfileFragment() : ElmFragment<ProfileEvent, ProfileEffect, ProfileState>
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupStatusBar()
+        configureToolbar()
         launchRightMode()
         addListeners()
     }
@@ -124,7 +125,7 @@ class ProfileFragment() : ElmFragment<ProfileEvent, ProfileEffect, ProfileState>
         }
         ProfileMode.STRANGER -> {
             hideBottomNavigation()
-            configureToolbar()
+            toolbarWithNavigation()
             binding.btnLogout.isVisible = false
             getSelectedUser()
         }
@@ -149,8 +150,11 @@ class ProfileFragment() : ElmFragment<ProfileEvent, ProfileEffect, ProfileState>
 
     private fun configureToolbar() {
         binding.toolbarLayout.toolbar.isVisible = true
-        binding.toolbarLayout.toolbar.setNavigationIcon(R.drawable.ic_back)
         binding.toolbarLayout.toolbar.title = resources.getString(R.string.profile)
+    }
+
+    private fun toolbarWithNavigation(){
+        binding.toolbarLayout.toolbar.setNavigationIcon(R.drawable.ic_back)
         binding.toolbarLayout.toolbar.setNavigationOnClickListener {
             activity?.onBackPressed()
         }
