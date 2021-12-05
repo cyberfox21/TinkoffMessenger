@@ -7,8 +7,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.setFragmentResultListener
+import com.cyberfox21.tinkoffmessanger.R
 import com.cyberfox21.tinkoffmessanger.databinding.FragmentListChannelsBinding
 import com.cyberfox21.tinkoffmessanger.presentation.MainActivity
+import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.delegate.SpacesItemDecoration
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.delegate.adapter.ChannelDelegateAdapter
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.delegate.adapter.MainChannelsRecyclerAdapter
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.delegate.adapter.TopicDelegateAdapter
@@ -129,6 +131,13 @@ class ListChannelsFragment : ElmFragment<ChannelsEvent, ChannelsEffect, Channels
 
     private fun setupRecyclerView() {
         binding.categoryChannelsRecycler.setHasFixedSize(true)
+        binding.categoryChannelsRecycler.addItemDecoration(
+            SpacesItemDecoration(
+                resources.getDimensionPixelOffset(
+                    R.dimen.itemDecorationSize
+                )
+            )
+        )
         mainAdapter.apply {
             addDelegate(ChannelDelegateAdapter(object :
                 ChannelDelegateAdapter.OnChannelDelegateClickListener {

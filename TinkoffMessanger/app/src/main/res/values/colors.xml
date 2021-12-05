@@ -12,6 +12,7 @@
     <color name="unselected_emoji">#1C1C1C</color>
     <color name="background">#121212</color>
     <color name="green">#2A9D8F</color>
+    <color name="yellow">#E9C46A</color>
     <color name="unselected_bottom_navigation">#919191</color>
     <color name="bottom_navigation_background">#1E1E1E</color>
     <color name="neon_green">#4AB54D</color>
