@@ -2,12 +2,14 @@ package com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.elm
 
 import com.cyberfox21.tinkoffmessanger.domain.entity.Message
 import com.cyberfox21.tinkoffmessanger.domain.entity.Reaction
+import com.cyberfox21.tinkoffmessanger.presentation.commondelegate.DelegateItem
 
 sealed class ChatEvent {
     sealed class Ui : ChatEvent() {
         object GetMessages : Ui()
         object GetReactionList : Ui()
         data class SendMessage(val msg: Message) : Ui()
+        data class AddReaction(val reactions: Reaction, val msg: DelegateItem) : Ui()
     }
 
     sealed class Internal : ChatEvent() {

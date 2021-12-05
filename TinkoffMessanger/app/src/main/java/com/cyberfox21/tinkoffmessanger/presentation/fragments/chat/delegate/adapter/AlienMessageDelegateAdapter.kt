@@ -6,22 +6,24 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.cyberfox21.tinkoffmessanger.presentation.commondelegate.AdapterDelegate
 import com.cyberfox21.tinkoffmessanger.presentation.commondelegate.DelegateItem
+import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.delegate.adapter.OnLongMessageClickListener
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.delegate.item.AlienMessageDelegateItem
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.delegate.viewholder.AlienMessageViewHolder
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.views.CustomEmojiView
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.views.EmojiMessageViewGroup
 import com.cyberfox21.tinkoffmessanger.util.EmojiFormatter
 
-class AlienMessageDelegateAdapter : AdapterDelegate {
-
-    var onLongMessageClickListener: OnLongMessageClickListener? = null
-
-    interface OnLongMessageClickListener {
-        fun onLongMessageClick(message: AlienMessageDelegateItem)
-    }
+class AlienMessageDelegateAdapter(private val onLongMessageClickListener: OnLongMessageClickListener) :
+    AdapterDelegate {
 
     override fun onCreateViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
-        return AlienMessageViewHolder(EmojiMessageViewGroup(parent.context))
+        val view = EmojiMessageViewGroup(parent.context).apply {
+            layoutParams = ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+        }
+        return AlienMessageViewHolder(view)
     }
 
     override fun onBindViewHolder(
@@ -52,17 +54,19 @@ class AlienMessageDelegateAdapter : AdapterDelegate {
                         }
                     }
                 }
-                emojiView.apply {
-                    emoji = EmojiFormatter.stringToEmoji(message.reactions[i].reaction)
-                    count = ""
-
+                EmojiFormatter.stringToEmoji(message.reactions[i].reaction)?.let{
+                    emojiView.apply {
+                        emoji = it
+                        count = ""
+                    }
                 }
+
                 Log.d("ChatRecyclerAdapter", "childcount ${emojiLayout.childCount}")
                 emojiLayout.addView(emojiView)
             }
 
             emojiMessageViewGroup.setOnLongClickListener {
-                onLongMessageClickListener?.onLongMessageClick(message)
+                onLongMessageClickListener.onLongMessageClick(message)
                 true
             }
         }

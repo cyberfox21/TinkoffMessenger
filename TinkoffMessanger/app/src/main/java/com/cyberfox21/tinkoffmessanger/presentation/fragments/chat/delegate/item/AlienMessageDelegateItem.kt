@@ -3,9 +3,10 @@ package com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.delegate.ite
 import com.cyberfox21.tinkoffmessanger.presentation.commondelegate.DelegateItem
 
 class AlienMessageDelegateItem(
-    private val id: Int,
+    val id: Int,
     val text: String,
     val time: String,
+    val senderId: Int,
     val senderName: String,
     val senderAvatarUrl: String,
     val reactions: List<MessageReactionListItem>

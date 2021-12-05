@@ -13,6 +13,7 @@
         <item name="android:navigationBarColor" tools:targetApi="l">
             @color/bottom_navigation_background
         </item>
+        <item name="bottomSheetDialogTheme">@style/CustomBottomSheetDialog</item>
     </style>
 
 
@@ -56,6 +57,20 @@
 
     <style name="TransparentBg">
         <item name="android:background">@android:color/transparent</item>
+    </style>
+
+    <style name="CustomBottomSheetDialog" parent="@style/ThemeOverlay.MaterialComponents.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/CustomBottomSheet</item>
+    </style>
+
+    <style name="CustomBottomSheet" parent="Widget.MaterialComponents.BottomSheet">
+        <item name="shapeAppearanceOverlay">@style/CustomShapeAppearanceBottomSheetDialog</item>
+    </style>
+
+    <style name="CustomShapeAppearanceBottomSheetDialog" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeTopRight">@dimen/btn_logout_corner_radius</item>
+        <item name="cornerSizeTopLeft">@dimen/btn_logout_corner_radius</item>
     </style>
 
 </resources>

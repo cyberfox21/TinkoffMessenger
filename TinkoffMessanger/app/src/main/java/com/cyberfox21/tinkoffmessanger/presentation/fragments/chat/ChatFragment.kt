@@ -8,8 +8,9 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import androidx.appcompat.widget.ThemeUtils
 import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
 import com.cyberfox21.tinkoffmessanger.R
@@ -18,6 +19,8 @@ import com.cyberfox21.tinkoffmessanger.databinding.FragmentChatBinding
 import com.cyberfox21.tinkoffmessanger.domain.entity.Message
 import com.cyberfox21.tinkoffmessanger.domain.entity.Reaction
 import com.cyberfox21.tinkoffmessanger.presentation.MainActivity
+import com.cyberfox21.tinkoffmessanger.presentation.commondelegate.DelegateItem
+import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.delegate.adapter.OnLongMessageClickListener
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.delegate.adapter.AlienMessageDelegateAdapter
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.delegate.adapter.DateDelegateAdapter
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.delegate.adapter.MainChatRecyclerAdapter
@@ -36,7 +39,9 @@ class ChatFragment : ElmFragment<ChatEvent, ChatEffect, ChatState>() {
     private lateinit var fragmentChannelName: String
     private lateinit var fragmentTopicName: String
 
-    private lateinit var bottomSheetDialog: BottomSheetDialog
+    internal lateinit var gridLayoutManager: GridLayoutManager
+
+    internal lateinit var bottomSheetDialog: BottomSheetDialog
 
     private var _binding: FragmentChatBinding? = null
     private val binding
@@ -49,6 +54,12 @@ class ChatFragment : ElmFragment<ChatEvent, ChatEffect, ChatState>() {
 
     private val chatRecyclerAdapter = MainChatRecyclerAdapter()
     private val reactionRecyclerAdapter = ReactionRecyclerAdapter()
+
+    private val onLongMessageClickListener = object : OnLongMessageClickListener{
+        override fun onLongMessageClick(message: DelegateItem) {
+            showBottomSheetDialog(message)
+        }
+    }
 
 //  < ---------------------------------------- ELM --------------------------------------------->
 
@@ -182,8 +193,8 @@ class ChatFragment : ElmFragment<ChatEvent, ChatEffect, ChatState>() {
     private fun setupViews() {
         setupStatusBar()
         binding.tvTopicTitle.text = setTopic(fragmentTopicName)
-        chatRecyclerAdapter.addDelegate(AlienMessageDelegateAdapter())
-        chatRecyclerAdapter.addDelegate(MyMessageDelegateAdapter())
+        chatRecyclerAdapter.addDelegate(AlienMessageDelegateAdapter(onLongMessageClickListener))
+        chatRecyclerAdapter.addDelegate(MyMessageDelegateAdapter(onLongMessageClickListener))
         chatRecyclerAdapter.addDelegate(DateDelegateAdapter())
         binding.chatRecycler.setHasFixedSize(true)
         binding.chatRecycler.adapter = chatRecyclerAdapter
@@ -235,20 +246,21 @@ class ChatFragment : ElmFragment<ChatEvent, ChatEffect, ChatState>() {
 //    }
 
     private fun setBottomSheetDialog() {
-        bottomSheetDialog = BottomSheetDialog((activity as MainActivity).applicationContext)
+        bottomSheetDialog = BottomSheetDialog(requireActivity())
         _dialogLayoutBinding = BottomSheetDialogLayoutBinding.inflate(layoutInflater)
         bottomSheetDialog.setContentView(dialogLayoutBinding.root)
         dialogLayoutBinding.emojiRecycler.layoutManager =
-            GridLayoutManager((activity as MainActivity).applicationContext, 6)
+            GridLayoutManager(requireActivity(), 6)
         dialogLayoutBinding.emojiRecycler.adapter = reactionRecyclerAdapter
     }
 
-    private fun showBottomSheetDialog(message: Message) {
+    private fun showBottomSheetDialog(message: DelegateItem) {
         reactionRecyclerAdapter.onEmojiDialogClickListener =
             object : ReactionRecyclerAdapter.OnEmojiDialogClickListener {
                 override fun onEmojiDialogClick(emoji: Reaction) {
 //                    viewModel.addNewEmoji(message, emoji)
-//                    Log.d("ChatActivity", "emoji selected $emoji")
+                    store.accept(ChatEvent.Ui.AddReaction(emoji, message))
+                    Log.d("ChatActivity", "emoji selected $emoji")
                     bottomSheetDialog.dismiss()
                 }
             }

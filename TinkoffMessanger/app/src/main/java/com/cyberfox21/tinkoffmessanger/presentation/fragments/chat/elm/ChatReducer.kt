@@ -65,6 +65,9 @@ class ChatReducer : DslReducer<ChatEvent, ChatState, ChatEffect, ChatCommand>() 
                 state { state.copy(isMessagesLoading = true) }
                 commands { +ChatCommand.SendMessage(event.msg) }
             }
+            is ChatEvent.Ui.AddReaction -> {
+
+            }
         }
     }
 }

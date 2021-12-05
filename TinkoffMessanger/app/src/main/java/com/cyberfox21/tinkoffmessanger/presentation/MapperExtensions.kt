@@ -50,6 +50,7 @@ fun List<Message>.toDelegateChatItemsList(userId: Int): List<DelegateItem> {
                     message.id,
                     message.message,
                     DateFormatter.getTimeForMessage(message.time),
+                    message.senderId,
                     message.senderName,
                     message.senderAvatarUrl,
                     listReactions

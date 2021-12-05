@@ -13,12 +13,12 @@ object EmojiFormatter {
         return ""
     }
 
-    fun stringToEmoji(emojiCode: String): String {
+    fun stringToEmoji(emojiCode: String): String? {
         if (emojiCode == "zulip") return ""
         if (!emojiCode.contains("-")) {
             return codeToEmoji(emojiCode.replace("\"", ""))
         }
-        return emojiCode.substringBeforeLast("-")
+        return null
     }
 
     fun jsonObjectToReactionsList(jsonObject: com.google.gson.JsonObject): List<Reaction> {
@@ -31,7 +31,7 @@ object EmojiFormatter {
         jsonObject.keySet().forEach { key ->
             val value = jsonObject.get(key)
             val emojiString = stringToEmoji(value.asString)
-            if (emojiString.isNotEmpty()) {
+            if (emojiString != null) {
                 reactionList.add(
                     Reaction(
                         reaction = emojiString,
