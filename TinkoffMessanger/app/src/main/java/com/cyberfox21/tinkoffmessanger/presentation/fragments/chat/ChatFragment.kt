@@ -8,15 +8,12 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.widget.ThemeUtils
 import androidx.core.content.ContextCompat
-import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
 import com.cyberfox21.tinkoffmessanger.R
 import com.cyberfox21.tinkoffmessanger.databinding.BottomSheetDialogLayoutBinding
 import com.cyberfox21.tinkoffmessanger.databinding.FragmentChatBinding
-import com.cyberfox21.tinkoffmessanger.domain.entity.Message
 import com.cyberfox21.tinkoffmessanger.domain.entity.Reaction
 import com.cyberfox21.tinkoffmessanger.presentation.MainActivity
 import com.cyberfox21.tinkoffmessanger.presentation.commondelegate.DelegateItem
@@ -55,7 +52,7 @@ class ChatFragment : ElmFragment<ChatEvent, ChatEffect, ChatState>() {
     private val chatRecyclerAdapter = MainChatRecyclerAdapter()
     private val reactionRecyclerAdapter = ReactionRecyclerAdapter()
 
-    private val onLongMessageClickListener = object : OnLongMessageClickListener{
+    private val onLongMessageClickListener = object : OnLongMessageClickListener {
         override fun onLongMessageClick(message: DelegateItem) {
             showBottomSheetDialog(message)
         }
@@ -211,10 +208,10 @@ class ChatFragment : ElmFragment<ChatEvent, ChatEffect, ChatState>() {
 
     private fun addListeners() {
         with(binding) {
-            imageBtnSend.setOnClickListener {
+            messageFieldLayout.imageBtnSend.setOnClickListener {
 //                viewModel.sendMessage(binding.etMessageField.text)
             }
-            etMessageField.addTextChangedListener(object : TextWatcher {
+            messageFieldLayout.etMessageField.addTextChangedListener(object : TextWatcher {
                 override fun beforeTextChanged(
                     s: CharSequence?,
                     start: Int,
@@ -224,7 +221,7 @@ class ChatFragment : ElmFragment<ChatEvent, ChatEffect, ChatState>() {
                 }
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) =
-                    imageBtnSend.setImageResource(getImageBtnResource(count))
+                    messageFieldLayout.imageBtnSend.setImageResource(getImageBtnResource(count))
 
                 override fun afterTextChanged(s: Editable?) {}
 
@@ -269,10 +266,10 @@ class ChatFragment : ElmFragment<ChatEvent, ChatEffect, ChatState>() {
 
     private fun getImageBtnResource(count: Int): Int = when (count) {
         0 -> {
-            R.drawable.ic_attach_btn
+            R.drawable.ic_attach
         }
         else -> {
-            R.drawable.ic_send_btn
+            R.drawable.ic_send
         }
     }
 
