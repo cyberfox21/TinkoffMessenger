@@ -4,7 +4,7 @@ import androidx.core.text.HtmlCompat
 import com.cyberfox21.tinkoffmessanger.data.api.response.dto.*
 import com.cyberfox21.tinkoffmessanger.data.database.model.*
 import com.cyberfox21.tinkoffmessanger.domain.entity.*
-import com.cyberfox21.tinkoffmessanger.util.DateFormatter
+import com.cyberfox21.tinkoffmessanger.presentation.util.DateFormatter
 
 fun MessageDTO.mapToMessage() = Message(
     id = id,

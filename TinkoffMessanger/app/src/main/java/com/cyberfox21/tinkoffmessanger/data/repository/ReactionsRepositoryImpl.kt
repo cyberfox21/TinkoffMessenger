@@ -6,7 +6,7 @@ import com.cyberfox21.tinkoffmessanger.data.mapToReactionForReactionList
 import com.cyberfox21.tinkoffmessanger.data.mapToReactionListDBModel
 import com.cyberfox21.tinkoffmessanger.domain.entity.Reaction
 import com.cyberfox21.tinkoffmessanger.domain.repository.ReactionsRepository
-import com.cyberfox21.tinkoffmessanger.util.EmojiFormatter
+import com.cyberfox21.tinkoffmessanger.presentation.util.EmojiFormatter
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single

@@ -10,7 +10,7 @@ import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.delegate.item
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.delegate.item.DateDelegateItem
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.delegate.item.MessageReactionListItem
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.delegate.item.MyMessageDelegateItem
-import com.cyberfox21.tinkoffmessanger.util.DateFormatter
+import com.cyberfox21.tinkoffmessanger.presentation.util.DateFormatter
 
 fun List<Message>.toDelegateChatItemsList(userId: Int): List<DelegateItem> {
     val delegateItemList = mutableListOf<DelegateItem>()

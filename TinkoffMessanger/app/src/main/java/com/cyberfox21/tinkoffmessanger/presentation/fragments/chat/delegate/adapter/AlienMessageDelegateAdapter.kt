@@ -11,7 +11,7 @@ import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.delegate.item
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.delegate.viewholder.AlienMessageViewHolder
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.views.CustomEmojiView
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.views.EmojiMessageViewGroup
-import com.cyberfox21.tinkoffmessanger.util.EmojiFormatter
+import com.cyberfox21.tinkoffmessanger.presentation.util.EmojiFormatter
 
 class AlienMessageDelegateAdapter(private val onLongMessageClickListener: OnLongMessageClickListener) :
     AdapterDelegate {

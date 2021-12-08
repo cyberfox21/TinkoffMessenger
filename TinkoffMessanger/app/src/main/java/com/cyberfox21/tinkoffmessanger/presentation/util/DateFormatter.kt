@@ -1,4 +1,4 @@
-package com.cyberfox21.tinkoffmessanger.util
+package com.cyberfox21.tinkoffmessanger.presentation.util
 
 import java.text.SimpleDateFormat
 import java.util.*
