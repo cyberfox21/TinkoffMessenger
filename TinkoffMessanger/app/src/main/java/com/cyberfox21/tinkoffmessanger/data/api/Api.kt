@@ -20,18 +20,13 @@ interface Api {
     fun getUsers(): Single<UsersResponse>
 
     @GET("users/{user_id}")
-    fun getUser(
-        @Path("user_id") id: Int
-    ): Maybe<UserDTO>
+    fun getUser(@Path("user_id") id: Int): Maybe<UserDTO>
 
     @GET("users/me")
     fun getMyUser(): Maybe<UserDTO>
 
     @GET("users/{user_id}/presence")
-    fun getUserPresence(
-        @Path(value = "user_id")
-        userId: Int
-    ): Single<UserPresenceResponse>
+    fun getUserPresence(@Path(value = "user_id") userId: Int): Single<UserPresenceResponse>
 
     @GET("streams")
     fun getChannels(): Single<ChannelsResponse>
@@ -40,10 +35,7 @@ interface Api {
     fun getSubscribedChannels(): Single<SubscribedChannelsResponse>
 
     @GET("users/me/{stream_id}/topics")
-    fun getChannelTopics(
-        @Path(value = "stream_id")
-        channelId: Int
-    ): Single<TopicsResponse>
+    fun getChannelTopics(@Path("stream_id") channelId: Int): Single<TopicsResponse>
 
     @GET("/static/generated/emoji/emoji_codes.json")
     fun getReactions(): Single<ReactionsResponse>
@@ -75,10 +67,8 @@ interface Api {
 
     @DELETE("messages/{message_id}/reactions")
     fun deleteReaction(
-        @Path("message_id")
-        messageId: Int,
-        @Query("emoji_name")
-        emojiName: String
+        @Path("message_id") messageId: Int,
+        @Query("emoji_name") emojiName: String
     ): Completable
 
 }

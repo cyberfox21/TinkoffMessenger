@@ -9,9 +9,10 @@ import java.lang.reflect.Type
 
 class ReactionsConverter {
 
+    private val gson = Gson()
+
     @TypeConverter
     fun fromReactionsList(reactions: List<Reaction>): String {
-        val gson = Gson()
         val type: Type = object : TypeToken<List<Reaction>>() {}.type
         return gson.toJson(reactions, type)
     }

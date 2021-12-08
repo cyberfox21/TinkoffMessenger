@@ -19,5 +19,4 @@ class ProfileActor(private val getMyUserUseCase: GetMyUserUseCase) :
                 )
         }
     }
-
 }

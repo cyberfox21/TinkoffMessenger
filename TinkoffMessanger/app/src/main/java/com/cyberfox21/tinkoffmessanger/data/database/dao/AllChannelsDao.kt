@@ -16,5 +16,4 @@ interface AllChannelsDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun addAllChannelsListToDB(channelsList: List<ChannelDBModel>)
 
-
 }

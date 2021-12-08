@@ -73,4 +73,3 @@ class UsersRepositoryImpl @Inject constructor(
         ).subscribeOn(Schedulers.io())
 
 }
-

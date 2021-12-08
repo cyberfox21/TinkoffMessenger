@@ -7,13 +7,8 @@ import com.cyberfox21.tinkoffmessanger.data.database.dao.*
 import com.cyberfox21.tinkoffmessanger.data.database.model.*
 
 @Database(
-    entities = [MessageDBModel::class,
-        ChannelDBModel::class,
-        SubscribedChannelDBModel::class,
-        TopicDBModel::class,
-        ReactionListDBModel::class,
-        UserDBModel::class,
-        CurrentUserDBModel::class],
+    entities = [ReactionListDBModel::class, SubscribedChannelDBModel::class, ChannelDBModel::class,
+        MessageDBModel::class, UserDBModel::class, TopicDBModel::class, CurrentUserDBModel::class],
     version = 1,
     exportSchema = false
 )

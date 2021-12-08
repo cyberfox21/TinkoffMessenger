@@ -18,5 +18,4 @@ class PeopleActor(private val getUsersListUseCase: GetUsersListUseCase) :
             }
         }
     }
-
 }

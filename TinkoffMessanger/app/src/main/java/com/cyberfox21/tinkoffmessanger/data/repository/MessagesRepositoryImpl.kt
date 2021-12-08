@@ -11,10 +11,12 @@ import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import javax.inject.Inject
 
+@ExperimentalSerializationApi
 class MessagesRepositoryImpl @Inject constructor(
     private val api: Api,
     private val messagesDao: MessagesDao
@@ -35,8 +37,8 @@ class MessagesRepositoryImpl @Inject constructor(
     ): Single<List<Message>> {
         // todo check internet is available
         val narrowList = listOf(
-            Narrow("stream", channelName),
-            Narrow("topic", topicName)
+            Narrow(STREAM_KEY, channelName),
+            Narrow(TOPIC_KEY, topicName)
         )
         return api.getMessages(
             messagesNumberBefore = numBefore,
@@ -74,6 +76,11 @@ class MessagesRepositoryImpl @Inject constructor(
             topic = topicName,
             content = msg.message
         ).subscribeOn(Schedulers.io())
+    }
+
+    private companion object{
+        const val STREAM_KEY = "stream"
+        const val TOPIC_KEY = "topic"
     }
 
 }

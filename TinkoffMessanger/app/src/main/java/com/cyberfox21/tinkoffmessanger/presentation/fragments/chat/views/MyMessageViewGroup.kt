@@ -3,6 +3,7 @@ package com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.views
 import android.content.Context
 import android.util.AttributeSet
 import android.view.ViewGroup
+import androidx.core.content.res.ResourcesCompat
 import com.cyberfox21.tinkoffmessanger.R
 
 class MyMessageViewGroup @JvmOverloads constructor(
@@ -13,8 +14,8 @@ class MyMessageViewGroup @JvmOverloads constructor(
 ) : ViewGroup(context, attrs, defStyleAttr, defStyleRes) {
 
     init {
-        inflate(context, R.layout.my_message_viewgroup, this)
-            .background = resources.getDrawable(R.drawable.my_message_bg, context.theme)
+        inflate(context, R.layout.my_message_viewgroup, this).background =
+            ResourcesCompat.getDrawable(resources, R.drawable.my_message_bg, context.theme)
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
