@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.setFragmentResultListener
 import com.cyberfox21.tinkoffmessanger.R
@@ -15,13 +16,13 @@ import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.delegate.
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.delegate.adapter.MainChannelsRecyclerAdapter
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.delegate.adapter.TopicDelegateAdapter
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.elm.*
+import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.elm.ChannelsState.Companion.UNDEFINED_CHANNEL_ID
+import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.elm.ChannelsState.Companion.UNDEFINED_CHANNEL_NAME
 import vivid.money.elmslie.android.base.ElmFragment
 import vivid.money.elmslie.core.store.Store
 import javax.inject.Inject
 
 class ListChannelsFragment : ElmFragment<ChannelsEvent, ChannelsEffect, ChannelsState>() {
-
-    private var selectedChannelName: String = ""
 
     private lateinit var fragmentCategory: Category
 
@@ -42,19 +43,20 @@ class ListChannelsFragment : ElmFragment<ChannelsEvent, ChannelsEffect, Channels
     @Inject
     internal lateinit var actor: ChannelsActor
 
+    override fun createStore(): Store<ChannelsEvent, ChannelsEffect, ChannelsState> =
+        ChannelsStoreFactory(actor).provide()
+
     override val initEvent: ChannelsEvent = ChannelsEvent.Ui.GetChannelsList(
         INITIAL_QUERY, Category.SUBSCRIBED
     )
 
-    override fun createStore(): Store<ChannelsEvent, ChannelsEffect, ChannelsState> =
-        ChannelsStoreFactory(actor).provide()
-
     override fun render(state: ChannelsState) {
         with(binding) {
-            channelsShimmerLayout.shimmerViewContainer.isVisible = state.isLoading
+            channelsShimmerLayout.shimmerViewContainer.isVisible =
+                state.isFirstLoading && state.error == null
             emptyLayout.errorLayout.isVisible = state.isEmptyState
             networkErrorLayout.errorLayout.isVisible = state.error != null
-            categoryChannelsRecycler.isVisible = state.isEmptyState.not() && state.isLoading.not()
+            categoryChannelsRecycler.isVisible = state.isEmptyState.not() && state.error == null
             mainAdapter.submitList(state.delegateItems)
         }
     }
@@ -126,7 +128,21 @@ class ListChannelsFragment : ElmFragment<ChannelsEvent, ChannelsEffect, Channels
     }
 
     private fun launchRightTab() {
-        store.accept(ChannelsEvent.Ui.GetChannelsList(INITIAL_QUERY, fragmentCategory))
+        when (store.currentState.selectedChannelName) {
+            UNDEFINED_CHANNEL_NAME -> store.accept(
+                ChannelsEvent.Ui.GetChannelsList(
+                    INITIAL_QUERY,
+                    fragmentCategory
+                )
+            )
+            else -> store.accept(
+                ChannelsEvent.Ui.UpdateTopics(
+                    store.currentState.selectedChannelId,
+                    isSelected = true
+                )
+            )
+        }
+
     }
 
     private fun setupRecyclerView() {
@@ -146,10 +162,29 @@ class ListChannelsFragment : ElmFragment<ChannelsEvent, ChannelsEffect, Channels
                     channelName: String,
                     isSelected: Boolean
                 ) {
-                    selectedChannelName =
-                        if (selectedChannelName != channelName) channelName else ""
+
+                    if (store.currentState.selectedChannelName != channelName) {
+                        store.currentState.selectedChannelName = channelName
+                        store.currentState.selectedChannelId = channelId
+                    } else {
+                        store.currentState.selectedChannelName = UNDEFINED_CHANNEL_NAME
+                        store.currentState.selectedChannelId = UNDEFINED_CHANNEL_ID
+                    }
                     if (!isSelected) {
+                        store.accept(
+                            ChannelsEvent.Ui.GetChannelsList(
+                                INITIAL_QUERY,
+                                fragmentCategory
+                            )
+                        )
                         store.accept(ChannelsEvent.Ui.UpdateTopics(channelId, isSelected))
+                    } else {
+                        store.accept(
+                            ChannelsEvent.Ui.GetChannelsList(
+                                INITIAL_QUERY,
+                                fragmentCategory
+                            )
+                        )
                     }
                 }
 
@@ -157,7 +192,10 @@ class ListChannelsFragment : ElmFragment<ChannelsEvent, ChannelsEffect, Channels
             addDelegate(TopicDelegateAdapter(object :
                 TopicDelegateAdapter.OnTopicDelegateClickListener {
                 override fun onTopicClick(topicName: String) {
-                    onTopicSelected?.showMatchingChat(selectedChannelName, topicName)
+                    onTopicSelected?.showMatchingChat(
+                        store.currentState.selectedChannelName,
+                        topicName
+                    )
                 }
             }))
         }

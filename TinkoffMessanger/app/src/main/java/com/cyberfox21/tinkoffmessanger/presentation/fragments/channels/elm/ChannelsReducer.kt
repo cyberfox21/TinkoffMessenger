@@ -17,6 +17,7 @@ class ChannelsReducer :
                     state {
                         copy(
                             delegateItems = listOf(),
+                            isFirstLoading = false,
                             isEmptyState = true,
                             isLoading = false,
                             error = null
@@ -28,6 +29,7 @@ class ChannelsReducer :
                         copy(
                             delegateItems = getChannelDelegateItemsList(event.channels),
                             delegateChannels = getChannelDelegateItemsList(event.channels),
+                            isFirstLoading = false,
                             isEmptyState = false,
                             isLoading = false,
                             error = null
