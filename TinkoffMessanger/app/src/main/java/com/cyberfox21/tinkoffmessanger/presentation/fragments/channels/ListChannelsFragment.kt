@@ -10,7 +10,6 @@ import com.cyberfox21.tinkoffmessanger.R
 import com.cyberfox21.tinkoffmessanger.databinding.FragmentListChannelsBinding
 import com.cyberfox21.tinkoffmessanger.presentation.MainActivity
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.ChannelsFragment.Companion.QUERY
-import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.ChannelsFragment.Companion.SEARCH_QUERY
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.delegate.SpacesItemDecoration
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.delegate.adapter.ChannelDelegateAdapter
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.delegate.adapter.MainChannelsRecyclerAdapter
@@ -142,7 +141,6 @@ class ListChannelsFragment : ElmFragment<ChannelsEvent, ChannelsEffect, Channels
                 )
             )
         }
-
     }
 
     private fun setupRecyclerView() {
@@ -162,7 +160,6 @@ class ListChannelsFragment : ElmFragment<ChannelsEvent, ChannelsEffect, Channels
                     channelName: String,
                     isSelected: Boolean
                 ) {
-
                     if (store.currentState.selectedChannelName != channelName) {
                         store.currentState.selectedChannelName = channelName
                         store.currentState.selectedChannelId = channelId
@@ -204,10 +201,10 @@ class ListChannelsFragment : ElmFragment<ChannelsEvent, ChannelsEffect, Channels
 
     private fun addListeners() {
         activity?.supportFragmentManager?.setFragmentResultListener(
-            SEARCH_QUERY,
+            fragmentCategory.uiName,
             viewLifecycleOwner
         ) { key, bundle ->
-            if (key == SEARCH_QUERY) {
+            if (key == fragmentCategory.uiName) {
                 val str = bundle.getString(QUERY)
                 str?.let { store.accept(ChannelsEvent.Ui.GetChannelsList(it, fragmentCategory)) }
             }
@@ -234,6 +231,5 @@ class ListChannelsFragment : ElmFragment<ChannelsEvent, ChannelsEffect, Channels
             }
         }
     }
-
 
 }

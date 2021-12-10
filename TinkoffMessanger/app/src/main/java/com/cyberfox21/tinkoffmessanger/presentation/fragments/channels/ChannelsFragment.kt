@@ -11,6 +11,7 @@ import android.widget.ImageView
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.viewpager2.widget.ViewPager2
 import com.cyberfox21.tinkoffmessanger.R
 import com.cyberfox21.tinkoffmessanger.databinding.FragmentChannelsBinding
 import com.cyberfox21.tinkoffmessanger.presentation.NavigationHolder
@@ -27,7 +28,11 @@ class ChannelsFragment : Fragment(), ListChannelsFragment.OnTopicSelected {
 
     private lateinit var vpAdapter: ChannelsViewPagerAdapter
 
+    private var fragmentCurrentPagesPosition = Category.SUBSCRIBED
+
     private val tabs = listOf(Category.SUBSCRIBED.uiName, Category.ALL.uiName)
+
+    private lateinit var onPageChangeCallback: ViewPager2.OnPageChangeCallback
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -66,14 +71,30 @@ class ChannelsFragment : Fragment(), ListChannelsFragment.OnTopicSelected {
     override fun onDestroyView() {
         super.onDestroyView()
         Log.d("ChannelsFragment", "onDestroyView()")
+        binding.vpCategories.unregisterOnPageChangeCallback(onPageChangeCallback)
         _binding = null
+    }
+
+    private fun getCurrentPageCategory(position: Int) = when (position) {
+        0 -> Category.SUBSCRIBED
+        1 -> Category.ALL
+        else -> throw RuntimeException("Unknown page category position $position")
     }
 
     private fun setupViewPager() {
         val categories = listOf(Category.SUBSCRIBED, Category.ALL)
         vpAdapter = ChannelsViewPagerAdapter(childFragmentManager, lifecycle, this)
         vpAdapter.setCategoryList(categories)
-        binding.vpCategories.adapter = vpAdapter
+        onPageChangeCallback = object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                fragmentCurrentPagesPosition =
+                    getCurrentPageCategory(binding.vpCategories.currentItem)
+            }
+        }
+        binding.vpCategories.apply {
+            registerOnPageChangeCallback(onPageChangeCallback)
+            adapter = vpAdapter
+        }
     }
 
     private fun setupTabLayout() {
@@ -100,14 +121,12 @@ class ChannelsFragment : Fragment(), ListChannelsFragment.OnTopicSelected {
             setIconifiedByDefault(false)
             setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                 override fun onQueryTextSubmit(query: String): Boolean {
-//                    DisplayUtils.hideKeyboard(activity)
                     return true
                 }
 
                 override fun onQueryTextChange(newText: String): Boolean {
-//                    onQueryChanged(newText)
                     activity?.supportFragmentManager?.setFragmentResult(
-                        SEARCH_QUERY,
+                        fragmentCurrentPagesPosition.uiName,
                         Bundle().apply { putString(QUERY, newText) })
                     return true
                 }
@@ -125,7 +144,6 @@ class ChannelsFragment : Fragment(), ListChannelsFragment.OnTopicSelected {
             CHANNELS_FRAGMENT_NAME
         )
     }
-
 
     companion object {
         const val CHANNELS_FRAGMENT_NAME = "channels_fragment"
