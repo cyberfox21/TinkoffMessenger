@@ -7,7 +7,12 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class PeopleState(
     val users: List<User>? = null,
+    var query: String = INITIAL_QUERY,
     val isEmptyState: Boolean = true,
     val isLoading: Boolean = false,
     val error: Throwable? = null
-) : Parcelable
+) : Parcelable {
+    companion object {
+        const val INITIAL_QUERY = ""
+    }
+}

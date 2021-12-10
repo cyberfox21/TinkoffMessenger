@@ -106,6 +106,9 @@ class ChannelsFragment : Fragment(), ListChannelsFragment.OnTopicSelected {
 
                 override fun onQueryTextChange(newText: String): Boolean {
 //                    onQueryChanged(newText)
+                    activity?.supportFragmentManager?.setFragmentResult(
+                        SEARCH_QUERY,
+                        Bundle().apply { putString(QUERY, newText) })
                     return true
                 }
 

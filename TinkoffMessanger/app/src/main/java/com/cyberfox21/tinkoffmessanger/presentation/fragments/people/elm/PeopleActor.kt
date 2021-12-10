@@ -11,18 +11,21 @@ class PeopleActor(private val getUsersListUseCase: GetUsersListUseCase) :
     override fun execute(command: PeopleCommand): Observable<PeopleEvent> {
         return when (command) {
             is PeopleCommand.LoadUserList -> {
-                getUsersListUseCase().mapEvents(
+                getUsersListUseCase(command.query).mapEvents(
                     { users ->
-                        users.fold(
-                            onSuccess = {
-                                val result = users.getOrNull()
-                                if (result == null) PeopleEvent.Internal.UserListLoadEmpty
-                                else PeopleEvent.Internal.UserListLoaded(result)
-                            },
-                            onFailure = {
-                                PeopleEvent.Internal.UserListLoadError(it)
-                            }
-                        )
+                        if (users.isFailure) PeopleEvent.Internal.UserListLoadEmpty
+                        else {
+                            users.fold(
+                                onSuccess = {
+                                    val result = users.getOrNull()
+                                    if (result == null) PeopleEvent.Internal.UserListLoadEmpty
+                                    else PeopleEvent.Internal.UserListLoaded(result)
+                                },
+                                onFailure = {
+                                    PeopleEvent.Internal.UserListLoadError(it)
+                                }
+                            )
+                        }
                     },
                     { error -> PeopleEvent.Internal.UserListLoadError(error) }
                 ).subscribeOn(Schedulers.io())

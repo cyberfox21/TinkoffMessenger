@@ -36,7 +36,7 @@ class PeopleFragment : ElmFragment<PeopleEvent, PeopleEffect, PeopleState>() {
     @Inject
     internal lateinit var actor: PeopleActor
 
-    override val initEvent: PeopleEvent = PeopleEvent.Ui.GetUserList
+    override val initEvent: PeopleEvent = PeopleEvent.Ui.GetUserList(PeopleState.INITIAL_QUERY)
 
     override fun createStore(): Store<PeopleEvent, PeopleEffect, PeopleState> =
         PeopleStoreFactory(actor).provide()
@@ -45,7 +45,8 @@ class PeopleFragment : ElmFragment<PeopleEvent, PeopleEffect, PeopleState>() {
         with(binding) {
             shimmerLayoutPeople.shimmerViewContainer.isVisible = state.isLoading
             emptyLayout.errorLayout.isVisible = state.isEmptyState && state.isLoading.not()
-            peopleRecyclerView.isVisible = state.error == null && state.users?.isNotEmpty() == true
+            peopleRecyclerView.isVisible =
+                state.error == null && state.users?.isNotEmpty() == true && state.isLoading.not()
             peopleRecyclerAdapter.submitList(state.users)
             networkErrorLayout.errorLayout.isVisible = state.error != null && state.isLoading.not()
         }
@@ -105,7 +106,6 @@ class PeopleFragment : ElmFragment<PeopleEvent, PeopleEffect, PeopleState>() {
         (activity as NavigationHolder).showNavigation()
     }
 
-
     private fun setupSearchPanel() {
         binding.toolbarLayout.toolbar.setTitleTextColor(
             ContextCompat.getColor(
@@ -119,7 +119,9 @@ class PeopleFragment : ElmFragment<PeopleEvent, PeopleEffect, PeopleState>() {
         searchView = searchMenuItem.actionView as SearchView
         searchMenuItem.isVisible = true
         searchView.apply {
-            findViewById<ImageView>(R.id.search_close_btn).setImageResource(R.drawable.ic_close)
+            findViewById<ImageView>(R.id.search_close_btn).apply {
+                setImageResource(R.drawable.ic_close)
+            }
             setSearchableInfo(searchManager.getSearchableInfo(activity?.componentName))
             setIconifiedByDefault(false)
             setOnQueryTextListener(object : SearchView.OnQueryTextListener {
@@ -128,10 +130,9 @@ class PeopleFragment : ElmFragment<PeopleEvent, PeopleEffect, PeopleState>() {
                 }
 
                 override fun onQueryTextChange(newText: String): Boolean {
-//                    onQueryChanged(newText)
+                    store.accept(PeopleEvent.Ui.GetUserList(newText))
                     return true
                 }
-
             })
         }
     }
@@ -143,10 +144,10 @@ class PeopleFragment : ElmFragment<PeopleEvent, PeopleEffect, PeopleState>() {
 
     private fun addListeners() {
         binding.networkErrorLayout.networkButton.setOnClickListener {
-            store.accept(PeopleEvent.Ui.GetUserList)
+            store.accept(PeopleEvent.Ui.GetUserList(store.currentState.query))
         }
         binding.emptyLayout.btnRefresh.setOnClickListener {
-            store.accept(PeopleEvent.Ui.GetUserList)
+            store.accept(PeopleEvent.Ui.GetUserList(store.currentState.query))
         }
         peopleRecyclerAdapter.onPersonClickListener =
             object : PeopleRecyclerAdapter.OnPersonClickListener {
@@ -166,6 +167,7 @@ class PeopleFragment : ElmFragment<PeopleEvent, PeopleEffect, PeopleState>() {
     }
 
     companion object {
+
         const val PEOPLE_FRAGMENT_NAME = "people_fragment"
 
         fun newInstance(): PeopleFragment {

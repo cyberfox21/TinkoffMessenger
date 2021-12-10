@@ -5,12 +5,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.view.isVisible
-import androidx.fragment.app.setFragmentResultListener
 import com.cyberfox21.tinkoffmessanger.R
 import com.cyberfox21.tinkoffmessanger.databinding.FragmentListChannelsBinding
 import com.cyberfox21.tinkoffmessanger.presentation.MainActivity
+import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.ChannelsFragment.Companion.QUERY
+import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.ChannelsFragment.Companion.SEARCH_QUERY
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.delegate.SpacesItemDecoration
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.delegate.adapter.ChannelDelegateAdapter
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.delegate.adapter.MainChannelsRecyclerAdapter
@@ -203,15 +203,14 @@ class ListChannelsFragment : ElmFragment<ChannelsEvent, ChannelsEffect, Channels
     }
 
     private fun addListeners() {
-        setFragmentResultListener(
-            ChannelsFragment.SEARCH_QUERY
+        activity?.supportFragmentManager?.setFragmentResultListener(
+            SEARCH_QUERY,
+            viewLifecycleOwner
         ) { key, bundle ->
-            store.accept(
-                ChannelsEvent.Ui.GetChannelsList(
-                    bundle.getString(key) ?: "",
-                    fragmentCategory
-                )
-            )
+            if (key == SEARCH_QUERY) {
+                val str = bundle.getString(QUERY)
+                str?.let { store.accept(ChannelsEvent.Ui.GetChannelsList(it, fragmentCategory)) }
+            }
         }
         binding.networkErrorLayout.networkButton.setOnClickListener {
             store.accept(ChannelsEvent.Ui.GetChannelsList(INITIAL_QUERY, fragmentCategory))

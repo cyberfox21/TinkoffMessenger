@@ -17,8 +17,9 @@ class PeopleReducer : DslReducer<PeopleEvent, PeopleState, PeopleEffect, PeopleC
                             error = null
                         )
                     }
+                } else {
+                    effects { PeopleEffect.UsersListEmpty }
                 }
-                else{ effects { PeopleEffect.UsersListEmpty }}
             }
             PeopleEvent.Internal.UserListLoadEmpty -> {
                 if (state.isEmptyState) {
@@ -43,7 +44,7 @@ class PeopleReducer : DslReducer<PeopleEvent, PeopleState, PeopleEffect, PeopleC
                         error = null
                     )
                 }
-                commands { +PeopleCommand.LoadUserList }
+                commands { +PeopleCommand.LoadUserList(event.query) }
             }
         }
     }

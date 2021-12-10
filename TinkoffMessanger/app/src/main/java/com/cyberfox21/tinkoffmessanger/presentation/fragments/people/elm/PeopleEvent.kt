@@ -4,7 +4,7 @@ import com.cyberfox21.tinkoffmessanger.domain.entity.User
 
 sealed class PeopleEvent {
     sealed class Ui : PeopleEvent() {
-        object GetUserList : Ui()
+        data class GetUserList(val query: String) : Ui()
     }
 
     sealed class Internal : PeopleEvent() {
