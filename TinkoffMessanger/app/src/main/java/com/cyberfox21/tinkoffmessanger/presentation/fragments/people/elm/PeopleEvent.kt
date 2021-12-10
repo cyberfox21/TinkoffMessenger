@@ -8,8 +8,8 @@ sealed class PeopleEvent {
     }
 
     sealed class Internal : PeopleEvent() {
-        data class UserListLoaded(val users: List<User>?) : Internal()
-
+        data class UserListLoaded(val users: List<User>) : Internal()
+        object UserListLoadEmpty : Internal()
         data class UserListLoadError(val error: Throwable) : Internal()
     }
 }

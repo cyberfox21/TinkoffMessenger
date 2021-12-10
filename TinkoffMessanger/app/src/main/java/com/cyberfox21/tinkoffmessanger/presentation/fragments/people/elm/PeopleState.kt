@@ -7,7 +7,7 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class PeopleState(
     val users: List<User>? = null,
-    val isEmptyState: Boolean = false,
+    val isEmptyState: Boolean = true,
     val isLoading: Boolean = false,
     val error: Throwable? = null
 ) : Parcelable

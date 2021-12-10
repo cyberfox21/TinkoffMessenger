@@ -39,13 +39,14 @@ class ProfileFragment() : ElmFragment<ProfileEvent, ProfileEffect, ProfileState>
     override fun render(state: ProfileState) {
         with(binding) {
             shimmerLayoutProfile.shimmerViewContainer.isVisible = state.isLoading
-            emptyLayout.errorLayout.isVisible = state.isEmptyState
+            emptyLayout.errorLayout.isVisible = state.isEmptyState && state.isLoading.not()
             binding.btnLogout.isVisible =
                 screenMode == ProfileMode.YOUR &&
                         state.error == null &&
+                        state.isEmptyState.not() &&
                         binding.shimmerLayoutProfile.shimmerViewContainer.isVisible.not()
-            if (!state.isEmptyState) state.user?.let { bindUser(it) }
-            networkErrorLayout.errorLayout.isVisible = state.error != null
+            if (!state.isEmptyState && state.isLoading.not()) state.user?.let { bindUser(it) }
+            networkErrorLayout.errorLayout.isVisible = state.error != null && state.isLoading.not()
         }
     }
 
@@ -103,6 +104,7 @@ class ProfileFragment() : ElmFragment<ProfileEvent, ProfileEffect, ProfileState>
         if (mode != ProfileMode.YOUR && mode != ProfileMode.STRANGER)
             throw RuntimeException("Unknown profile screen mode $mode")
         screenMode = mode
+        store.currentState.profileScreenMode = mode
         if (screenMode == ProfileMode.STRANGER && !args.containsKey(EXTRA_USER))
             throw RuntimeException("Param user is absent")
         else if (screenMode == ProfileMode.STRANGER && args.containsKey(EXTRA_USER))
@@ -153,7 +155,7 @@ class ProfileFragment() : ElmFragment<ProfileEvent, ProfileEffect, ProfileState>
         binding.toolbarLayout.toolbar.title = resources.getString(R.string.profile)
     }
 
-    private fun toolbarWithNavigation(){
+    private fun toolbarWithNavigation() {
         binding.toolbarLayout.toolbar.setNavigationIcon(R.drawable.ic_back)
         binding.toolbarLayout.toolbar.setNavigationOnClickListener {
             activity?.onBackPressed()
@@ -162,6 +164,7 @@ class ProfileFragment() : ElmFragment<ProfileEvent, ProfileEffect, ProfileState>
 
     private fun addListeners() {
         binding.networkErrorLayout.networkButton.setOnClickListener { launchRightMode() }
+        binding.emptyLayout.btnRefresh.setOnClickListener { launchRightMode() }
     }
 
     companion object {
@@ -190,3 +193,4 @@ class ProfileFragment() : ElmFragment<ProfileEvent, ProfileEffect, ProfileState>
         }
     }
 }
+

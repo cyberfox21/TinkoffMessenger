@@ -3,7 +3,6 @@ package com.cyberfox21.tinkoffmessanger.data.api
 import com.cyberfox21.tinkoffmessanger.data.api.response.*
 import com.cyberfox21.tinkoffmessanger.data.api.response.dto.UserDTO
 import io.reactivex.Completable
-import io.reactivex.Maybe
 import io.reactivex.Single
 import retrofit2.http.*
 
@@ -20,10 +19,10 @@ interface Api {
     fun getUsers(): Single<UsersResponse>
 
     @GET("users/{user_id}")
-    fun getUser(@Path("user_id") id: Int): Maybe<UserDTO>
+    fun getUser(@Path("user_id") id: Int): Single<UserDTO>
 
     @GET("users/me")
-    fun getMyUser(): Maybe<UserDTO>
+    fun getMyUser(): Single<UserDTO>
 
     @GET("users/{user_id}/presence")
     fun getUserPresence(@Path(value = "user_id") userId: Int): Single<UserPresenceResponse>

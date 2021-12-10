@@ -44,10 +44,10 @@ class PeopleFragment : ElmFragment<PeopleEvent, PeopleEffect, PeopleState>() {
     override fun render(state: PeopleState) {
         with(binding) {
             shimmerLayoutPeople.shimmerViewContainer.isVisible = state.isLoading
-            emptyLayout.errorLayout.isVisible = state.isEmptyState
-            peopleRecyclerView.isVisible = state.isEmptyState.not()
+            emptyLayout.errorLayout.isVisible = state.isEmptyState && state.isLoading.not()
+            peopleRecyclerView.isVisible = state.error == null && state.users?.isNotEmpty() == true
             peopleRecyclerAdapter.submitList(state.users)
-            networkErrorLayout.errorLayout.isVisible = state.error != null
+            networkErrorLayout.errorLayout.isVisible = state.error != null && state.isLoading.not()
         }
     }
 
@@ -145,6 +145,9 @@ class PeopleFragment : ElmFragment<PeopleEvent, PeopleEffect, PeopleState>() {
         binding.networkErrorLayout.networkButton.setOnClickListener {
             store.accept(PeopleEvent.Ui.GetUserList)
         }
+        binding.emptyLayout.btnRefresh.setOnClickListener {
+            store.accept(PeopleEvent.Ui.GetUserList)
+        }
         peopleRecyclerAdapter.onPersonClickListener =
             object : PeopleRecyclerAdapter.OnPersonClickListener {
                 override fun onPersonClick(user: User) {
@@ -161,7 +164,6 @@ class PeopleFragment : ElmFragment<PeopleEvent, PeopleEffect, PeopleState>() {
             PEOPLE_FRAGMENT_NAME
         )
     }
-
 
     companion object {
         const val PEOPLE_FRAGMENT_NAME = "people_fragment"

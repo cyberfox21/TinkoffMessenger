@@ -12,9 +12,8 @@ class ProfileActor(private val getMyUserUseCase: GetMyUserUseCase) :
         return when (command) {
             is ProfileCommand.LoadCurrentUser -> getMyUserUseCase()
                 .subscribeOn(Schedulers.io())
-                .toObservable()
                 .mapEvents(
-                    { user -> ProfileEvent.Internal.UserLoaded(user) },
+                    { user -> ProfileEvent.Internal.UserLoaded(user.getOrNull()) },
                     { error -> ProfileEvent.Internal.ErrorLoading(error) }
                 )
         }

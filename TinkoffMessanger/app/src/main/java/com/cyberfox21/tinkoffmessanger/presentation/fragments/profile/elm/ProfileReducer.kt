@@ -8,16 +8,20 @@ class ProfileReducer : DslReducer<ProfileEvent, ProfileState, ProfileEffect, Pro
         return when (event) {
             is ProfileEvent.Internal.UserLoaded -> {
                 if (event.user == null) {
-                    state {
-                        copy(
-                            user = null,
-                            isEmptyState = true,
-                            isLoading = false,
-                            error = null,
-                            profileScreenMode = ProfileMode.YOUR
-                        )
+                    if (state.profileScreenMode == ProfileMode.YOUR && state.isEmptyState) {
+                        state {
+                            copy(
+                                user = null,
+                                isEmptyState = true,
+                                isLoading = false,
+                                error = null,
+                                profileScreenMode = ProfileMode.YOUR
+                            )
+                        }
+                        effects { ProfileEffect.UserEmpty }
+                    } else {
+                        state { copy(isLoading = false, error = null) }
                     }
-                    effects { ProfileEffect.UserEmpty }
                 } else {
                     state {
                         copy(
@@ -43,18 +47,17 @@ class ProfileReducer : DslReducer<ProfileEvent, ProfileState, ProfileEffect, Pro
                 effects { ProfileEffect.UserLoadError(event.error) }
             }
             is ProfileEvent.Ui.GetCurrentUser -> {
-                state {
-                    copy(
-                        user = null,
-                        isEmptyState = false,
-                        isLoading = true,
-                        error = null,
-                        profileScreenMode = ProfileMode.YOUR
-                    )
-                }
+                if (state.profileScreenMode == ProfileMode.YOUR)
+                    state {
+                        copy(
+                            isLoading = true,
+                            error = null,
+                            profileScreenMode = ProfileMode.YOUR
+                        )
+                    }
                 commands { +ProfileCommand.LoadCurrentUser }
             }
-            is ProfileEvent.Ui.GetSelectedUser -> { // сразу показываем результат
+            is ProfileEvent.Ui.GetSelectedUser -> {
                 state {
                     copy(
                         user = event.user,

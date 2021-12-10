@@ -1,22 +1,14 @@
 package com.cyberfox21.tinkoffmessanger.presentation.fragments.people.elm
 
+import android.util.Log
 import vivid.money.elmslie.core.store.dsl_reducer.DslReducer
 
 class PeopleReducer : DslReducer<PeopleEvent, PeopleState, PeopleEffect, PeopleCommand>() {
     override fun Result.reduce(event: PeopleEvent): Any {
         return when (event) {
             is PeopleEvent.Internal.UserListLoaded -> {
-                if (event.users?.isEmpty() == true) {
-                    state {
-                        copy(
-                            users = listOf(),
-                            isEmptyState = true,
-                            isLoading = false,
-                            error = null
-                        )
-                    }
-                    effects { PeopleEffect.UsersListEmpty }
-                } else {
+                if (event.users.isNotEmpty()) {
+                    Log.d("UsersLoaded not empty", "${event.users.size}")
                     state {
                         copy(
                             users = event.users,
@@ -26,23 +18,27 @@ class PeopleReducer : DslReducer<PeopleEvent, PeopleState, PeopleEffect, PeopleC
                         )
                     }
                 }
+                else{ effects { PeopleEffect.UsersListEmpty }}
+            }
+            PeopleEvent.Internal.UserListLoadEmpty -> {
+                if (state.isEmptyState) {
+                    state { copy(isLoading = false, error = null) }
+                    effects { PeopleEffect.UsersListEmpty }
+                } else {
+                    state { copy(isLoading = false, error = null) }
+                }
             }
             is PeopleEvent.Internal.UserListLoadError -> {
-                state {
-                    copy(
-                        users = null,
-                        isEmptyState = false,
-                        isLoading = false,
-                        error = event.error
-                    )
+                if (state.error != null) {
+                    state { copy(isLoading = false, error = event.error) }
+                    effects { PeopleEffect.UserListLoadError(event.error) }
+                } else {
+                    state { copy(isLoading = false, error = null) }
                 }
-                effects { PeopleEffect.UserListLoadError(event.error) }
             }
             is PeopleEvent.Ui.GetUserList -> {
                 state {
                     copy(
-                        users = null,
-                        isEmptyState = false,
                         isLoading = true,
                         error = null
                     )

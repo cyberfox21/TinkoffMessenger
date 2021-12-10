@@ -1,14 +1,13 @@
 package com.cyberfox21.tinkoffmessanger.domain.repository
 
 import com.cyberfox21.tinkoffmessanger.domain.entity.User
-import io.reactivex.Flowable
 import io.reactivex.Observable
 
 interface UsersRepository {
 
-    fun getUsersList(): Observable<List<User>>
+    fun getUsersList(): Observable<Result<List<User>>>
 
-    fun getMyUser(): Flowable<User>
+    fun getMyUser(): Observable<Result<User>>
 
-    fun getUser(id: Int): Flowable<User>
+    fun getUser(id: Int): Observable<Result<User>>
 }

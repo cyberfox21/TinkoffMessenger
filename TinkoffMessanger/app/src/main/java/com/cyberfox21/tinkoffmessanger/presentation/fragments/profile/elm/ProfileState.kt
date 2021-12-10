@@ -8,8 +8,8 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class ProfileState(
     val user: User? = null,
-    val isEmptyState: Boolean = false,
+    val isEmptyState: Boolean = true,
     val isLoading: Boolean = false,
     val error: Throwable? = null,
-    val profileScreenMode: ProfileMode = ProfileMode.YOUR
+    var profileScreenMode: ProfileMode = ProfileMode.YOUR
 ) : Parcelable

@@ -12,7 +12,18 @@ class PeopleActor(private val getUsersListUseCase: GetUsersListUseCase) :
         return when (command) {
             is PeopleCommand.LoadUserList -> {
                 getUsersListUseCase().mapEvents(
-                    { users -> PeopleEvent.Internal.UserListLoaded(users) },
+                    { users ->
+                        users.fold(
+                            onSuccess = {
+                                val result = users.getOrNull()
+                                if (result == null) PeopleEvent.Internal.UserListLoadEmpty
+                                else PeopleEvent.Internal.UserListLoaded(result)
+                            },
+                            onFailure = {
+                                PeopleEvent.Internal.UserListLoadError(it)
+                            }
+                        )
+                    },
                     { error -> PeopleEvent.Internal.UserListLoadError(error) }
                 ).subscribeOn(Schedulers.io())
             }
