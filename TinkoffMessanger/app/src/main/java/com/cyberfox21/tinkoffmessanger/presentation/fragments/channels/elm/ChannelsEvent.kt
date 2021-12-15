@@ -10,7 +10,11 @@ sealed class ChannelsEvent {
 
         data class GetChannelsList(val searchQuery: String, val category: Category) : Ui()
 
-        data class UpdateTopics(val channelId: Int, val isSelected: Boolean) : Ui()
+        data class UpdateTopics(
+            val channelId: Int,
+            val channelName: String,
+            val isSelected: Boolean
+        ) : Ui()
     }
 
     sealed class Internal : ChannelsEvent() {
@@ -24,6 +28,7 @@ sealed class ChannelsEvent {
         data class TopicsLoaded(
             val topics: List<Topic>,
             val channelId: Int,
+            val channelName: String,
             val isSelected: Boolean
         ) : Internal()
 

@@ -32,12 +32,6 @@ class ListChannelsFragment : ElmFragment<ChannelsEvent, ChannelsEffect, Channels
     private val binding
         get() = _binding ?: throw RuntimeException("FragmentListChannelsBinding = null")
 
-    private var onTopicSelected: OnTopicSelected? = null
-
-    interface OnTopicSelected {
-        fun showMatchingChat(topicName: String, channelName: String)
-    }
-
 //  < ---------------------------------------- ELM --------------------------------------------->
 
     @Inject
@@ -178,7 +172,8 @@ class ListChannelsFragment : ElmFragment<ChannelsEvent, ChannelsEffect, Channels
             )
             else -> store.accept(
                 ChannelsEvent.Ui.UpdateTopics(
-                    store.currentState.selectedChannelId,
+                    channelId = store.currentState.selectedChannelId,
+                    channelName = store.currentState.selectedChannelName,
                     isSelected = true
                 )
             )
@@ -202,13 +197,13 @@ class ListChannelsFragment : ElmFragment<ChannelsEvent, ChannelsEffect, Channels
                     channelName: String,
                     isSelected: Boolean
                 ) {
-                    updateTopics(channelId, isSelected)
+                    updateTopics(channelId, channelName, isSelected)
                 }
             }))
             addDelegate(TopicDelegateAdapter(object :
                 TopicDelegateAdapter.OnTopicDelegateClickListener {
                 override fun onTopicClick(topicName: String) {
-                    onTopicSelected?.showMatchingChat(
+                    (parentFragment as ChannelsFragment).showMatchingChat(
                         store.currentState.selectedChannelName,
                         topicName
                     )
@@ -236,8 +231,8 @@ class ListChannelsFragment : ElmFragment<ChannelsEvent, ChannelsEffect, Channels
         }
     }
 
-    private fun updateTopics(channelId: Int, isSelected: Boolean) {
-        store.accept(ChannelsEvent.Ui.UpdateTopics(channelId, isSelected))
+    private fun updateTopics(channelId: Int, channelName: String, isSelected: Boolean) {
+        store.accept(ChannelsEvent.Ui.UpdateTopics(channelId, channelName, isSelected))
     }
 
     companion object {
@@ -245,12 +240,10 @@ class ListChannelsFragment : ElmFragment<ChannelsEvent, ChannelsEffect, Channels
         private const val INITIAL_QUERY: String = ""
 
         fun newInstance(
-            category: Category,
-            onTopicSelected: OnTopicSelected
+            category: Category
         ): ListChannelsFragment {
 
             return ListChannelsFragment().apply {
-                this.onTopicSelected = onTopicSelected
                 arguments = Bundle().apply {
                     putSerializable(EXTRA_CATEGORY, category)
                 }

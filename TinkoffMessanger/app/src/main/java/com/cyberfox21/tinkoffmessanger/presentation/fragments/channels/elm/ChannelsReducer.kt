@@ -46,6 +46,8 @@ class ChannelsReducer :
             is ChannelsEvent.Internal.TopicsLoaded -> {
                 state {
                     copy(
+                        selectedChannelName = event.channelName,
+                        selectedChannelId = event.channelId,
                         delegateItems = getDelegateItemsList(
                             state.delegateItems,
                             state.delegateChannels,
@@ -91,6 +93,7 @@ class ChannelsReducer :
                     commands {
                         +ChannelsCommand.GetTopicsList(
                             event.channelId,
+                            event.channelName,
                             event.isSelected
                         )
                     }

@@ -18,7 +18,7 @@ import com.cyberfox21.tinkoffmessanger.presentation.NavigationHolder
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.ChatFragment
 import com.google.android.material.tabs.TabLayoutMediator
 
-class ChannelsFragment : Fragment(), ListChannelsFragment.OnTopicSelected {
+class ChannelsFragment : Fragment() {
 
     private var _binding: FragmentChannelsBinding? = null
     private val binding: FragmentChannelsBinding
@@ -83,7 +83,7 @@ class ChannelsFragment : Fragment(), ListChannelsFragment.OnTopicSelected {
 
     private fun setupViewPager() {
         val categories = listOf(Category.SUBSCRIBED, Category.ALL)
-        vpAdapter = ChannelsViewPagerAdapter(childFragmentManager, lifecycle, this)
+        vpAdapter = ChannelsViewPagerAdapter(childFragmentManager, lifecycle)
         vpAdapter.setCategoryList(categories)
         onPageChangeCallback = object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
@@ -135,7 +135,7 @@ class ChannelsFragment : Fragment(), ListChannelsFragment.OnTopicSelected {
         }
     }
 
-    override fun showMatchingChat(chnlName: String, topicName: String) {
+    fun showMatchingChat(chnlName: String, topicName: String) {
         (requireActivity() as NavigationHolder).startFragment(
             ChatFragment.newInstance(
                 chnlName,

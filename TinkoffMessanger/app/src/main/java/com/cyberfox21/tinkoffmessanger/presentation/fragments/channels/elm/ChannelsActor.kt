@@ -34,6 +34,7 @@ class ChannelsActor(
                             ChannelsEvent.Internal.TopicsLoaded(
                                 topics,
                                 command.channelId,
+                                command.channelName,
                                 command.isSelected
                             )
                         },

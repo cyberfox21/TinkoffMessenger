@@ -7,8 +7,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 
 class ChannelsViewPagerAdapter(
     fragmentManager: FragmentManager,
-    lifecycle: Lifecycle,
-    private val onTopicSelected: ListChannelsFragment.OnTopicSelected
+    lifecycle: Lifecycle
 ) : FragmentStateAdapter(fragmentManager, lifecycle) {
 
     private var categories = listOf<Category>()
@@ -21,7 +20,7 @@ class ChannelsViewPagerAdapter(
     fun setCategoryList(list: List<Category>) {
         categories = list
         categories.forEach {
-            fragments.add(ListChannelsFragment.newInstance(it, onTopicSelected))
+            fragments.add(ListChannelsFragment.newInstance(it))
         }
         notifyItemRangeChanged(LIST_START_POSITION, categories.size)
     }
