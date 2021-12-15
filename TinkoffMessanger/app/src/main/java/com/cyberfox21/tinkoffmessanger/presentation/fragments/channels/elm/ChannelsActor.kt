@@ -3,6 +3,7 @@ package com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.elm
 import com.cyberfox21.tinkoffmessanger.domain.usecase.GetTopicsUseCase
 import com.cyberfox21.tinkoffmessanger.domain.usecase.SearchChannelsUseCase
 import io.reactivex.Observable
+import io.reactivex.schedulers.Schedulers
 import vivid.money.elmslie.core.ActorCompat
 
 class ChannelsActor(
@@ -14,14 +15,20 @@ class ChannelsActor(
         return when (command) {
             is ChannelsCommand.GetChannelsList -> {
                 searchChannelsUseCase(command.searchQuery, command.category)
-                    .mapEvents(
-                        { channels -> ChannelsEvent.Internal.ChannelsLoaded(channels) },
-                        { error -> ChannelsEvent.Internal.ChannelsLoadError(error) }
-                    )
+                    .subscribeOn(Schedulers.io())
+                    .map { result ->
+                        result.fold(
+                            { list ->
+                                if (list.isEmpty()) {
+                                    ChannelsEvent.Internal.ChannelsLoadedEmpty
+                                } else ChannelsEvent.Internal.ChannelsLoaded(list)
+                            },
+                            { ChannelsEvent.Internal.ChannelsLoadError(it) }
+                        )
+                    }
             }
             is ChannelsCommand.GetTopicsList -> {
                 getTopicsUseCase(command.channelId)
-                    .toObservable()
                     .mapEvents(
                         { topics ->
                             ChannelsEvent.Internal.TopicsLoaded(
@@ -31,7 +38,7 @@ class ChannelsActor(
                             )
                         },
                         { error -> ChannelsEvent.Internal.TopicsLoadError(error) }
-                    )
+                    ).subscribeOn(Schedulers.io())
             }
         }
     }

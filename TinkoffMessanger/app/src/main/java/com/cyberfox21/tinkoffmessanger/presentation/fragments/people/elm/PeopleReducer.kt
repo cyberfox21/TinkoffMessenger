@@ -18,6 +18,7 @@ class PeopleReducer : DslReducer<PeopleEvent, PeopleState, PeopleEffect, PeopleC
                         )
                     }
                 } else {
+                    state { copy(isLoading = false, error = null) }
                     effects { PeopleEffect.UsersListEmpty }
                 }
             }

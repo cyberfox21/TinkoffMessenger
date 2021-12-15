@@ -21,7 +21,7 @@ class UsersRepositoryImpl @Inject constructor(
         Observable.concat(
             getMyUserFromDB().toObservable(),
             getMyUserFromNetwork().toObservable()
-        )
+        ).subscribeOn(Schedulers.io())
 
     override fun getUser(id: Int): Observable<Result<User>> =
         Observable.concat(
@@ -31,60 +31,63 @@ class UsersRepositoryImpl @Inject constructor(
 
     override fun getUsersList(): Observable<Result<List<User>>> =
         Observable.concat(
-            getUsersListFromDB().toObservable(),
-            getUsersListFromNetwork().toObservable()
+            getUsersListFromNetwork().toObservable(),
+            getUsersListFromDB().toObservable()
         ).subscribeOn(Schedulers.io())
 
-    private fun getMyUserFromDB() = usersDao.getMyUser().map {
-        Result.success(it.mapToUser())
-    }.onErrorReturn {
-        Result.failure(it)
-    }.subscribeOn(Schedulers.io())
+    private fun getMyUserFromDB(): Single<Result<User>> {
+        return usersDao.getMyUser()
+            .map { Result.success(it.mapToUser()) }
+            .onErrorReturn { Result.failure(it) }
+            .subscribeOn(Schedulers.io())
+    }
 
-    private fun getMyUserFromNetwork() = api.getMyUser()
-        .map {
-            Result.success(it.mapToUser())
-        }.doOnSuccess { result ->
-            result.getOrNull()?.mapToCurrentUserDBModel()?.let { usersDao.addMyUserToDB(it) }
-        }.onErrorReturn {
-            Result.failure(it)
-        }.subscribeOn(Schedulers.io())
+    private fun getMyUserFromNetwork(): Single<Result<User>> {
+        return api.getMyUser()
+            .map { Result.success(it.mapToUser()) }
+            .doOnSuccess { result ->
+                result.getOrNull()?.mapToCurrentUserDBModel()?.let { usersDao.addMyUserToDB(it) }
+            }
+            .onErrorReturn { Result.failure(it) }
+            .subscribeOn(Schedulers.io())
+    }
 
-    private fun getUserFromDB(userId: Int) = usersDao.getUser(userId).map {
-        Result.success(it.mapToUser())
-    }.onErrorReturn {
-        Result.failure(it)
-    }.subscribeOn(Schedulers.io())
+    private fun getUserFromDB(userId: Int): Single<Result<User>> {
+        return usersDao.getUser(userId)
+            .map { Result.success(it.mapToUser()) }
+            .onErrorReturn { Result.failure(it) }
+            .subscribeOn(Schedulers.io())
+    }
 
-    private fun getUserFromNetwork(userId: Int) = api.getUser(userId)
-        .map {
-            Result.success(it.mapToUser())
-        }.doOnSuccess { result ->
-            result.getOrNull()?.mapToUserDBModel()?.let { usersDao.addUserToDB(it) }
-        }.onErrorReturn {
-            Result.failure(it)
-        }.subscribeOn(Schedulers.io())
+    private fun getUserFromNetwork(userId: Int): Single<Result<User>> {
+        return api.getUser(userId)
+            .map { Result.success(it.mapToUser()) }
+            .doOnSuccess { result ->
+                result.getOrNull()?.mapToUserDBModel()?.let { usersDao.addUserToDB(it) }
+            }
+            .onErrorReturn { Result.failure(it) }
+            .subscribeOn(Schedulers.io())
+    }
 
-    private fun getUsersListFromDB() = usersDao.getUsersList().map { list ->
-        Result.success(list.map { it.mapToUser() }.sortedBy { user -> user.name })
-    }.onErrorReturn {
-        Result.failure(it)
-    }.subscribeOn(Schedulers.io())
+    private fun getUsersListFromDB(): Single<Result<List<User>>> {
+        return usersDao.getUsersList()
+            .map { list ->
+                Result.success(list.map { it.mapToUser() }.sortedBy { user -> user.name })
+            }
+            .onErrorReturn { Result.failure(it) }
+            .subscribeOn(Schedulers.io())
+    }
 
     private fun getUsersListFromNetwork(): Single<Result<List<User>>> {
         return api.getUsers()
             .map { response ->
-                Result.success(response.members.map {
-                    it.mapToUser()
-                }.sortedBy { user -> user.name })
+                Result.success(response.members.map { it.mapToUser() }
+                    .sortedBy { user -> user.name })
             }.doOnSuccess { result ->
                 result.getOrNull()?.let { list ->
-                    usersDao.addUsersListToDB(list.map {
-                        it.mapToUserDBModel()
-                    })
+                    usersDao.addUsersListToDB(list.map { it.mapToUserDBModel() })
                 }
-            }.onErrorReturn {
-                Result.failure(it)
-            }.subscribeOn(Schedulers.io())
+            }.onErrorReturn { Result.failure(it) }
+            .subscribeOn(Schedulers.io())
     }
 }

@@ -2,6 +2,7 @@ package com.cyberfox21.tinkoffmessanger.presentation.fragments.channels
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,13 +10,13 @@ import androidx.core.view.isVisible
 import com.cyberfox21.tinkoffmessanger.R
 import com.cyberfox21.tinkoffmessanger.databinding.FragmentListChannelsBinding
 import com.cyberfox21.tinkoffmessanger.presentation.MainActivity
+import com.cyberfox21.tinkoffmessanger.presentation.commondelegate.DelegateItem
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.ChannelsFragment.Companion.QUERY
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.delegate.SpacesItemDecoration
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.delegate.adapter.ChannelDelegateAdapter
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.delegate.adapter.MainChannelsRecyclerAdapter
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.delegate.adapter.TopicDelegateAdapter
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.elm.*
-import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.elm.ChannelsState.Companion.UNDEFINED_CHANNEL_ID
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.elm.ChannelsState.Companion.UNDEFINED_CHANNEL_NAME
 import vivid.money.elmslie.android.base.ElmFragment
 import vivid.money.elmslie.core.store.Store
@@ -50,18 +51,30 @@ class ListChannelsFragment : ElmFragment<ChannelsEvent, ChannelsEffect, Channels
     )
 
     override fun render(state: ChannelsState) {
-        with(binding) {
-            channelsShimmerLayout.shimmerViewContainer.isVisible =
-                state.isFirstLoading && state.error == null
-            emptyLayout.errorLayout.isVisible = state.isEmptyState
-            networkErrorLayout.errorLayout.isVisible = state.error != null
-            categoryChannelsRecycler.isVisible = state.isEmptyState.not() && state.error == null
-            mainAdapter.submitList(state.delegateItems)
+        Log.d("ListChannelsFragment", "$state")
+
+        when (state.channelStatus) {
+            ResourceStatus.SUCCESS -> {
+                provideSuccess(state.delegateItems)
+            }
+            ResourceStatus.LOADING -> {
+                provideLoading()
+            }
+            ResourceStatus.EMPTY -> {
+                provideEmpty()
+            }
+            ResourceStatus.ERROR -> {
+                provideError()
+            }
         }
     }
 
     override fun handleEffect(effect: ChannelsEffect) {
         when (effect) {
+            ChannelsEffect.Loading -> {
+                binding.networkErrorLayout.errorLayout.isVisible = false
+                binding.emptyLayout.errorLayout.isVisible = false
+            }
             ChannelsEffect.EmptyChannels -> {
                 binding.categoryChannelsRecycler.isVisible = false
                 binding.networkErrorLayout.errorLayout.isVisible = false
@@ -78,13 +91,42 @@ class ListChannelsFragment : ElmFragment<ChannelsEvent, ChannelsEffect, Channels
             is ChannelsEffect.TopicsLoadError -> {
                 //TODO
             }
-            is ChannelsEffect.RefrashTopics -> {
+            is ChannelsEffect.RefreshTopics -> {
                 mainAdapter.submitList(effect.items)
             }
         }
     }
 
 //  < ---------------------------------------- ELM --------------------------------------------->
+
+    private fun provideSuccess(items: List<DelegateItem>) {
+        binding.channelsShimmerLayout.shimmerViewContainer.isVisible = false
+        binding.networkErrorLayout.errorLayout.isVisible = false
+        binding.emptyLayout.errorLayout.isVisible = false
+        binding.categoryChannelsRecycler.isVisible = true
+        mainAdapter.submitList(items)
+    }
+
+    private fun provideLoading() {
+        binding.channelsShimmerLayout.shimmerViewContainer.isVisible = true
+        binding.networkErrorLayout.errorLayout.isVisible = false
+        binding.emptyLayout.errorLayout.isVisible = false
+        binding.categoryChannelsRecycler.isVisible = false
+    }
+
+    private fun provideEmpty() {
+        binding.channelsShimmerLayout.shimmerViewContainer.isVisible = false
+        binding.networkErrorLayout.errorLayout.isVisible = false
+        binding.emptyLayout.errorLayout.isVisible = true
+        binding.categoryChannelsRecycler.isVisible = false
+    }
+
+    private fun provideError() {
+        binding.channelsShimmerLayout.shimmerViewContainer.isVisible = false
+        binding.networkErrorLayout.errorLayout.isVisible = true
+        binding.emptyLayout.errorLayout.isVisible = false
+        binding.categoryChannelsRecycler.isVisible = false
+    }
 
     override fun onAttach(context: Context) {
         (activity as MainActivity).component.injectChannelsFragment(this)
@@ -160,31 +202,8 @@ class ListChannelsFragment : ElmFragment<ChannelsEvent, ChannelsEffect, Channels
                     channelName: String,
                     isSelected: Boolean
                 ) {
-                    if (store.currentState.selectedChannelName != channelName) {
-                        store.currentState.selectedChannelName = channelName
-                        store.currentState.selectedChannelId = channelId
-                    } else {
-                        store.currentState.selectedChannelName = UNDEFINED_CHANNEL_NAME
-                        store.currentState.selectedChannelId = UNDEFINED_CHANNEL_ID
-                    }
-                    if (!isSelected) {
-                        store.accept(
-                            ChannelsEvent.Ui.GetChannelsList(
-                                INITIAL_QUERY,
-                                fragmentCategory
-                            )
-                        )
-                        store.accept(ChannelsEvent.Ui.UpdateTopics(channelId, isSelected))
-                    } else {
-                        store.accept(
-                            ChannelsEvent.Ui.GetChannelsList(
-                                INITIAL_QUERY,
-                                fragmentCategory
-                            )
-                        )
-                    }
+                    updateTopics(channelId, isSelected)
                 }
-
             }))
             addDelegate(TopicDelegateAdapter(object :
                 TopicDelegateAdapter.OnTopicDelegateClickListener {
@@ -212,6 +231,13 @@ class ListChannelsFragment : ElmFragment<ChannelsEvent, ChannelsEffect, Channels
         binding.networkErrorLayout.networkButton.setOnClickListener {
             store.accept(ChannelsEvent.Ui.GetChannelsList(INITIAL_QUERY, fragmentCategory))
         }
+        binding.emptyLayout.btnRefresh.setOnClickListener {
+            store.accept(ChannelsEvent.Ui.GetChannelsList(INITIAL_QUERY, fragmentCategory))
+        }
+    }
+
+    private fun updateTopics(channelId: Int, isSelected: Boolean) {
+        store.accept(ChannelsEvent.Ui.UpdateTopics(channelId, isSelected))
     }
 
     companion object {

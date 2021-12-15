@@ -10,9 +10,9 @@
         android:id="@+id/iv_user_avatar"
         android:layout_width="48dp"
         android:layout_height="48dp"
+        android:src="@color/gray"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:src="@drawable/ed" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/tv_user_name"

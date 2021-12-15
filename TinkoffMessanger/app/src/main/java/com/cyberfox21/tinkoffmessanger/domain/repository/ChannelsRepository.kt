@@ -5,5 +5,5 @@ import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.Category
 import io.reactivex.Observable
 
 interface ChannelsRepository {
-    fun searchChannels(searchQuery: String, category: Category): Observable<List<Channel>>
+    fun searchChannels(searchQuery: String, category: Category): Observable<Result<List<Channel>>>
 }

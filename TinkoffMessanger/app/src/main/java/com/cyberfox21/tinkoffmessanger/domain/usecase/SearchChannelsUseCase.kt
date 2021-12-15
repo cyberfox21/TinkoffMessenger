@@ -9,15 +9,29 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class SearchChannelsUseCase @Inject constructor(private val repository: ChannelsRepository) {
-    operator fun invoke(searchQuery: String, category: Category): Observable<List<Channel>> {
-        val channels = repository.searchChannels(searchQuery, category)
-            .debounce(500L, TimeUnit.MILLISECONDS, Schedulers.io())
-            .distinctUntilChanged()
-            .map { channels ->
-                channels.filter { channel ->
-                    return@filter channel.name.contains(searchQuery, ignoreCase = true)
+    operator fun invoke(
+        searchQuery: String,
+        category: Category
+    ): Observable<Result<List<Channel>>> {
+        val channels: Observable<Result<List<Channel>>> =
+            repository.searchChannels(searchQuery, category)
+                .debounce(500L, TimeUnit.MILLISECONDS, Schedulers.io())
+                .distinctUntilChanged()
+                .map { result ->
+                    result.fold(
+                        onSuccess = {
+                            result.map { channels ->
+                                channels.filter { channel ->
+                                    return@filter channel.name.contains(
+                                        searchQuery,
+                                        ignoreCase = true
+                                    )
+                                }
+                            }
+                        },
+                        onFailure = { Result.failure(it) }
+                    )
                 }
-            }
         return channels
     }
 }
