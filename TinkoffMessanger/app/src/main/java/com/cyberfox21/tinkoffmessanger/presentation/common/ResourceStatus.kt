@@ -1,4 +1,4 @@
-package com.cyberfox21.tinkoffmessanger.presentation.fragments.channels
+package com.cyberfox21.tinkoffmessanger.presentation.common
 
 enum class ResourceStatus {
     SUCCESS,

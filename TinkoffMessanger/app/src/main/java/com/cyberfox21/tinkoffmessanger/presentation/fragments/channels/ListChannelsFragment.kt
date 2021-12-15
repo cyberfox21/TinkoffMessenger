@@ -10,6 +10,7 @@ import androidx.core.view.isVisible
 import com.cyberfox21.tinkoffmessanger.R
 import com.cyberfox21.tinkoffmessanger.databinding.FragmentListChannelsBinding
 import com.cyberfox21.tinkoffmessanger.presentation.MainActivity
+import com.cyberfox21.tinkoffmessanger.presentation.common.ResourceStatus
 import com.cyberfox21.tinkoffmessanger.presentation.commondelegate.DelegateItem
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.ChannelsFragment.Companion.QUERY
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.delegate.SpacesItemDecoration
@@ -46,20 +47,12 @@ class ListChannelsFragment : ElmFragment<ChannelsEvent, ChannelsEffect, Channels
 
     override fun render(state: ChannelsState) {
         Log.d("ListChannelsFragment", "$state")
-
         when (state.channelStatus) {
-            ResourceStatus.SUCCESS -> {
-                provideSuccess(state.delegateItems)
-            }
-            ResourceStatus.LOADING -> {
-                provideLoading()
-            }
-            ResourceStatus.EMPTY -> {
-                provideEmpty()
-            }
-            ResourceStatus.ERROR -> {
-                provideError()
-            }
+            ResourceStatus.SUCCESS -> provideSuccess(state.delegateItems)
+            ResourceStatus.LOADING -> provideLoading()
+            ResourceStatus.EMPTY -> provideEmpty()
+            ResourceStatus.ERROR -> provideError()
+
         }
     }
 

@@ -1,5 +1,6 @@
 package com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.elm
 
+import com.cyberfox21.tinkoffmessanger.presentation.common.ResourceStatus
 import vivid.money.elmslie.core.store.dsl_reducer.DslReducer
 
 class ChatReducer : DslReducer<ChatEvent, ChatState, ChatEffect, ChatCommand>() {
@@ -7,62 +8,56 @@ class ChatReducer : DslReducer<ChatEvent, ChatState, ChatEffect, ChatCommand>() 
         return when (event) {
             is ChatEvent.Internal.MessagesLoaded -> {
                 state {
-                    if(event.messages.isEmpty() && this.messages.isNotEmpty()){
-                        state.copy(
-                            isMessagesLoading = false,
-                            messageError = null
-                        )
-                    }else{
-                        state.copy(
-                            messages = event.messages,
-                            isEmptyMessageList = event.messages.isEmpty(),
-                            isMessagesLoading = false,
-                            messageError = null
-                        )
-                    }
-                }
-                effects { if (state.isEmptyMessageList) ChatEffect.EmptyMessageList }
-            }
-            is ChatEvent.Internal.MessageLoadError -> {
-                state {
                     state.copy(
-                        isMessagesLoading = false,
-                        messageError = event.error
+                        messages = event.messages,
+                        messageStatus = ResourceStatus.SUCCESS
                     )
                 }
-                effects { ChatEffect.MessagesLoadError(event.error) }
+            }
+            ChatEvent.Internal.MessagesLoadEmpty -> {
+                if (state.messages.isEmpty()) {
+                    state { state.copy(messageStatus = ResourceStatus.EMPTY) }
+                } else {
+                    state { state.copy(messageStatus = ResourceStatus.SUCCESS) }
+                }
+            }
+            is ChatEvent.Internal.MessageLoadError -> {
+                if (state.messages.isEmpty()) {
+                    state {
+                        state.copy(
+                            messageStatus = ResourceStatus.ERROR,
+                            messageError = event.error
+                        )
+                    }
+                } else {
+                    state { state.copy(messageStatus = ResourceStatus.SUCCESS) }
+                }
             }
             is ChatEvent.Internal.ReactionsLoaded -> {
                 state {
                     state.copy(
                         reactions = event.reactions,
-                        isEmptyReactionList = event.reactions.isEmpty(),
-                        isReactionsLoading = false,
-                        reactionsError = null
+                        reactionsListStatus = ResourceStatus.SUCCESS
                     )
                 }
-                effects { if (state.isEmptyReactionList) ChatEffect.EmptyReactionList }
             }
             is ChatEvent.Internal.ReactionsLoadError -> {
                 state {
                     state.copy(
-                        isReactionsLoading = false,
+                        reactionsListStatus = ResourceStatus.ERROR,
                         reactionsError = event.error
                     )
                 }
-                effects { ChatEffect.ReactionsLoadError(event.error) }
             }
             ChatEvent.Ui.GetMessages -> {
-                state { state.copy(isMessagesLoading = true) }
+                state { state.copy(messageStatus = ResourceStatus.LOADING) }
                 commands { +ChatCommand.LoadMessages }
             }
             ChatEvent.Ui.GetReactionList -> {
-                state { state.copy(isReactionsLoading = true) }
+                state { state.copy(reactionsListStatus = ResourceStatus.LOADING) }
                 commands { +ChatCommand.LoadReactionList }
             }
             is ChatEvent.Ui.SendMessage -> {
-                // todo fix this
-                state { state.copy(isMessagesLoading = true) }
                 commands { +ChatCommand.SendMessage(event.msg) }
             }
             is ChatEvent.Ui.AddReaction -> {

@@ -14,8 +14,10 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.cyberfox21.tinkoffmessanger.R
 import com.cyberfox21.tinkoffmessanger.databinding.BottomSheetDialogLayoutBinding
 import com.cyberfox21.tinkoffmessanger.databinding.FragmentChatBinding
+import com.cyberfox21.tinkoffmessanger.domain.entity.Message
 import com.cyberfox21.tinkoffmessanger.domain.entity.Reaction
 import com.cyberfox21.tinkoffmessanger.presentation.MainActivity
+import com.cyberfox21.tinkoffmessanger.presentation.common.ResourceStatus
 import com.cyberfox21.tinkoffmessanger.presentation.commondelegate.DelegateItem
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.delegate.adapter.OnLongMessageClickListener
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.delegate.adapter.AlienMessageDelegateAdapter
@@ -35,8 +37,6 @@ class ChatFragment : ElmFragment<ChatEvent, ChatEffect, ChatState>() {
 
     private lateinit var fragmentChannelName: String
     private lateinit var fragmentTopicName: String
-
-    internal lateinit var gridLayoutManager: GridLayoutManager
 
     internal lateinit var bottomSheetDialog: BottomSheetDialog
 
@@ -69,25 +69,19 @@ class ChatFragment : ElmFragment<ChatEvent, ChatEffect, ChatState>() {
         ChatStoreFactory(actor).provide()
 
     override fun render(state: ChatState) {
-        with(binding) {
-            pbLoading.isVisible = state.isMessagesLoading
-            emptyLayout.errorLayout.isVisible =
-                state.isEmptyMessageList && state.messages.isEmpty() && state.isMessagesLoading.not()
-            if (state.messages.isNotEmpty() && state.isEmptyMessageList.not()) {
-                chatRecycler.isVisible = true
-                // todo get current user id
-                chatRecyclerAdapter.submitList(
-                    state.messages.toDelegateChatItemsList(
-                        UNDEFINED_USER_ID
-                    )
-                )
-            }
-            networkErrorLayout.errorLayout.isVisible =
-                state.messageError != null && state.isMessagesLoading.not()
+        when (state.messageStatus) {
+            ResourceStatus.SUCCESS -> provideMessageSuccess(state.messages)
+            ResourceStatus.LOADING -> provideMessageLoading()
+            ResourceStatus.EMPTY -> provideMessageEmpty()
+            ResourceStatus.ERROR -> provideMessageError()
         }
-        dialogLayoutBinding.pbLoading.isVisible = state.isReactionsLoading
-        dialogLayoutBinding.emojiRecycler.isVisible = state.isEmptyReactionList.not()
-        reactionRecyclerAdapter.submitList(state.reactions)
+
+        when (state.reactionsListStatus) {
+            ResourceStatus.SUCCESS -> provideReactionListSuccess(state.reactions)
+            ResourceStatus.LOADING -> provideReactionListLoading()
+            ResourceStatus.EMPTY -> provideReactionListEmpty()
+            ResourceStatus.ERROR -> provideReactionListError()
+        }
     }
 
     override fun handleEffect(effect: ChatEffect) {
@@ -197,6 +191,56 @@ class ChatFragment : ElmFragment<ChatEvent, ChatEffect, ChatState>() {
         binding.chatRecycler.adapter = chatRecyclerAdapter
     }
 
+    private fun provideMessageSuccess(messages: List<Message>) {
+        binding.pbLoading.isVisible = false
+        binding.emptyLayout.errorLayout.isVisible = false
+        binding.networkErrorLayout.errorLayout.isVisible = false
+        binding.chatRecycler.isVisible = true
+        chatRecyclerAdapter.submitList(messages.toDelegateChatItemsList(UNDEFINED_USER_ID))
+    }
+
+    private fun provideMessageLoading() {
+        binding.pbLoading.isVisible = true
+        binding.emptyLayout.errorLayout.isVisible = false
+        binding.networkErrorLayout.errorLayout.isVisible = false
+        binding.chatRecycler.isVisible = false
+    }
+
+    private fun provideMessageEmpty() {
+        binding.pbLoading.isVisible = false
+        binding.emptyLayout.errorLayout.isVisible = true
+        binding.networkErrorLayout.errorLayout.isVisible = false
+        binding.chatRecycler.isVisible = false
+    }
+
+    private fun provideMessageError() {
+        binding.pbLoading.isVisible = false
+        binding.emptyLayout.errorLayout.isVisible = false
+        binding.networkErrorLayout.errorLayout.isVisible = true
+        binding.chatRecycler.isVisible = false
+    }
+
+    private fun provideReactionListSuccess(reactions: List<Reaction>) {
+        dialogLayoutBinding.pbLoading.isVisible = false
+        dialogLayoutBinding.emojiRecycler.isVisible = true
+        reactionRecyclerAdapter.submitList(reactions)
+    }
+
+    private fun provideReactionListLoading() {
+        dialogLayoutBinding.pbLoading.isVisible = true
+        dialogLayoutBinding.emojiRecycler.isVisible = false
+    }
+
+    private fun provideReactionListEmpty() {
+        dialogLayoutBinding.pbLoading.isVisible = false
+        dialogLayoutBinding.emojiRecycler.isVisible = false
+    }
+
+    private fun provideReactionListError() {
+        dialogLayoutBinding.pbLoading.isVisible = false
+        dialogLayoutBinding.emojiRecycler.isVisible = false
+    }
+
     private fun setChannel(channel: String) = "#$channel"
 
     private fun setTopic(topic: String) = "Topic: #$topic"
@@ -208,15 +252,14 @@ class ChatFragment : ElmFragment<ChatEvent, ChatEffect, ChatState>() {
 
     private fun addListeners() {
         with(binding) {
+            networkErrorLayout.networkButton.setOnClickListener { store.accept(ChatEvent.Ui.GetMessages) }
+            emptyLayout.btnRefresh.setOnClickListener { store.accept(ChatEvent.Ui.GetMessages) }
             messageFieldLayout.imageBtnSend.setOnClickListener {
 //                viewModel.sendMessage(binding.etMessageField.text)
             }
             messageFieldLayout.etMessageField.addTextChangedListener(object : TextWatcher {
                 override fun beforeTextChanged(
-                    s: CharSequence?,
-                    start: Int,
-                    count: Int,
-                    after: Int
+                    s: CharSequence?, start: Int, count: Int, after: Int
                 ) {
                 }
 
@@ -227,20 +270,7 @@ class ChatFragment : ElmFragment<ChatEvent, ChatEffect, ChatState>() {
 
             })
         }
-//        chatRecyclerAdapter.onLongMessageClickListener =
-//            object : ChatRecyclerAdapter.OnLongMessageClickListener {
-//                override fun onLongMessageClick(message: Message) {
-//                    showBottomSheetDialog(message)
-//                }
-//            }
     }
-
-//    private fun observeViewModel() {
-//        viewModel.reactionsListStateLD.observe(
-//            viewLifecycleOwner,
-//            { processedReactionsListState(it) })
-//        viewModel.chatScreenStateLD.observe(viewLifecycleOwner, { processedChatScreenState(it) })
-//    }
 
     private fun setBottomSheetDialog() {
         bottomSheetDialog = BottomSheetDialog(requireActivity())

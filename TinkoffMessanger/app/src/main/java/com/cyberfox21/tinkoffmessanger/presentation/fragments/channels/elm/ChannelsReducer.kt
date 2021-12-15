@@ -2,8 +2,8 @@ package com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.elm
 
 import com.cyberfox21.tinkoffmessanger.domain.entity.Channel
 import com.cyberfox21.tinkoffmessanger.domain.entity.Topic
+import com.cyberfox21.tinkoffmessanger.presentation.common.ResourceStatus
 import com.cyberfox21.tinkoffmessanger.presentation.commondelegate.DelegateItem
-import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.ResourceStatus
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.delegate.item.ChannelDelegateItem
 import com.cyberfox21.tinkoffmessanger.presentation.mapToChannelDelegateItem
 import com.cyberfox21.tinkoffmessanger.presentation.mapToTopicDelegateItem
@@ -38,9 +38,7 @@ class ChannelsReducer :
                         )
                     }
                 } else {
-                    state {
-                        copy(channelStatus = ResourceStatus.SUCCESS)
-                    }
+                    state { copy(channelStatus = ResourceStatus.SUCCESS) }
                 }
             }
             is ChannelsEvent.Internal.TopicsLoaded -> {

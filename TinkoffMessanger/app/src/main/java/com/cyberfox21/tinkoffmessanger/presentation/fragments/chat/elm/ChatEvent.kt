@@ -14,6 +14,7 @@ sealed class ChatEvent {
 
     sealed class Internal : ChatEvent() {
         data class MessagesLoaded(val messages: List<Message>) : Internal()
+        object MessagesLoadEmpty : Internal()
         data class MessageLoadError(val error: Throwable) : Internal()
         data class ReactionsLoaded(val reactions: List<Reaction>) : Internal()
         data class ReactionsLoadError(val error: Throwable) : Internal()

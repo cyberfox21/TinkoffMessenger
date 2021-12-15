@@ -1,7 +1,7 @@
 package com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.elm
 
+import com.cyberfox21.tinkoffmessanger.presentation.common.ResourceStatus
 import com.cyberfox21.tinkoffmessanger.presentation.commondelegate.DelegateItem
-import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.ResourceStatus
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.delegate.item.ChannelDelegateItem
 
 data class ChannelsState(
