@@ -176,11 +176,7 @@ class ListChannelsFragment : ElmFragment<ChannelsEvent, ChannelsEffect, Channels
     private fun setupRecyclerView() {
         binding.categoryChannelsRecycler.setHasFixedSize(true)
         binding.categoryChannelsRecycler.addItemDecoration(
-            SpacesItemDecoration(
-                resources.getDimensionPixelOffset(
-                    R.dimen.itemDecorationSize
-                )
-            )
+            SpacesItemDecoration(resources.getDimensionPixelOffset(R.dimen.itemDecorationSize))
         )
         mainAdapter.apply {
             addDelegate(ChannelDelegateAdapter(object :

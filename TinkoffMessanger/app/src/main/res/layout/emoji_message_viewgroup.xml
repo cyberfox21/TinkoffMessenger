@@ -10,8 +10,8 @@
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/imageView"
-        android:layout_width="@dimen/cicleImageViewAvatarLayoutWidth"
-        android:layout_height="@dimen/cicleImageViewAvatarLayoutHeight"
+        android:layout_width="@dimen/circleImageViewAvatarLayoutWidth"
+        android:layout_height="@dimen/circleImageViewAvatarLayoutHeight"
         android:layout_marginEnd="@dimen/margin10dp"
         android:layout_marginBottom="@dimen/margin10dp"
         android:clickable="true"
@@ -23,8 +23,8 @@
         android:id="@+id/time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/white"
         android:background="@android:color/transparent"
+        android:textColor="@color/white"
         tools:text="@string/example_time" />
 
     <TextView

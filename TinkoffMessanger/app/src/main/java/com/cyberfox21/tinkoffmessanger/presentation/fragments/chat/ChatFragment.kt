@@ -21,6 +21,7 @@ import com.cyberfox21.tinkoffmessanger.domain.entity.Reaction
 import com.cyberfox21.tinkoffmessanger.presentation.MainActivity
 import com.cyberfox21.tinkoffmessanger.presentation.common.ResourceStatus
 import com.cyberfox21.tinkoffmessanger.presentation.commondelegate.DelegateItem
+import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.delegate.SpacesItemDecoration
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.delegate.adapter.OnLongMessageClickListener
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.delegate.adapter.AlienMessageDelegateAdapter
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.delegate.adapter.DateDelegateAdapter
@@ -162,7 +163,7 @@ class ChatFragment : ElmFragment<ChatEvent, ChatEffect, ChatState>() {
         actor.topicName = fragmentTopicName
     }
 
-    private fun startChatFragmentWork(){
+    private fun startChatFragmentWork() {
         getMessageList()
         getReactionList()
     }
@@ -191,6 +192,9 @@ class ChatFragment : ElmFragment<ChatEvent, ChatEffect, ChatState>() {
         chatRecyclerAdapter.addDelegate(AlienMessageDelegateAdapter(onLongMessageClickListener))
         chatRecyclerAdapter.addDelegate(MyMessageDelegateAdapter(onLongMessageClickListener))
         chatRecyclerAdapter.addDelegate(DateDelegateAdapter())
+        binding.chatRecycler.addItemDecoration(
+            SpacesItemDecoration(resources.getDimensionPixelOffset(R.dimen.messageSpaceSize))
+        )
         binding.chatRecycler.setHasFixedSize(true)
         binding.chatRecycler.adapter = chatRecyclerAdapter
     }

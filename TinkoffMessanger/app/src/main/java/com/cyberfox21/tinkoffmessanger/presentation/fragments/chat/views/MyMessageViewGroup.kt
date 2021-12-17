@@ -1,9 +1,12 @@
 package com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.views
 
 import android.content.Context
+import android.content.res.TypedArray
+import android.text.SpannableString
+import android.text.Spanned
 import android.util.AttributeSet
 import android.view.ViewGroup
-import androidx.core.content.res.ResourcesCompat
+import androidx.core.view.marginTop
 import com.cyberfox21.tinkoffmessanger.R
 
 class MyMessageViewGroup @JvmOverloads constructor(
@@ -13,77 +16,103 @@ class MyMessageViewGroup @JvmOverloads constructor(
     defStyleRes: Int = 0
 ) : ViewGroup(context, attrs, defStyleAttr, defStyleRes) {
 
+    var myMessage: MyMessage
+    var flexBoxLayout: FlexBoxLayout
+
+    var time: String = ""
+        set(value) {
+            field = value
+            val myMessage = getChildAt(0) as MyMessage
+            myMessage.time = value
+        }
+
+    var message: Spanned = SpannableString("")
+        set(value) {
+            field = value
+            val myMessage = getChildAt(0) as MyMessage
+            myMessage.message = value
+        }
+
     init {
-        inflate(context, R.layout.my_message_viewgroup, this).background =
-            ResourcesCompat.getDrawable(resources, R.drawable.my_message_bg, context.theme)
+        inflate(context, R.layout.my_message_viewgroup, this).apply {
+
+        }
+
+        val typedArray: TypedArray = context.obtainStyledAttributes(
+            attrs,
+            R.styleable.MyMessageViewGroup,
+            defStyleAttr,
+            defStyleRes
+        )
+        message =
+            SpannableString(typedArray.getString(R.styleable.MyMessageViewGroup_message).orEmpty())
+        time = typedArray.getString(R.styleable.MyMessageViewGroup_time).orEmpty()
+        typedArray.recycle()
+//
+        myMessage = (getChildAt(0) as MyMessage).apply {
+            this.time = time
+            this.message = message
+        }
+        flexBoxLayout = getChildAt(1) as FlexBoxLayout
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        require(childCount == 3) { "Child count should be 3, but was $childCount" }
+        require(childCount == 2) { "Child count should be 2, but was $childCount" }
 
-        val time = getChildAt(0)
-        val text = getChildAt(1)
-        val flexBoxLayout = getChildAt(2)
+        val myMessage = getChildAt(0)
+        val flexBoxLayout = getChildAt(1)
 
-        val marginBottom = (text.layoutParams as MarginLayoutParams).bottomMargin
-        val marginRight = (text.layoutParams as MarginLayoutParams).marginEnd
+        var totalWidth = 0
+        var totalHeight = 0
 
-        (layoutParams as MarginLayoutParams).setMargins(
-            marginRight,
-            marginBottom,
-            marginRight,
-            marginBottom
+        measureChildWithMargins(
+            myMessage,
+            widthMeasureSpec,
+            0,
+            heightMeasureSpec,
+            0
         )
 
-        measureChildWithMargins(text, widthMeasureSpec, text.measuredWidth, heightMeasureSpec, 0)
-        measureChildWithMargins(time, widthMeasureSpec, 0, heightMeasureSpec, 0)
-        measureChildWithMargins(flexBoxLayout, widthMeasureSpec, 0, heightMeasureSpec, 0)
+        val messageMargin = (myMessage.layoutParams as MarginLayoutParams)
 
-        val totalWidth =
-            maxOf(text.measuredWidth, time.measuredWidth, flexBoxLayout.measuredWidth)
-        val totalHeight =
-            3 * marginBottom + time.measuredHeight + text.measuredHeight + flexBoxLayout.measuredHeight
+        totalWidth += myMessage.measuredWidth
+        totalHeight += myMessage.measuredHeight + messageMargin.bottomMargin
 
-        val resultWidth = resolveSize(
-            totalWidth,
-            widthMeasureSpec
-        )
-        val resultHeight = resolveSize(
-            totalHeight,
-            heightMeasureSpec
-        )
+        measureChildWithMargins(flexBoxLayout, widthMeasureSpec, 0, heightMeasureSpec, totalHeight)
 
+        val flexBoxMargin = (flexBoxLayout.layoutParams as MarginLayoutParams)
+
+        totalWidth = maxOf(totalWidth, flexBoxMargin.leftMargin + flexBoxLayout.measuredWidth)
+
+        // должно быть if (flexBoxLayout.measuredHeight != 0) totalHeight += flexBoxLayout.topMargin + flexBoxLayout.measuredHeight
+        if (flexBoxLayout.measuredHeight != 0) totalHeight += flexBoxLayout.marginTop + flexBoxLayout.measuredHeight
+
+        val resultWidth = resolveSize(paddingLeft + totalWidth + paddingRight, widthMeasureSpec)
+        val resultHeight = resolveSize(paddingTop + totalHeight + paddingBottom, heightMeasureSpec)
         setMeasuredDimension(resultWidth, resultHeight)
 
     }
 
     override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
-        val time = getChildAt(0)
-        val text = getChildAt(1)
-        val flexBoxLayout = getChildAt(2)
+        val myMessage = getChildAt(0)
+        val flexBoxLayout = getChildAt(1)
 
-        val marginBottom = (text.layoutParams as MarginLayoutParams).bottomMargin
-        val marginRight = (text.layoutParams as MarginLayoutParams).marginEnd
+        val messageMargin = (myMessage.layoutParams as MarginLayoutParams)
+        val flexBoxMargin = (flexBoxLayout.layoutParams as MarginLayoutParams)
 
-        time.layout(
-            width - paddingLeft - 2 * marginRight - time.measuredWidth,
-            0 + paddingTop + marginBottom,
-            width - paddingLeft - marginRight,
-            0 + time.measuredHeight + paddingTop + marginBottom
-        )
-
-        text.layout(
-            marginRight,
-            0 + paddingBottom + marginBottom + time.bottom,
-            width - paddingLeft - marginRight,
-            time.bottom + text.measuredHeight + paddingBottom + marginBottom
+        myMessage.layout(
+            measuredWidth - paddingRight - myMessage.measuredWidth,
+            paddingTop,
+            measuredWidth - paddingRight,
+            paddingTop + myMessage.measuredHeight
         )
 
         flexBoxLayout.layout(
-            marginRight,
-            text.bottom + paddingBottom + marginBottom,
-            width - paddingLeft - marginRight,
-            text.bottom + flexBoxLayout.measuredHeight + paddingBottom + marginBottom
+            measuredWidth - paddingRight - flexBoxLayout.measuredWidth,
+            myMessage.bottom + messageMargin.bottomMargin + flexBoxMargin.topMargin,
+            measuredWidth - paddingRight,
+            myMessage.bottom + messageMargin.bottomMargin +
+                    flexBoxMargin.topMargin + flexBoxLayout.measuredHeight
         )
     }
 

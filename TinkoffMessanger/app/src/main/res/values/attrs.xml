@@ -11,4 +11,13 @@
         <attr name="paddingVertical" format="integer" />
         <attr name="paddingHorizontal" format="integer" />
     </declare-styleable>
+    <declare-styleable name="MyMessageViewGroup">
+        <attr name="message" format="string" />
+        <attr name="time" format="string" />
+    </declare-styleable>
+    <declare-styleable name="MyMessage">
+        <attr name="horizontalMargins" format="dimension" />
+        <attr name="verticalMargins" format="dimension" />
+        <attr name="percentWidth" format="float" />
+    </declare-styleable>
 </resources>

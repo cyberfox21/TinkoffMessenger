@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="cicleImageViewAvatarLayoutWidth">50dp</dimen>
-    <dimen name="cicleImageViewAvatarLayoutHeight">50dp</dimen>
+    <dimen name="circleImageViewAvatarLayoutWidth">50dp</dimen>
+    <dimen name="circleImageViewAvatarLayoutHeight">50dp</dimen>
     <dimen name="addEmojiBtnPaddingStart">10dp</dimen>
     <dimen name="addEmojiBtnPaddingEnd">10dp</dimen>
     <dimen name="addEmojiBtnPaddingTop">10dp</dimen>
@@ -14,8 +14,10 @@
     <dimen name="padding2dp">2dp</dimen>
     <dimen name="padding8dp">8dp</dimen>
     <dimen name="padding10dp">10dp</dimen>
+    <dimen name="padding12dp">10dp</dimen>
     <dimen name="padding16dp">16dp</dimen>
     <dimen name="padding20dp">20dp</dimen>
+    <dimen name="padding24dp">24dp</dimen>
     <dimen name="padding40dp">40dp</dimen>
     <dimen name="textSize12sp">12sp</dimen>
     <dimen name="textSize14sp">14sp</dimen>
@@ -39,4 +41,5 @@
     <dimen name="width48dp">48dp</dimen>
     <dimen name="margin40dp">40dp</dimen>
     <dimen name="itemDecorationSize">2dp</dimen>
+    <dimen name="messageSpaceSize">8dp</dimen>
 </resources>

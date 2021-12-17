@@ -2,6 +2,7 @@ package com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.delegate.ada
 
 import android.util.Log
 import android.view.ViewGroup
+import androidx.core.text.toSpannable
 import androidx.recyclerview.widget.RecyclerView
 import com.cyberfox21.tinkoffmessanger.presentation.commondelegate.AdapterDelegate
 import com.cyberfox21.tinkoffmessanger.presentation.commondelegate.DelegateItem
@@ -15,11 +16,12 @@ import com.cyberfox21.tinkoffmessanger.presentation.util.EmojiFormatter
 class MyMessageDelegateAdapter(private val onLongMessageClickListener: OnLongMessageClickListener) :
     AdapterDelegate {
 
+    private val lp = ViewGroup.LayoutParams(
+        ViewGroup.LayoutParams.MATCH_PARENT,
+        ViewGroup.LayoutParams.WRAP_CONTENT,
+    )
+
     override fun onCreateViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
-        val lp = ViewGroup.LayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT
-        )
         return MyMessageViewHolder(MyMessageViewGroup(parent.context).apply { layoutParams = lp })
     }
 
@@ -34,15 +36,15 @@ class MyMessageDelegateAdapter(private val onLongMessageClickListener: OnLongMes
     private fun bindMessage(holder: RecyclerView.ViewHolder, item: DelegateItem) {
         val message = (item as MyMessageDelegateItem)
         with(holder as MyMessageViewHolder) {
-            text.text = message.text
-            time.text = message.time
+            this.myMessage.time = message.time
+            this.myMessage.message = message.text.toSpannable()
 
-            val btnAdd = emojiLayout.getChildAt(0)
-            emojiLayout.removeView(btnAdd)
-            emojiLayout.addView(btnAdd)
+            val btnAdd = this.emojiLayout.getChildAt(0)
+            this.emojiLayout.removeView(btnAdd)
+            this.emojiLayout.addView(btnAdd)
 
             for (i in message.reactions.indices) {
-                val emojiView = CustomEmojiView(emojiLayout.context).apply {
+                val emojiView = CustomEmojiView(this.emojiLayout.context).apply {
                     onEmojiClickListener = object : CustomEmojiView.OnEmojiClickListener {
                         override fun onEmojiClick(view: CustomEmojiView) {
                             view.isSelected = !view.isSelected
@@ -55,8 +57,8 @@ class MyMessageDelegateAdapter(private val onLongMessageClickListener: OnLongMes
                         count = ""
                     }
                 }
-                Log.d("ChatRecyclerAdapter", "childcount ${emojiLayout.childCount}")
-                emojiLayout.addView(emojiView)
+                Log.d("ChatRecyclerAdapter", "childcount ${this.emojiLayout.childCount}")
+                this.emojiLayout.addView(emojiView)
             }
 
             myMessageViewGroup.setOnLongClickListener {

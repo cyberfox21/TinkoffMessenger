@@ -40,6 +40,8 @@
         android:id="@+id/chat_recycler"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:paddingStart="@dimen/padding8dp"
+        android:paddingEnd="@dimen/padding8dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toTopOf="@+id/message_field_layout"
         app:layout_constraintEnd_toEndOf="parent"
