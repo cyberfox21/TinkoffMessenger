@@ -1,9 +1,9 @@
 package com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.elm
 
-import com.cyberfox21.tinkoffmessanger.domain.entity.Message
+import com.cyberfox21.tinkoffmessanger.domain.enum.LoadType
 
 sealed class ChatCommand {
-    object LoadMessages : ChatCommand()
+    data class LoadMessages(val loadType: LoadType) : ChatCommand()
     object LoadReactionList : ChatCommand()
-    data class SendMessage(val msg: Message) : ChatCommand()
+    data class SendMessage(val msg: String) : ChatCommand()
 }

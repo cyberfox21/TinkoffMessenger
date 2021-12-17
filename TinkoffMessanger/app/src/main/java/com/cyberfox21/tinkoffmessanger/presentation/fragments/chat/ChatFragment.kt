@@ -1,5 +1,6 @@
 package com.cyberfox21.tinkoffmessanger.presentation.fragments.chat
 
+import android.app.AlertDialog
 import android.content.Context
 import android.os.Bundle
 import android.text.Editable
@@ -14,6 +15,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.cyberfox21.tinkoffmessanger.R
 import com.cyberfox21.tinkoffmessanger.databinding.BottomSheetDialogLayoutBinding
 import com.cyberfox21.tinkoffmessanger.databinding.FragmentChatBinding
+import com.cyberfox21.tinkoffmessanger.databinding.SendingMessageErrorDialogLayoutBinding
 import com.cyberfox21.tinkoffmessanger.domain.entity.Message
 import com.cyberfox21.tinkoffmessanger.domain.entity.Reaction
 import com.cyberfox21.tinkoffmessanger.presentation.MainActivity
@@ -40,6 +42,8 @@ class ChatFragment : ElmFragment<ChatEvent, ChatEffect, ChatState>() {
 
     internal lateinit var bottomSheetDialog: BottomSheetDialog
 
+    private var alertDialog: AlertDialog? = null
+
     private var _binding: FragmentChatBinding? = null
     private val binding
         get() = _binding ?: throw RuntimeException("FragmentChatBinding = null")
@@ -63,7 +67,7 @@ class ChatFragment : ElmFragment<ChatEvent, ChatEffect, ChatState>() {
     @Inject
     internal lateinit var actor: ChatActor
 
-    override val initEvent: ChatEvent = ChatEvent.Ui.GetReactionList
+    override val initEvent: ChatEvent = ChatEvent.Ui.GetMessages
 
     override fun createStore(): Store<ChatEvent, ChatEffect, ChatState> =
         ChatStoreFactory(actor).provide()
@@ -96,8 +100,13 @@ class ChatFragment : ElmFragment<ChatEvent, ChatEffect, ChatState>() {
                 binding.emptyLayout.errorLayout.isVisible = false
                 binding.networkErrorLayout.errorLayout.isVisible = true
             }
-            ChatEffect.EmptyReactionList -> TODO()
-            is ChatEffect.ReactionsLoadError -> TODO()
+            ChatEffect.EmptyReactionList -> {
+            }
+            is ChatEffect.ReactionsLoadError -> {
+            }
+            ChatEffect.MessageSendingError -> showErrorDialog()
+            ChatEffect.MessageSendingSuccess -> {
+            }
         }
     }
 
@@ -112,12 +121,8 @@ class ChatFragment : ElmFragment<ChatEvent, ChatEffect, ChatState>() {
         super.onCreate(savedInstanceState)
         parseArguments()
         setActorFields()
+        getMessageList()
         getReactionList()
-    }
-
-    private fun getReactionList() {
-        store.accept(ChatEvent.Ui.GetMessages)
-        store.accept(ChatEvent.Ui.GetReactionList)
     }
 
     override fun onCreateView(
@@ -141,11 +146,7 @@ class ChatFragment : ElmFragment<ChatEvent, ChatEffect, ChatState>() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        store.stop()
+        _dialogLayoutBinding = null
     }
 
     private fun parseArguments() {
@@ -254,9 +255,7 @@ class ChatFragment : ElmFragment<ChatEvent, ChatEffect, ChatState>() {
         with(binding) {
             networkErrorLayout.networkButton.setOnClickListener { store.accept(ChatEvent.Ui.GetMessages) }
             emptyLayout.btnRefresh.setOnClickListener { store.accept(ChatEvent.Ui.GetMessages) }
-            messageFieldLayout.imageBtnSend.setOnClickListener {
-//                viewModel.sendMessage(binding.etMessageField.text)
-            }
+            messageFieldLayout.imageBtnSend.setOnClickListener { sendMessage() }
             messageFieldLayout.etMessageField.addTextChangedListener(object : TextWatcher {
                 override fun beforeTextChanged(
                     s: CharSequence?, start: Int, count: Int, after: Int
@@ -270,6 +269,7 @@ class ChatFragment : ElmFragment<ChatEvent, ChatEffect, ChatState>() {
 
             })
         }
+
     }
 
     private fun setBottomSheetDialog() {
@@ -293,6 +293,37 @@ class ChatFragment : ElmFragment<ChatEvent, ChatEffect, ChatState>() {
             }
         bottomSheetDialog.show()
     }
+
+    private fun showErrorDialog() {
+        alertDialog = AlertDialog.Builder(activity, R.style.CustomAlertDialogStyle)
+            .setCancelable(true)
+            .setView(
+                SendingMessageErrorDialogLayoutBinding.inflate(LayoutInflater.from(this.context))
+                    .apply {
+                        btnRetrySendingMessage.setOnClickListener {
+                            sendMessage()
+                            alertDialog?.cancel()
+                        }
+                    }
+                    .root
+            )
+            .create()
+        alertDialog?.show()
+    }
+
+    private fun getReactionList() = store.accept(ChatEvent.Ui.GetReactionList)
+
+
+    private fun getMessageList() = store.accept(ChatEvent.Ui.GetMessages)
+
+
+    private fun sendMessage() {
+        store.accept(ChatEvent.Ui.SendMessage(getText()))
+        Log.d("ChatActivity", "text to send ${getText()}")
+    }
+
+    private fun getText() = binding.messageFieldLayout.etMessageField.text.toString().trim()
+
 
     private fun getImageBtnResource(count: Int): Int = when (count) {
         0 -> {
@@ -320,3 +351,4 @@ class ChatFragment : ElmFragment<ChatEvent, ChatEffect, ChatState>() {
         }
     }
 }
+

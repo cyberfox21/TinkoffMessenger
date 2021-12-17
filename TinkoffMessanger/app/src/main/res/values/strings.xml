@@ -26,4 +26,5 @@
     <string name="empty_error">Тут ничего нет</string>
     <string name="retry">Повторить</string>
     <string name="logout_button">logout button</string>
+    <string name="sending_message_dialog_error">Unfortunately, we can\'t send \nyour message to the server. \nPlease check your internet \nconnection and retry.</string>
 </resources>

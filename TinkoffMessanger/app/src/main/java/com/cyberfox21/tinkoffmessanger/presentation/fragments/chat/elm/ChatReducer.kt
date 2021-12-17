@@ -1,5 +1,6 @@
 package com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.elm
 
+import com.cyberfox21.tinkoffmessanger.domain.enum.LoadType
 import com.cyberfox21.tinkoffmessanger.presentation.common.ResourceStatus
 import vivid.money.elmslie.core.store.dsl_reducer.DslReducer
 
@@ -51,18 +52,20 @@ class ChatReducer : DslReducer<ChatEvent, ChatState, ChatEffect, ChatCommand>() 
             }
             ChatEvent.Ui.GetMessages -> {
                 state { state.copy(messageStatus = ResourceStatus.LOADING) }
-                commands { +ChatCommand.LoadMessages }
+                commands { +ChatCommand.LoadMessages(LoadType.ANY) }
             }
             ChatEvent.Ui.GetReactionList -> {
                 state { state.copy(reactionsListStatus = ResourceStatus.LOADING) }
                 commands { +ChatCommand.LoadReactionList }
             }
-            is ChatEvent.Ui.SendMessage -> {
-                commands { +ChatCommand.SendMessage(event.msg) }
-            }
+            is ChatEvent.Ui.SendMessage -> commands { +ChatCommand.SendMessage(event.msg) }
             is ChatEvent.Ui.AddReaction -> {
-
             }
+            ChatEvent.Internal.MessageSendingSuccess -> commands {
+                +ChatCommand.LoadMessages(LoadType.NETWORK)
+            }
+            is ChatEvent.Internal.MessageSendingError -> effects { +ChatEffect.MessageSendingError }
+
         }
     }
 }

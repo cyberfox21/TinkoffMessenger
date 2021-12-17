@@ -6,6 +6,7 @@ import com.cyberfox21.tinkoffmessanger.data.database.dao.MessagesDao
 import com.cyberfox21.tinkoffmessanger.data.mapToMessage
 import com.cyberfox21.tinkoffmessanger.data.mapToMessageDBModel
 import com.cyberfox21.tinkoffmessanger.domain.entity.Message
+import com.cyberfox21.tinkoffmessanger.domain.enum.LoadType
 import com.cyberfox21.tinkoffmessanger.domain.repository.MessagesRepository
 import io.reactivex.Completable
 import io.reactivex.Observable
@@ -22,12 +23,10 @@ class MessagesRepositoryImpl @Inject constructor(
     private val messagesDao: MessagesDao
 ) : MessagesRepository {
 
-    private fun getMessagesFromDB(topicName: String) =
-        messagesDao.getMessageList(topicName).map { dbModels ->
-            dbModels.map {
-                it.mapToMessage()
-            }
-        }.subscribeOn(Schedulers.io())
+    private fun getMessagesFromDB(topicName: String): Single<List<Message>> =
+        messagesDao.getMessageList(topicName)
+            .map { dbModels -> dbModels.map { it.mapToMessage() } }
+            .subscribeOn(Schedulers.io())
 
     private fun getMessagesFromNetwork(
         numBefore: Int,
@@ -35,7 +34,6 @@ class MessagesRepositoryImpl @Inject constructor(
         channelName: String,
         topicName: String
     ): Single<List<Message>> {
-        // todo check internet is available
         val narrowList = listOf(
             Narrow(STREAM_KEY, channelName),
             Narrow(TOPIC_KEY, topicName)
@@ -44,41 +42,46 @@ class MessagesRepositoryImpl @Inject constructor(
             messagesNumberBefore = numBefore,
             messagesNumberAfter = numAfter,
             narrowFilterArray = Json.encodeToString(narrowList)
-        ).map { response ->
-            response.messages.map {
-                it.mapToMessage()
+        ).map { response -> response.messages.map { it.mapToMessage() } }
+            .doOnSuccess {
+                messagesDao.addMessageListToDB(it.map { message ->
+                    message.mapToMessageDBModel(topicName)
+                })
             }
-        }.doOnSuccess {
-            messagesDao.addMessageListToDB(it.map { message ->
-                message.mapToMessageDBModel(
-                    topicName
-                )
-            })
-        }.subscribeOn(Schedulers.io())
+            .subscribeOn(Schedulers.io())
     }
 
     override fun getMessageList(
         numBefore: Int,
         numAfter: Int,
         channelName: String,
-        topicName: String
-    ): Observable<List<Message>> {
-        return Observable.concat(
-            getMessagesFromDB(topicName).toObservable().map { it.sortedBy { msg -> msg.time } },
-            getMessagesFromNetwork(numBefore, numAfter, channelName, topicName).toObservable()
-                .map { it.sortedBy { msg -> msg.time } }
-        ).subscribeOn(Schedulers.io())
+        topicName: String,
+        loadType: LoadType
+    ): Observable<List<Message>> = when (loadType) {
+
+        LoadType.NETWORK -> getMessagesFromNetwork(numBefore, numAfter, channelName, topicName)
+            .toObservable().map { it.sortedBy { msg -> msg.time } }
+
+        LoadType.ANY -> {
+            Observable.concat(
+                getMessagesFromDB(topicName).toObservable()
+                    .map { it.sortedBy { msg -> msg.time } },
+                getMessagesFromNetwork(numBefore, numAfter, channelName, topicName).toObservable()
+                    .map { it.sortedBy { msg -> msg.time } }
+            ).subscribeOn(Schedulers.io())
+        }
+
     }
 
-    override fun addMessage(channelName: String, topicName: String, msg: Message): Completable {
+    override fun addMessage(channelName: String, topicName: String, msg: String): Completable {
         return api.sendMessageToChannel(
             channel = channelName,
             topic = topicName,
-            content = msg.message
+            content = msg
         ).subscribeOn(Schedulers.io())
     }
 
-    private companion object{
+    private companion object {
         const val STREAM_KEY = "stream"
         const val TOPIC_KEY = "topic"
     }

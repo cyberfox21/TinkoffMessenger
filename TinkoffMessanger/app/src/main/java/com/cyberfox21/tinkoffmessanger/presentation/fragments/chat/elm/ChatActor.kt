@@ -20,27 +20,29 @@ class ChatActor(
     lateinit var channelName: String
     lateinit var topicName: String
 
-    override fun execute(command: ChatCommand): Observable<ChatEvent> {
-        return when (command) {
-            ChatCommand.LoadMessages -> {
-                getMessageListUseCase(numBefore, numAfter, channelName, topicName)
-                    .subscribeOn(Schedulers.io())
-                    .mapEvents(
-                        { messages -> ChatEvent.Internal.MessagesLoaded(messages) },
-                        { error -> ChatEvent.Internal.MessageLoadError(error) }
-                    )
-            }
-            ChatCommand.LoadReactionList -> {
-                getReactionListUseCase()
-                    .subscribeOn(Schedulers.io())
-                    .mapEvents(
-                        { reactions -> ChatEvent.Internal.ReactionsLoaded(reactions) },
-                        { error -> ChatEvent.Internal.ReactionsLoadError(error) }
-                    )
-            }
-            is ChatCommand.SendMessage -> {
-                addMessageUseCase(channelName, topicName, command.msg).toObservable()
-            }
+    override fun execute(command: ChatCommand): Observable<ChatEvent> = when (command) {
+        is ChatCommand.LoadMessages -> {
+            getMessageListUseCase(numBefore, numAfter, channelName, topicName, command.loadType)
+                .subscribeOn(Schedulers.io())
+                .mapEvents(
+                    { messages -> ChatEvent.Internal.MessagesLoaded(messages) },
+                    { error -> ChatEvent.Internal.MessageLoadError(error) }
+                )
+        }
+        ChatCommand.LoadReactionList -> {
+            getReactionListUseCase()
+                .subscribeOn(Schedulers.io())
+                .mapEvents(
+                    { reactions -> ChatEvent.Internal.ReactionsLoaded(reactions) },
+                    { error -> ChatEvent.Internal.ReactionsLoadError(error) }
+                )
+        }
+        is ChatCommand.SendMessage -> {
+            addMessageUseCase(channelName, topicName, command.msg).subscribeOn(Schedulers.io())
+                .mapEvents(ChatEvent.Internal.MessageSendingSuccess) { error ->
+                    ChatEvent.Internal.MessageSendingError(error)
+                }
         }
     }
 }
+

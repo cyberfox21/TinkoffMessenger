@@ -5,4 +5,7 @@ sealed class ChatEffect {
     object EmptyMessageList : ChatEffect()
     data class ReactionsLoadError(val error: Throwable) : ChatEffect()
     object EmptyReactionList : ChatEffect()
+
+    object MessageSendingError : ChatEffect()
+    object MessageSendingSuccess : ChatEffect()
 }
