@@ -105,8 +105,7 @@ class ChatFragment : ElmFragment<ChatEvent, ChatEffect, ChatState>() {
             is ChatEffect.ReactionsLoadError -> {
             }
             ChatEffect.MessageSendingError -> showErrorDialog()
-            ChatEffect.MessageSendingSuccess -> {
-            }
+            ChatEffect.StartChatFragmentWork -> startChatFragmentWork()
         }
     }
 
@@ -121,8 +120,7 @@ class ChatFragment : ElmFragment<ChatEvent, ChatEffect, ChatState>() {
         super.onCreate(savedInstanceState)
         parseArguments()
         setActorFields()
-        getMessageList()
-        getReactionList()
+        getCurrentUserId()
     }
 
     override fun onCreateView(
@@ -164,6 +162,11 @@ class ChatFragment : ElmFragment<ChatEvent, ChatEffect, ChatState>() {
         actor.topicName = fragmentTopicName
     }
 
+    private fun startChatFragmentWork(){
+        getMessageList()
+        getReactionList()
+    }
+
     private fun configureToolbar() {
         binding.toolbarLayout.root.setBackgroundColor(
             ContextCompat.getColor(
@@ -197,7 +200,9 @@ class ChatFragment : ElmFragment<ChatEvent, ChatEffect, ChatState>() {
         binding.emptyLayout.errorLayout.isVisible = false
         binding.networkErrorLayout.errorLayout.isVisible = false
         binding.chatRecycler.isVisible = true
-        chatRecyclerAdapter.submitList(messages.toDelegateChatItemsList(UNDEFINED_USER_ID))
+        chatRecyclerAdapter.submitList(
+            messages.toDelegateChatItemsList(store.currentState.currentUserId)
+        )
     }
 
     private fun provideMessageLoading() {
@@ -311,11 +316,11 @@ class ChatFragment : ElmFragment<ChatEvent, ChatEffect, ChatState>() {
         alertDialog?.show()
     }
 
+    private fun getCurrentUserId() = store.accept(ChatEvent.Ui.GetCurrentUserId)
+
     private fun getReactionList() = store.accept(ChatEvent.Ui.GetReactionList)
 
-
     private fun getMessageList() = store.accept(ChatEvent.Ui.GetMessages)
-
 
     private fun sendMessage() {
         store.accept(ChatEvent.Ui.SendMessage(getText()))
@@ -338,8 +343,6 @@ class ChatFragment : ElmFragment<ChatEvent, ChatEffect, ChatState>() {
 
         const val CHANNEL_EXTRA = "channel_extra"
         const val TOPIC_EXTRA = "topic_extra"
-
-        const val UNDEFINED_USER_ID = -1
 
         fun newInstance(channelName: String, topic: String): ChatFragment {
             return ChatFragment().apply {

@@ -15,6 +15,7 @@ class ChatReducer : DslReducer<ChatEvent, ChatState, ChatEffect, ChatCommand>() 
                     )
                 }
             }
+
             ChatEvent.Internal.MessagesLoadEmpty -> {
                 if (state.messages.isEmpty()) {
                     state { state.copy(messageStatus = ResourceStatus.EMPTY) }
@@ -22,6 +23,7 @@ class ChatReducer : DslReducer<ChatEvent, ChatState, ChatEffect, ChatCommand>() 
                     state { state.copy(messageStatus = ResourceStatus.SUCCESS) }
                 }
             }
+
             is ChatEvent.Internal.MessageLoadError -> {
                 if (state.messages.isEmpty()) {
                     state {
@@ -34,6 +36,7 @@ class ChatReducer : DslReducer<ChatEvent, ChatState, ChatEffect, ChatCommand>() 
                     state { state.copy(messageStatus = ResourceStatus.SUCCESS) }
                 }
             }
+
             is ChatEvent.Internal.ReactionsLoaded -> {
                 state {
                     state.copy(
@@ -42,6 +45,7 @@ class ChatReducer : DslReducer<ChatEvent, ChatState, ChatEffect, ChatCommand>() 
                     )
                 }
             }
+
             is ChatEvent.Internal.ReactionsLoadError -> {
                 state {
                     state.copy(
@@ -50,22 +54,36 @@ class ChatReducer : DslReducer<ChatEvent, ChatState, ChatEffect, ChatCommand>() 
                     )
                 }
             }
+
+            ChatEvent.Ui.GetCurrentUserId -> commands { +ChatCommand.LoadCurrentUser }
+
             ChatEvent.Ui.GetMessages -> {
                 state { state.copy(messageStatus = ResourceStatus.LOADING) }
                 commands { +ChatCommand.LoadMessages(LoadType.ANY) }
             }
+
             ChatEvent.Ui.GetReactionList -> {
                 state { state.copy(reactionsListStatus = ResourceStatus.LOADING) }
                 commands { +ChatCommand.LoadReactionList }
             }
+
             is ChatEvent.Ui.SendMessage -> commands { +ChatCommand.SendMessage(event.msg) }
+
             is ChatEvent.Ui.AddReaction -> {
             }
+
             ChatEvent.Internal.MessageSendingSuccess -> commands {
                 +ChatCommand.LoadMessages(LoadType.NETWORK)
             }
-            is ChatEvent.Internal.MessageSendingError -> effects { +ChatEffect.MessageSendingError }
 
+            is ChatEvent.Internal.MessageSendingError -> effects { +ChatEffect.MessageSendingError }
+            is ChatEvent.Internal.UserLoadingFailed -> {
+                // todo show error
+            }
+            is ChatEvent.Internal.UserLoadingSuccess -> {
+                state { state.copy(currentUserId = event.user.id) }
+                effects { +ChatEffect.StartChatFragmentWork }
+            }
         }
     }
 }

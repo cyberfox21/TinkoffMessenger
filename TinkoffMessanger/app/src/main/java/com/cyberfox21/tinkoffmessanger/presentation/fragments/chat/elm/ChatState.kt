@@ -8,10 +8,15 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class ChatState(
+    val currentUserId: Int = UNDEFINED_USER_ID,
     val messages: List<Message> = listOf(),
     val reactions: List<Reaction> = listOf(),
     val messageError: Throwable? = null,
     val reactionsError: Throwable? = null,
     val messageStatus: ResourceStatus = ResourceStatus.EMPTY,
     val reactionsListStatus: ResourceStatus = ResourceStatus.EMPTY
-) : Parcelable
+) : Parcelable {
+    companion object {
+        const val UNDEFINED_USER_ID = -1
+    }
+}

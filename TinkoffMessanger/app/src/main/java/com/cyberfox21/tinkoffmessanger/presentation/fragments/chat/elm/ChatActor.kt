@@ -21,6 +21,13 @@ class ChatActor(
     lateinit var topicName: String
 
     override fun execute(command: ChatCommand): Observable<ChatEvent> = when (command) {
+        ChatCommand.LoadCurrentUser -> getMyUserUseCase().subscribeOn(Schedulers.io())
+            .map { result ->
+                result.fold(
+                    { user -> ChatEvent.Internal.UserLoadingSuccess(user) },
+                    { error -> ChatEvent.Internal.UserLoadingFailed(error) }
+                )
+            }
         is ChatCommand.LoadMessages -> {
             getMessageListUseCase(numBefore, numAfter, channelName, topicName, command.loadType)
                 .subscribeOn(Schedulers.io())
