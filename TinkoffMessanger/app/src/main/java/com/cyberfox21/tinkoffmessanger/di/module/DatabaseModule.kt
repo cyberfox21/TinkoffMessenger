@@ -37,8 +37,7 @@ class DatabaseModule {
 
     @Provides
     @ApplicationScope
-    fun provideTopicsDao(appDatabase: AppDatabase): TopicsDao =
-        appDatabase.topicsDao()
+    fun provideTopicsDao(appDatabase: AppDatabase): TopicsDao = appDatabase.topicsDao()
 
     @Provides
     @ApplicationScope

@@ -16,15 +16,14 @@ import com.cyberfox21.tinkoffmessanger.R
 import com.cyberfox21.tinkoffmessanger.databinding.BottomSheetDialogLayoutBinding
 import com.cyberfox21.tinkoffmessanger.databinding.FragmentChatBinding
 import com.cyberfox21.tinkoffmessanger.databinding.SendingMessageErrorDialogLayoutBinding
-import com.cyberfox21.tinkoffmessanger.domain.entity.Message
 import com.cyberfox21.tinkoffmessanger.domain.entity.Reaction
 import com.cyberfox21.tinkoffmessanger.presentation.MainActivity
 import com.cyberfox21.tinkoffmessanger.presentation.common.ResourceStatus
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.delegate.SpacesItemDecoration
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.delegate.adapter.*
+import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.delegate.item.ChatDelegateItem
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.elm.*
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.reactions.ReactionRecyclerAdapter
-import com.cyberfox21.tinkoffmessanger.presentation.toDelegateChatItemsList
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import vivid.money.elmslie.android.base.ElmFragment
 import vivid.money.elmslie.core.store.Store
@@ -113,7 +112,8 @@ class ChatFragment : ElmFragment<ChatEvent, ChatEffect, ChatState>() {
             is ChatEffect.ReactionsLoadError -> {
             }
             ChatEffect.MessageSendingError -> showErrorDialog()
-            ChatEffect.StartChatFragmentWork -> startChatFragmentWork()
+            ChatEffect.PrepareReactionList -> getReactionList()
+            ChatEffect.StartChatFragmentWork -> getMessageList()
         }
     }
 
@@ -170,11 +170,6 @@ class ChatFragment : ElmFragment<ChatEvent, ChatEffect, ChatState>() {
         actor.topicName = fragmentTopicName
     }
 
-    private fun startChatFragmentWork() {
-        getMessageList()
-        getReactionList()
-    }
-
     private fun configureToolbar() {
         binding.toolbarLayout.root.setBackgroundColor(
             ContextCompat.getColor(
@@ -210,14 +205,12 @@ class ChatFragment : ElmFragment<ChatEvent, ChatEffect, ChatState>() {
         binding.chatRecycler.adapter = chatRecyclerAdapter
     }
 
-    private fun provideMessageSuccess(messages: List<Message>) {
+    private fun provideMessageSuccess(messages: List<ChatDelegateItem>) {
         binding.pbLoading.isVisible = false
         binding.emptyLayout.errorLayout.isVisible = false
         binding.networkErrorLayout.errorLayout.isVisible = false
         binding.chatRecycler.isVisible = true
-        chatRecyclerAdapter.submitList(
-            messages.toDelegateChatItemsList(store.currentState.currentUserId)
-        )
+        chatRecyclerAdapter.submitList(messages)
     }
 
     private fun provideMessageLoading() {

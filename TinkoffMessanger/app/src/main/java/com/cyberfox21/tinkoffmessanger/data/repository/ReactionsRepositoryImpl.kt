@@ -1,5 +1,6 @@
 package com.cyberfox21.tinkoffmessanger.data.repository
 
+import android.util.Log
 import com.cyberfox21.tinkoffmessanger.data.api.Api
 import com.cyberfox21.tinkoffmessanger.data.database.dao.ReactionListDao
 import com.cyberfox21.tinkoffmessanger.data.mapToReactionForReactionList
@@ -25,12 +26,12 @@ class ReactionsRepositoryImpl @Inject constructor(
             }
         }
 
-    // todo check is internet available
     private fun getReactionListFromNetwork() = api.getReactions()
         .map {
             val jObject = it.reactionsObject
             EmojiFormatter.jsonObjectToReactionsList(jObject)
         }.doOnSuccess { reactionList ->
+            Log.d("ReactionsRepositoryImpl", "save reaction list to db $reactionList")
             reactionListDao.addReactionListToDB(reactionList.map {
                 it.mapToReactionListDBModel()
             })

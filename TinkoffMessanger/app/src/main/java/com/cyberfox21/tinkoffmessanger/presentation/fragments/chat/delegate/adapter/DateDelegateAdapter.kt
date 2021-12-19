@@ -11,10 +11,6 @@ import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.delegate.view
 
 class DateDelegateAdapter : AdapterDelegate {
     override fun onCreateViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
-        val lp = ViewGroup.LayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT
-        )
         return DateViewHolder(
             DateViewBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         )

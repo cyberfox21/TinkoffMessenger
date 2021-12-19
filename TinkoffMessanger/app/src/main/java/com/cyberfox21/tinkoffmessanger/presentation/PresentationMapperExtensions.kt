@@ -6,13 +6,9 @@ import com.cyberfox21.tinkoffmessanger.domain.entity.Channel
 import com.cyberfox21.tinkoffmessanger.domain.entity.Message
 import com.cyberfox21.tinkoffmessanger.domain.entity.Reaction
 import com.cyberfox21.tinkoffmessanger.domain.entity.Topic
-import com.cyberfox21.tinkoffmessanger.presentation.commondelegate.DelegateItem
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.delegate.item.ChannelDelegateItem
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.delegate.item.TopicDelegateItem
-import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.delegate.item.AlienMessageDelegateItem
-import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.delegate.item.DateDelegateItem
-import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.delegate.item.MessageReactionListItem
-import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.delegate.item.MyMessageDelegateItem
+import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.delegate.item.*
 import com.cyberfox21.tinkoffmessanger.presentation.util.DateFormatter
 
 fun String.mapMessageContent(emojis: List<Reaction>): SpannableString {
@@ -34,8 +30,11 @@ fun String.mapMessageContent(emojis: List<Reaction>): SpannableString {
     )
 }
 
-fun List<Message>.toDelegateChatItemsList(userId: Int): List<DelegateItem> {
-    val delegateItemList = mutableListOf<DelegateItem>()
+fun List<Message>.toDelegateChatItemsList(
+    userId: Int,
+    reactionList: List<Reaction>
+): List<ChatDelegateItem> {
+    val delegateItemList = mutableListOf<ChatDelegateItem>()
     this.indices.forEach { index ->
         val message = this[index]
         val reactions = message.reactions
@@ -65,7 +64,7 @@ fun List<Message>.toDelegateChatItemsList(userId: Int): List<DelegateItem> {
             true -> {
                 MyMessageDelegateItem(
                     message.id,
-                    message.message.mapMessageContent(reactions),
+                    message.message.mapMessageContent(reactionList),
                     DateFormatter.getTimeForMessage(message.time),
                     listReactions
                 )
@@ -73,7 +72,7 @@ fun List<Message>.toDelegateChatItemsList(userId: Int): List<DelegateItem> {
             false -> {
                 AlienMessageDelegateItem(
                     message.id,
-                    message.message.mapMessageContent(reactions),
+                    message.message.mapMessageContent(reactionList),
                     DateFormatter.getTimeForMessage(message.time),
                     message.senderId,
                     message.senderName,

@@ -1,7 +1,6 @@
 package com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.delegate.item
 
 import android.text.SpannableString
-import com.cyberfox21.tinkoffmessanger.presentation.commondelegate.DelegateItem
 
 class AlienMessageDelegateItem(
     val id: Int,
@@ -11,7 +10,7 @@ class AlienMessageDelegateItem(
     val senderName: String,
     val senderAvatarUrl: String,
     val reactions: List<MessageReactionListItem>
-) : DelegateItem {
+) : ChatDelegateItem() {
 
     override fun id(): Int = id
 
