@@ -2,6 +2,7 @@ package com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.elm
 
 import com.cyberfox21.tinkoffmessanger.domain.enum.LoadType
 import com.cyberfox21.tinkoffmessanger.presentation.common.ResourceStatus
+import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.enums.ScrollStatus
 import com.cyberfox21.tinkoffmessanger.presentation.toDelegateChatItemsList
 import vivid.money.elmslie.core.store.dsl_reducer.DslReducer
 
@@ -103,9 +104,9 @@ class ChatReducer : DslReducer<ChatEvent, ChatState, ChatEffect, ChatCommand>() 
                 }
             }
 
-
-            ChatEvent.Internal.MessageSendingSuccess -> commands {
-                +ChatCommand.LoadMessages(LoadType.NETWORK)
+            ChatEvent.Internal.MessageSendingSuccess -> {
+                commands { +ChatCommand.LoadMessages(LoadType.NETWORK) }
+                effects { +ChatEffect.MessageSendingSuccess }
             }
 
             is ChatEvent.Internal.MessageSendingError -> effects { +ChatEffect.MessageSendingError }
@@ -115,6 +116,16 @@ class ChatReducer : DslReducer<ChatEvent, ChatState, ChatEffect, ChatCommand>() 
 
             ChatEvent.Internal.ReactionDeletingError -> effects { +ChatEffect.EmojiDeletedError }
             ChatEvent.Internal.ReactionDeletingSuccess -> effects { +ChatEffect.EmojiDeletedSuccess }
+
+            ChatEvent.Ui.OnDataInserted -> {
+                when (state.scrollStatus) {
+                    ScrollStatus.SCROLL_TO_TOP -> effects { +ChatEffect.ScrollToTop }
+                    ScrollStatus.SCROLL_TO_POSITION -> {
+                        effects { +ChatEffect.ScrollToPosition(state.savedPosition) }
+                    }
+                    ScrollStatus.STAY -> effects {}
+                }
+            }
         }
     }
 }

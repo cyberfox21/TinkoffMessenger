@@ -14,6 +14,8 @@ sealed class ChatEvent {
 
         data class AddReaction(val reaction: Reaction, val msgId: Int) : Ui()
         data class DeleteReaction(val reaction: Reaction, val msgId: Int) : Ui()
+
+        object OnDataInserted : Ui()
     }
 
     sealed class Internal : ChatEvent() {

@@ -2,6 +2,7 @@ package com.cyberfox21.tinkoffmessanger.data.repository
 
 import com.cyberfox21.tinkoffmessanger.data.api.Api
 import com.cyberfox21.tinkoffmessanger.data.api.Narrow
+import com.cyberfox21.tinkoffmessanger.data.api.response.MessagesResponse
 import com.cyberfox21.tinkoffmessanger.data.database.dao.MessagesDao
 import com.cyberfox21.tinkoffmessanger.data.mapToMessage
 import com.cyberfox21.tinkoffmessanger.data.mapToMessageDBModel
@@ -26,29 +27,34 @@ class MessagesRepositoryImpl @Inject constructor(
     private fun getMessagesFromDB(topicName: String): Single<Result<List<Message>>> =
         messagesDao.getMessageList(topicName)
             .map { dbModels ->
-                Result.success(dbModels.map { it.mapToMessage() }.sortedBy { msg -> msg.time })
+                Result.success(dbModels
+                    .map { it.mapToMessage() }
+                    .sortedBy { msg -> msg.time }
+                    .takeLast(DB_LOAD_SIZE)
+                )
             }
             .onErrorReturn { Result.failure(it) }
             .subscribeOn(Schedulers.io())
 
+
     private fun getMessagesFromNetwork(
-        numBefore: Int,
-        numAfter: Int,
         channelName: String,
-        topicName: String
+        topicName: String,
+        lastMessageId: Int = UNDEFINED_LAST_MESSAGE_ID
     ): Single<Result<List<Message>>> {
         val narrowList = listOf(
             Narrow(STREAM_KEY, channelName),
             Narrow(TOPIC_KEY, topicName)
         )
-        return api.getMessages(
-            messagesNumberBefore = numBefore,
-            messagesNumberAfter = numAfter,
-            narrowFilterArray = Json.encodeToString(narrowList)
-        )
+        return (if (lastMessageId != UNDEFINED_LAST_MESSAGE_ID)
+            getMessagesWithAnchor(lastMessageId, narrowList)
+        else getMessagesWithoutAnchor(narrowList))
             .map { response ->
-                Result.success(response.messages.map { it.mapToMessage() }
-                    .sortedBy { msg -> msg.time })
+                Result.success(response.messages
+                    .map { it.mapToMessage() }
+                    .sortedBy { msg -> msg.time }
+                    .takeLast(SERVER_LOAD_SIZE)
+                )
             }
             .doOnSuccess { result ->
                 result.map { message ->
@@ -60,21 +66,49 @@ class MessagesRepositoryImpl @Inject constructor(
             .subscribeOn(Schedulers.io())
     }
 
+    private fun getMessagesWithAnchor(
+        lastMessageId: Int,
+        narrowList: List<Narrow>
+    ): Single<MessagesResponse> = api.getMessages(
+        messagesNumberBefore = SERVER_LOAD_SIZE,
+        messagesNumberAfter = AFTER_MESSAGES_COUNT,
+        narrowFilterArray = Json.encodeToString(narrowList),
+        anchor = lastMessageId
+    )
+
+
+    private fun getMessagesWithoutAnchor(narrowList: List<Narrow>): Single<MessagesResponse> =
+        api.getMessages(
+            messagesNumberBefore = SERVER_LOAD_SIZE,
+            messagesNumberAfter = AFTER_MESSAGES_COUNT,
+            narrowFilterArray = Json.encodeToString(narrowList)
+        )
+
     override fun getMessageList(
-        numBefore: Int,
-        numAfter: Int,
         channelName: String,
         topicName: String,
-        loadType: LoadType
+        loadType: LoadType,
+        lastMessageId: Int
     ): Observable<Result<List<Message>>> = when (loadType) {
 
-        LoadType.NETWORK -> getMessagesFromNetwork(numBefore, numAfter, channelName, topicName)
-            .toObservable()
-            .subscribeOn(Schedulers.io())
+        LoadType.NETWORK -> {
+            if (lastMessageId != UNDEFINED_LAST_MESSAGE_ID)
+                getMessagesFromNetwork(channelName, topicName, lastMessageId)
+                    .toObservable()
+                    .subscribeOn(Schedulers.io())
+            else getMessagesFromNetwork(channelName, topicName)
+                .toObservable()
+                .subscribeOn(Schedulers.io())
+        }
 
         LoadType.ANY -> {
-            Observable.concat(
-                getMessagesFromNetwork(numBefore, numAfter, channelName, topicName).toObservable(),
+            if (lastMessageId != UNDEFINED_LAST_MESSAGE_ID)
+                Observable.concat(
+                    getMessagesFromNetwork(channelName, topicName, lastMessageId).toObservable(),
+                    getMessagesFromDB(topicName).toObservable()
+                ).subscribeOn(Schedulers.io())
+            else Observable.concat(
+                getMessagesFromNetwork(channelName, topicName).toObservable(),
                 getMessagesFromDB(topicName).toObservable()
             ).subscribeOn(Schedulers.io())
         }
@@ -90,11 +124,15 @@ class MessagesRepositoryImpl @Inject constructor(
     }
 
     private companion object {
+        private const val UNDEFINED_LAST_MESSAGE_ID = -1
+
+        private const val AFTER_MESSAGES_COUNT = 0
+
+        private const val SERVER_LOAD_SIZE = 20
+        private const val DB_LOAD_SIZE = 50
+
         const val STREAM_KEY = "stream"
         const val TOPIC_KEY = "topic"
-
-        private const val CACHE_LOAD_SIZE = 50
-        private const val SERVER_LOAD_SIZE = 20
     }
 
 }

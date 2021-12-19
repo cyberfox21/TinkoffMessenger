@@ -6,6 +6,7 @@ sealed class ChatEffect {
     object StartChatFragmentWork : ChatEffect()
 
     object MessageSendingError : ChatEffect()
+    object MessageSendingSuccess : ChatEffect()
 
     object EmojiAddedSuccess : ChatEffect()
     object EmojiAddedError : ChatEffect()
@@ -14,4 +15,7 @@ sealed class ChatEffect {
     object EmojiDeletedError : ChatEffect()
 
     object ShowNetworkError : ChatEffect()
+
+    object ScrollToTop : ChatEffect()
+    data class ScrollToPosition(val position: Int) : ChatEffect()
 }

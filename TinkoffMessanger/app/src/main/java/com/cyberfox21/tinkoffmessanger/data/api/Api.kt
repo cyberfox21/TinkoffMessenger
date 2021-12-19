@@ -15,6 +15,14 @@ interface Api {
         @Query("narrow") narrowFilterArray: String,
     ): Single<MessagesResponse>
 
+    @GET("messages")
+    fun getMessages(
+        @Query("anchor") anchor: Int,
+        @Query("num_before") messagesNumberBefore: Int,
+        @Query("num_after") messagesNumberAfter: Int,
+        @Query("narrow") narrowFilterArray: String,
+    ): Single<MessagesResponse>
+
     @GET("users")
     fun getUsers(): Single<UsersResponse>
 

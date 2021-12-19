@@ -8,12 +8,15 @@ import io.reactivex.Observable
 interface MessagesRepository {
 
     fun getMessageList(
-        numBefore: Int,
-        numAfter: Int,
         channelName: String,
         topicName: String,
-        loadType: LoadType
+        loadType: LoadType,
+        lastMessageId: Int = UNDEFINED_LAST_MESSAGE_ID
     ): Observable<Result<List<Message>>>
 
     fun addMessage(channelName: String, topicName: String, msg: String): Completable
+
+    companion object {
+        private const val UNDEFINED_LAST_MESSAGE_ID = -1
+    }
 }

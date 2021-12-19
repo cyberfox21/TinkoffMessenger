@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.cyberfox21.tinkoffmessanger.R
 import com.cyberfox21.tinkoffmessanger.databinding.BottomSheetDialogLayoutBinding
 import com.cyberfox21.tinkoffmessanger.databinding.FragmentChatBinding
@@ -73,6 +74,13 @@ class ChatFragment : ElmFragment<ChatEvent, ChatEffect, ChatState>() {
 
     }
 
+    private val dataObserver = object : RecyclerView.AdapterDataObserver() {
+        override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+            super.onItemRangeInserted(positionStart, itemCount)
+            processScroll()
+        }
+    }
+
 //  < ---------------------------------------- ELM --------------------------------------------->
 
     @Inject
@@ -101,10 +109,6 @@ class ChatFragment : ElmFragment<ChatEvent, ChatEffect, ChatState>() {
 
     override fun handleEffect(effect: ChatEffect) {
         when (effect) {
-            ChatEffect.MessageSendingError -> showErrorDialog(
-                getErrorMessage(R.string.sending_message_dialog_error)
-            ) { sendMessage() }
-
             ChatEffect.PrepareReactionList -> {
                 refreshStatus = RefreshStatus.RELOAD_REACTIONS
                 getReactionList()
@@ -114,6 +118,12 @@ class ChatFragment : ElmFragment<ChatEvent, ChatEffect, ChatState>() {
                 refreshStatus = RefreshStatus.RELOAD_MESSAGES
                 getMessageList()
             }
+
+            ChatEffect.MessageSendingSuccess -> clearInput()
+
+            ChatEffect.MessageSendingError -> showErrorDialog(
+                getErrorMessage(R.string.sending_message_dialog_error)
+            ) { sendMessage() }
 
             ChatEffect.EmojiAddedSuccess -> updateMessageList()
 
@@ -126,7 +136,11 @@ class ChatFragment : ElmFragment<ChatEvent, ChatEffect, ChatState>() {
             ChatEffect.EmojiDeletedError -> showErrorDialog(
                 getErrorMessage(R.string.delete_emoji_dialog_error)
             ) { processDeleteEmoji() }
+
             ChatEffect.ShowNetworkError -> provideReactionListError()
+
+            ChatEffect.ScrollToTop -> scrollToTop()
+            is ChatEffect.ScrollToPosition -> scrollToPosition(effect.position)
         }
     }
 
@@ -204,18 +218,24 @@ class ChatFragment : ElmFragment<ChatEvent, ChatEffect, ChatState>() {
     private fun setupViews() {
         setupStatusBar()
         binding.tvTopicTitle.text = setTopic(fragmentTopicName)
-        chatRecyclerAdapter.addDelegate(
-            AlienMessageDelegateAdapter(onReactionClickListener, onLongMsgClickListener)
-        )
-        chatRecyclerAdapter.addDelegate(
-            MyMessageDelegateAdapter(onReactionClickListener, onLongMsgClickListener)
-        )
-        chatRecyclerAdapter.addDelegate(DateDelegateAdapter())
-        binding.chatRecycler.addItemDecoration(
-            SpacesItemDecoration(resources.getDimensionPixelOffset(R.dimen.messageSpaceSize))
-        )
-        binding.chatRecycler.setHasFixedSize(true)
-        binding.chatRecycler.adapter = chatRecyclerAdapter
+        with(chatRecyclerAdapter) {
+            addDelegate(
+                AlienMessageDelegateAdapter(
+                    onReactionClickListener,
+                    onLongMsgClickListener
+                )
+            )
+            addDelegate(MyMessageDelegateAdapter(onReactionClickListener, onLongMsgClickListener))
+            addDelegate(DateDelegateAdapter())
+            registerAdapterDataObserver(dataObserver)
+        }
+        with(binding.chatRecycler) {
+            addItemDecoration(
+                SpacesItemDecoration(resources.getDimensionPixelOffset(R.dimen.messageSpaceSize))
+            )
+            setHasFixedSize(true)
+            adapter = chatRecyclerAdapter
+        }
     }
 
     private fun provideMessageSuccess(messages: List<ChatDelegateItem>) {
@@ -378,7 +398,15 @@ class ChatFragment : ElmFragment<ChatEvent, ChatEffect, ChatState>() {
         store.accept(ChatEvent.Ui.DeleteReaction(emoji, messageId))
     }
 
+    private fun processScroll() = store.accept(ChatEvent.Ui.OnDataInserted)
+
+    private fun scrollToTop() = binding.chatRecycler.scrollToPosition(START_SCROLL_POSITION)
+
+    private fun scrollToPosition(position: Int) = binding.chatRecycler.scrollToPosition(position)
+
     private fun getText() = binding.messageFieldLayout.etMessageField.text.toString().trim()
+
+    private fun clearInput() = binding.messageFieldLayout.etMessageField.setText(CLEAR_TEXT)
 
     private fun getErrorMessage(id: Int) = resources.getString(id)
 
@@ -395,6 +423,10 @@ class ChatFragment : ElmFragment<ChatEvent, ChatEffect, ChatState>() {
 
         const val CHANNEL_EXTRA = "channel_extra"
         const val TOPIC_EXTRA = "topic_extra"
+
+        const val START_SCROLL_POSITION = 0
+
+        const val CLEAR_TEXT = ""
 
         fun newInstance(channelName: String, topic: String): ChatFragment {
             return ChatFragment().apply {

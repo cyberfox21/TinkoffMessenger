@@ -29,7 +29,7 @@ class ChatActor(
                 )
             }
         is ChatCommand.LoadMessages -> {
-            getMessageListUseCase(numBefore, numAfter, channelName, topicName, command.loadType)
+            getMessageListUseCase(channelName, topicName, command.loadType)
                 .subscribeOn(Schedulers.io())
                 .map { result ->
                     result.fold(
