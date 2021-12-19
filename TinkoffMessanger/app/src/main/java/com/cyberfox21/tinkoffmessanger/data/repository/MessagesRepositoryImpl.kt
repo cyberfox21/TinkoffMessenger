@@ -92,6 +92,9 @@ class MessagesRepositoryImpl @Inject constructor(
     private companion object {
         const val STREAM_KEY = "stream"
         const val TOPIC_KEY = "topic"
+
+        private const val CACHE_LOAD_SIZE = 50
+        private const val SERVER_LOAD_SIZE = 20
     }
 
 }

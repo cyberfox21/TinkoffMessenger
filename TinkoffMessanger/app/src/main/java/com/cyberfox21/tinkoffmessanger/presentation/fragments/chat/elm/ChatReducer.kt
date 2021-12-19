@@ -1,6 +1,5 @@
 package com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.elm
 
-import android.util.Log
 import com.cyberfox21.tinkoffmessanger.domain.enum.LoadType
 import com.cyberfox21.tinkoffmessanger.presentation.common.ResourceStatus
 import com.cyberfox21.tinkoffmessanger.presentation.toDelegateChatItemsList
@@ -43,7 +42,8 @@ class ChatReducer : DslReducer<ChatEvent, ChatState, ChatEffect, ChatCommand>() 
             is ChatEvent.Internal.UserLoadingFailed -> {
                 if (state.currentUserId == ChatState.UNDEFINED_USER_ID) {
                     effects { +ChatEffect.ShowNetworkError }
-                } else { }
+                } else {
+                }
             }
 
             is ChatEvent.Internal.ReactionsLoaded -> {

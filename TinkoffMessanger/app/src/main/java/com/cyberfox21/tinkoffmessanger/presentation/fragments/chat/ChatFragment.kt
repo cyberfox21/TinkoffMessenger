@@ -18,6 +18,7 @@ import com.cyberfox21.tinkoffmessanger.databinding.SendingMessageErrorDialogLayo
 import com.cyberfox21.tinkoffmessanger.domain.entity.Reaction
 import com.cyberfox21.tinkoffmessanger.presentation.common.MainActivity
 import com.cyberfox21.tinkoffmessanger.presentation.common.ResourceStatus
+import com.cyberfox21.tinkoffmessanger.presentation.commondelegate.MainRecyclerAdapter
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.delegate.SpacesItemDecoration
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.delegate.adapter.*
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.delegate.item.ChatDelegateItem
@@ -51,7 +52,7 @@ class ChatFragment : ElmFragment<ChatEvent, ChatEffect, ChatState>() {
         get() = _dialogLayoutBinding
             ?: throw RuntimeException("BottomSheetDialogLayoutBinding = null")
 
-    private val chatRecyclerAdapter = MainChatRecyclerAdapter()
+    private val chatRecyclerAdapter = MainRecyclerAdapter()
     private val emojiListAdapter = ReactionListAdapter()
 
     private val onLongMsgClickListener = object : OnLongMessageClickListener {

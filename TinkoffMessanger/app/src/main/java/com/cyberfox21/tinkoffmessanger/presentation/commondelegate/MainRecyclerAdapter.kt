@@ -1,13 +1,10 @@
-package com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.delegate.adapter
+package com.cyberfox21.tinkoffmessanger.presentation.commondelegate
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.cyberfox21.tinkoffmessanger.presentation.commondelegate.AdapterDelegate
-import com.cyberfox21.tinkoffmessanger.presentation.commondelegate.DelegateAdapterItemCallback
-import com.cyberfox21.tinkoffmessanger.presentation.commondelegate.DelegateItem
 
-class MainChannelsRecyclerAdapter :
+class MainRecyclerAdapter :
     ListAdapter<DelegateItem, RecyclerView.ViewHolder>(DelegateAdapterItemCallback()) {
 
     private val delegates = mutableListOf<AdapterDelegate>()

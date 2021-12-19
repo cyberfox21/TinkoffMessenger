@@ -11,10 +11,10 @@ import com.cyberfox21.tinkoffmessanger.databinding.FragmentListChannelsBinding
 import com.cyberfox21.tinkoffmessanger.presentation.common.MainActivity
 import com.cyberfox21.tinkoffmessanger.presentation.common.ResourceStatus
 import com.cyberfox21.tinkoffmessanger.presentation.commondelegate.DelegateItem
+import com.cyberfox21.tinkoffmessanger.presentation.commondelegate.MainRecyclerAdapter
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.ChannelsFragment.Companion.QUERY
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.delegate.SpacesItemDecoration
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.delegate.adapter.ChannelDelegateAdapter
-import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.delegate.adapter.MainChannelsRecyclerAdapter
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.delegate.adapter.TopicDelegateAdapter
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.elm.*
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.elm.ChannelsState.Companion.UNDEFINED_CHANNEL_NAME
@@ -27,7 +27,7 @@ class ListChannelsFragment : ElmFragment<ChannelsEvent, ChannelsEffect, Channels
 
     private lateinit var fragmentCategory: Category
 
-    private val mainAdapter = MainChannelsRecyclerAdapter()
+    private val mainAdapter = MainRecyclerAdapter()
 
     private var _binding: FragmentListChannelsBinding? = null
     private val binding
