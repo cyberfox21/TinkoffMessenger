@@ -8,7 +8,7 @@ import com.cyberfox21.tinkoffmessanger.data.mapToChannelDBModel
 import com.cyberfox21.tinkoffmessanger.data.mapToSubscribedChannelDBModel
 import com.cyberfox21.tinkoffmessanger.domain.entity.Channel
 import com.cyberfox21.tinkoffmessanger.domain.repository.ChannelsRepository
-import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.Category
+import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.enums.Category
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers

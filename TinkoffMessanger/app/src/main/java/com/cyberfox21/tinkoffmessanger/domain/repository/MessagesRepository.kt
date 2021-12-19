@@ -13,7 +13,7 @@ interface MessagesRepository {
         channelName: String,
         topicName: String,
         loadType: LoadType
-    ): Observable<List<Message>>
+    ): Observable<Result<List<Message>>>
 
     fun addMessage(channelName: String, topicName: String, msg: String): Completable
 }

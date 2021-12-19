@@ -1,7 +1,7 @@
 package com.cyberfox21.tinkoffmessanger.domain.repository
 
 import com.cyberfox21.tinkoffmessanger.domain.entity.Channel
-import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.Category
+import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.enums.Category
 import io.reactivex.Observable
 
 interface ChannelsRepository {

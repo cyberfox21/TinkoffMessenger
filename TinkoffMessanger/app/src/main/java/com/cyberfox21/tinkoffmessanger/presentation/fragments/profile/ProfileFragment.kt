@@ -11,8 +11,9 @@ import com.bumptech.glide.Glide
 import com.cyberfox21.tinkoffmessanger.R
 import com.cyberfox21.tinkoffmessanger.databinding.FragmentProfileBinding
 import com.cyberfox21.tinkoffmessanger.domain.entity.User
-import com.cyberfox21.tinkoffmessanger.presentation.MainActivity
+import com.cyberfox21.tinkoffmessanger.presentation.common.MainActivity
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.profile.elm.*
+import com.cyberfox21.tinkoffmessanger.presentation.fragments.profile.enums.ProfileMode
 import vivid.money.elmslie.android.base.ElmFragment
 import vivid.money.elmslie.core.store.Store
 import javax.inject.Inject

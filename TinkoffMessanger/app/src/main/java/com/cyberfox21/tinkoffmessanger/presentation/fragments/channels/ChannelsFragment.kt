@@ -3,7 +3,6 @@ package com.cyberfox21.tinkoffmessanger.presentation.fragments.channels
 import android.app.SearchManager
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,7 +13,8 @@ import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import com.cyberfox21.tinkoffmessanger.R
 import com.cyberfox21.tinkoffmessanger.databinding.FragmentChannelsBinding
-import com.cyberfox21.tinkoffmessanger.presentation.NavigationHolder
+import com.cyberfox21.tinkoffmessanger.presentation.common.NavigationHolder
+import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.enums.Category
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.ChatFragment
 import com.google.android.material.tabs.TabLayoutMediator
 
@@ -39,14 +39,12 @@ class ChannelsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        Log.d("ChannelsFragment", "onCreateView()")
         _binding = FragmentChannelsBinding.inflate(inflater)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Log.d("ChannelsFragment", "onViewCreated()")
         setupStatusBar()
         setupNavigation()
         setupViewPager()
@@ -70,7 +68,6 @@ class ChannelsFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        Log.d("ChannelsFragment", "onDestroyView()")
         binding.vpCategories.unregisterOnPageChangeCallback(onPageChangeCallback)
         _binding = null
     }
@@ -105,14 +102,12 @@ class ChannelsFragment : Fragment() {
 
     private fun setupSearchPanel() {
         binding.toolbarLayout.toolbar.setTitleTextColor(
-            ContextCompat.getColor(
-                requireContext(),
-                R.color.white
-            )
+            ContextCompat.getColor(requireContext(), R.color.white)
         )
         binding.toolbarLayout.toolbar.title = getString(R.string.channels)
         val searchMenuItem = binding.toolbarLayout.toolbar.menu.findItem(R.id.actionSearch)
-        val searchManager = context?.getSystemService(Context.SEARCH_SERVICE) as SearchManager
+        val searchManager = context?.getSystemService(Context.SEARCH_SERVICE)
+                as SearchManager
         searchView = searchMenuItem.actionView as SearchView
         searchMenuItem.isVisible = true
         searchView.apply {
@@ -130,7 +125,6 @@ class ChannelsFragment : Fragment() {
                         Bundle().apply { putString(QUERY, newText) })
                     return true
                 }
-
             })
         }
     }
@@ -147,7 +141,6 @@ class ChannelsFragment : Fragment() {
 
     companion object {
         const val CHANNELS_FRAGMENT_NAME = "channels_fragment"
-        const val SEARCH_QUERY = "search_query"
         const val QUERY = "query"
         fun newInstance(): ChannelsFragment {
             return ChannelsFragment()

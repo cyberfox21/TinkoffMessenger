@@ -16,12 +16,14 @@ import com.cyberfox21.tinkoffmessanger.databinding.BottomSheetDialogLayoutBindin
 import com.cyberfox21.tinkoffmessanger.databinding.FragmentChatBinding
 import com.cyberfox21.tinkoffmessanger.databinding.SendingMessageErrorDialogLayoutBinding
 import com.cyberfox21.tinkoffmessanger.domain.entity.Reaction
-import com.cyberfox21.tinkoffmessanger.presentation.MainActivity
+import com.cyberfox21.tinkoffmessanger.presentation.common.MainActivity
 import com.cyberfox21.tinkoffmessanger.presentation.common.ResourceStatus
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.delegate.SpacesItemDecoration
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.delegate.adapter.*
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.delegate.item.ChatDelegateItem
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.elm.*
+import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.enums.ClickEmojiMode
+import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.enums.RefreshStatus
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.reactions.ReactionListAdapter
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import vivid.money.elmslie.android.base.ElmFragment
@@ -30,6 +32,8 @@ import javax.inject.Inject
 
 
 class ChatFragment : ElmFragment<ChatEvent, ChatEffect, ChatState>() {
+
+    private var refreshStatus: RefreshStatus = RefreshStatus.RELOAD_USER
 
     private lateinit var fragmentChannelName: String
     private lateinit var fragmentTopicName: String
@@ -100,9 +104,15 @@ class ChatFragment : ElmFragment<ChatEvent, ChatEffect, ChatState>() {
                 getErrorMessage(R.string.sending_message_dialog_error)
             ) { sendMessage() }
 
-            ChatEffect.PrepareReactionList -> getReactionList()
+            ChatEffect.PrepareReactionList -> {
+                refreshStatus = RefreshStatus.RELOAD_REACTIONS
+                getReactionList()
+            }
 
-            ChatEffect.StartChatFragmentWork -> getMessageList()
+            ChatEffect.StartChatFragmentWork -> {
+                refreshStatus = RefreshStatus.RELOAD_MESSAGES
+                getMessageList()
+            }
 
             ChatEffect.EmojiAddedSuccess -> updateMessageList()
 
@@ -115,6 +125,7 @@ class ChatFragment : ElmFragment<ChatEvent, ChatEffect, ChatState>() {
             ChatEffect.EmojiDeletedError -> showErrorDialog(
                 getErrorMessage(R.string.delete_emoji_dialog_error)
             ) { processDeleteEmoji() }
+            ChatEffect.ShowNetworkError -> provideReactionListError()
         }
     }
 
@@ -268,10 +279,18 @@ class ChatFragment : ElmFragment<ChatEvent, ChatEffect, ChatState>() {
     private fun addListeners() {
         with(binding) {
             errorLayout.btnNetwork.setOnClickListener {
-                store.accept(ChatEvent.Ui.GetMessages(needLoading = true))
+                when (refreshStatus) {
+                    RefreshStatus.RELOAD_USER -> getCurrentUserId()
+                    RefreshStatus.RELOAD_REACTIONS -> getReactionList()
+                    RefreshStatus.RELOAD_MESSAGES -> getMessageList()
+                }
             }
             emptyLayout.btnRefresh.setOnClickListener {
-                store.accept(ChatEvent.Ui.GetMessages(needLoading = true))
+                when (refreshStatus) {
+                    RefreshStatus.RELOAD_USER -> getCurrentUserId()
+                    RefreshStatus.RELOAD_REACTIONS -> getReactionList()
+                    RefreshStatus.RELOAD_MESSAGES -> getMessageList()
+                }
             }
             messageFieldLayout.imageBtnSend.setOnClickListener { sendMessage() }
             messageFieldLayout.etMessageField.addTextChangedListener(object : TextWatcher {

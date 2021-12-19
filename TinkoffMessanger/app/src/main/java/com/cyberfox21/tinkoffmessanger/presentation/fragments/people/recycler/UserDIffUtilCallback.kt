@@ -1,4 +1,4 @@
-package com.cyberfox21.tinkoffmessanger.presentation.fragments.people
+package com.cyberfox21.tinkoffmessanger.presentation.fragments.people.recycler
 
 import androidx.recyclerview.widget.DiffUtil
 import com.cyberfox21.tinkoffmessanger.domain.entity.User

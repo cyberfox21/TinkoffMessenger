@@ -12,4 +12,6 @@ sealed class ChatEffect {
 
     object EmojiDeletedSuccess : ChatEffect()
     object EmojiDeletedError : ChatEffect()
+
+    object ShowNetworkError : ChatEffect()
 }

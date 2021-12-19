@@ -1,6 +1,6 @@
 package com.cyberfox21.tinkoffmessanger.presentation.fragments.profile.elm
 
-import com.cyberfox21.tinkoffmessanger.presentation.fragments.profile.ProfileMode
+import com.cyberfox21.tinkoffmessanger.presentation.fragments.profile.enums.ProfileMode
 import vivid.money.elmslie.core.store.dsl_reducer.DslReducer
 
 class ProfileReducer : DslReducer<ProfileEvent, ProfileState, ProfileEffect, ProfileCommand>() {

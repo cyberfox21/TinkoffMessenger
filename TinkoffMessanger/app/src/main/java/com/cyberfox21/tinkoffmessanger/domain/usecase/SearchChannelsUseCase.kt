@@ -2,7 +2,7 @@ package com.cyberfox21.tinkoffmessanger.domain.usecase
 
 import com.cyberfox21.tinkoffmessanger.domain.entity.Channel
 import com.cyberfox21.tinkoffmessanger.domain.repository.ChannelsRepository
-import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.Category
+import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.enums.Category
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
 import java.util.concurrent.TimeUnit

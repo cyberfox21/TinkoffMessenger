@@ -31,10 +31,15 @@ class ChatActor(
         is ChatCommand.LoadMessages -> {
             getMessageListUseCase(numBefore, numAfter, channelName, topicName, command.loadType)
                 .subscribeOn(Schedulers.io())
-                .mapEvents(
-                    { messages -> ChatEvent.Internal.MessagesLoaded(messages) },
-                    { error -> ChatEvent.Internal.MessageLoadError(error) }
-                )
+                .map { result ->
+                    result.fold(
+                        { messages ->
+                            if (messages.isEmpty()) ChatEvent.Internal.MessagesLoadEmpty
+                            else ChatEvent.Internal.MessagesLoaded(messages)
+                        },
+                        { ChatEvent.Internal.MessageLoadError(it) }
+                    )
+                }
         }
         ChatCommand.LoadReactionList -> {
             getReactionListUseCase()

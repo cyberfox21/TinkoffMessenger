@@ -9,9 +9,9 @@ import com.cyberfox21.tinkoffmessanger.R
 import com.cyberfox21.tinkoffmessanger.data.mapToReaction
 import com.cyberfox21.tinkoffmessanger.presentation.commondelegate.AdapterDelegate
 import com.cyberfox21.tinkoffmessanger.presentation.commondelegate.DelegateItem
-import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.ClickEmojiMode
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.delegate.item.AlienMessageDelegateItem
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.delegate.viewholder.AlienMessageViewHolder
+import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.enums.ClickEmojiMode
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.views.AlienMessageViewGroup
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.views.CustomEmojiView
 

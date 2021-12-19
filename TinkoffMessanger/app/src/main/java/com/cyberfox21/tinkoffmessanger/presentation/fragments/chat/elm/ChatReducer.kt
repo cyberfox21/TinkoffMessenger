@@ -19,9 +19,9 @@ class ChatReducer : DslReducer<ChatEvent, ChatState, ChatEffect, ChatCommand>() 
             is ChatEvent.Ui.GetMessages -> {
                 if (event.needLoading) {
                     state { state.copy(messageStatus = ResourceStatus.LOADING) }
-                    commands { +ChatCommand.LoadMessages(LoadType.NETWORK) }
-                } else {
                     commands { +ChatCommand.LoadMessages(LoadType.ANY) }
+                } else {
+                    commands { +ChatCommand.LoadMessages(LoadType.NETWORK) }
                 }
             }
 
@@ -41,7 +41,9 @@ class ChatReducer : DslReducer<ChatEvent, ChatState, ChatEffect, ChatCommand>() 
             }
 
             is ChatEvent.Internal.UserLoadingFailed -> {
-                Log.d("ChatReducer", "UserLoadingFailed")
+                if (state.currentUserId == ChatState.UNDEFINED_USER_ID) {
+                    effects { +ChatEffect.ShowNetworkError }
+                } else { }
             }
 
             is ChatEvent.Internal.ReactionsLoaded -> {
@@ -55,11 +57,16 @@ class ChatReducer : DslReducer<ChatEvent, ChatState, ChatEffect, ChatCommand>() 
             }
 
             is ChatEvent.Internal.ReactionsLoadError -> {
-                state {
-                    state.copy(
-                        reactionsListStatus = ResourceStatus.ERROR,
-                        reactionsError = event.error
-                    )
+                if (state.reactions.isEmpty()) {
+                    state {
+                        state.copy(
+                            reactionsListStatus = ResourceStatus.ERROR,
+                            reactionsError = event.error
+                        )
+                    }
+                    effects { +ChatEffect.ShowNetworkError }
+                } else {
+                    state { state.copy(reactionsListStatus = ResourceStatus.SUCCESS) }
                 }
             }
 

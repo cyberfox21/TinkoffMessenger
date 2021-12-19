@@ -13,9 +13,10 @@ import androidx.core.view.isVisible
 import com.cyberfox21.tinkoffmessanger.R
 import com.cyberfox21.tinkoffmessanger.databinding.FragmentPeopleBinding
 import com.cyberfox21.tinkoffmessanger.domain.entity.User
-import com.cyberfox21.tinkoffmessanger.presentation.MainActivity
-import com.cyberfox21.tinkoffmessanger.presentation.NavigationHolder
+import com.cyberfox21.tinkoffmessanger.presentation.common.MainActivity
+import com.cyberfox21.tinkoffmessanger.presentation.common.NavigationHolder
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.people.elm.*
+import com.cyberfox21.tinkoffmessanger.presentation.fragments.people.recycler.PeopleRecyclerAdapter
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.profile.ProfileFragment
 import vivid.money.elmslie.android.base.ElmFragment
 import vivid.money.elmslie.core.store.Store

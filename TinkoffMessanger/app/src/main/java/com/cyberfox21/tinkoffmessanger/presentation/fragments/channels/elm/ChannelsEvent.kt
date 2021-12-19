@@ -2,7 +2,7 @@ package com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.elm
 
 import com.cyberfox21.tinkoffmessanger.domain.entity.Channel
 import com.cyberfox21.tinkoffmessanger.domain.entity.Topic
-import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.Category
+import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.enums.Category
 
 sealed class ChannelsEvent {
 
