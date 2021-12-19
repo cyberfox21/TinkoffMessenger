@@ -46,7 +46,7 @@ class ProfileFragment() : ElmFragment<ProfileEvent, ProfileEffect, ProfileState>
                         state.isEmptyState.not() &&
                         binding.shimmerLayoutProfile.shimmerViewContainer.isVisible.not()
             if (!state.isEmptyState && state.isLoading.not()) state.user?.let { bindUser(it) }
-            networkErrorLayout.errorLayout.isVisible = state.error != null && state.isLoading.not()
+            errorLayout.errorRoot.isVisible = state.error != null && state.isLoading.not()
         }
     }
 
@@ -54,10 +54,10 @@ class ProfileFragment() : ElmFragment<ProfileEvent, ProfileEffect, ProfileState>
         when (effect) {
             is ProfileEffect.UserLoadError -> {
                 binding.emptyLayout.errorLayout.isVisible = false
-                binding.networkErrorLayout.errorLayout.isVisible = true
+                binding.errorLayout.errorRoot.isVisible = true
             }
             is ProfileEffect.UserEmpty -> {
-                binding.networkErrorLayout.errorLayout.isVisible = false
+                binding.errorLayout.errorRoot.isVisible = false
                 binding.emptyLayout.errorLayout.isVisible = true
             }
         }
@@ -163,7 +163,7 @@ class ProfileFragment() : ElmFragment<ProfileEvent, ProfileEffect, ProfileState>
     }
 
     private fun addListeners() {
-        binding.networkErrorLayout.networkButton.setOnClickListener { launchRightMode() }
+        binding.errorLayout.btnNetwork.setOnClickListener { launchRightMode() }
         binding.emptyLayout.btnRefresh.setOnClickListener { launchRightMode() }
     }
 

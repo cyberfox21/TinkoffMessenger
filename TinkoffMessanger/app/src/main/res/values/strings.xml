@@ -27,4 +27,6 @@
     <string name="retry">Повторить</string>
     <string name="logout_button">logout button</string>
     <string name="sending_message_dialog_error">Unfortunately, we can\'t send \nyour message to the server. \nPlease check your internet \nconnection and retry.</string>
+    <string name="add_emoji_dialog_error">Unfortunately, we can\'t send \nyour reaction to the server. \nPlease check your internet \nconnection and retry.</string>
+    <string name="delete_emoji_dialog_error">Unfortunately, we can\'t delete \nyour reaction from the server. \nPlease check your internet \nconnection and retry.</string>
 </resources>

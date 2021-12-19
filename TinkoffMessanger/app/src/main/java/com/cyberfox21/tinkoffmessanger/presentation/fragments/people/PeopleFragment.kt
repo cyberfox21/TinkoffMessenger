@@ -48,7 +48,7 @@ class PeopleFragment : ElmFragment<PeopleEvent, PeopleEffect, PeopleState>() {
             peopleRecyclerView.isVisible =
                 state.error == null && state.users?.isNotEmpty() == true && state.isLoading.not()
             peopleRecyclerAdapter.submitList(state.users)
-            networkErrorLayout.errorLayout.isVisible = state.error != null && state.isLoading.not()
+            errorLayout.errorRoot.isVisible = state.error != null && state.isLoading.not()
         }
     }
 
@@ -57,11 +57,11 @@ class PeopleFragment : ElmFragment<PeopleEvent, PeopleEffect, PeopleState>() {
             is PeopleEffect.UserListLoadError -> {
                 binding.peopleRecyclerView.isVisible = false
                 binding.emptyLayout.errorLayout.isVisible = false
-                binding.networkErrorLayout.errorLayout.isVisible = true
+                binding.errorLayout.errorRoot.isVisible = true
             }
             is PeopleEffect.UsersListEmpty -> {
                 binding.peopleRecyclerView.isVisible = false
-                binding.networkErrorLayout.errorLayout.isVisible = false
+                binding.errorLayout.errorRoot.isVisible = false
                 binding.emptyLayout.errorLayout.isVisible = true
             }
         }
@@ -143,7 +143,7 @@ class PeopleFragment : ElmFragment<PeopleEvent, PeopleEffect, PeopleState>() {
     }
 
     private fun addListeners() {
-        binding.networkErrorLayout.networkButton.setOnClickListener {
+        binding.errorLayout.btnNetwork.setOnClickListener {
             store.accept(PeopleEvent.Ui.GetUserList(store.currentState.query))
         }
         binding.emptyLayout.btnRefresh.setOnClickListener {

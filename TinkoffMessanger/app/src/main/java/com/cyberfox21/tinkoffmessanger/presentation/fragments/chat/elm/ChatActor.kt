@@ -50,6 +50,19 @@ class ChatActor(
                     ChatEvent.Internal.MessageSendingError(error)
                 }
         }
+        is ChatCommand.AddReaction -> addReactionUseCase(command.msgId, command.reaction.name)
+            .subscribeOn(Schedulers.io())
+            .mapEvents(
+                ChatEvent.Internal.ReactionAddingSuccess,
+                ChatEvent.Internal.ReactionAddingError
+            )
+        is ChatCommand.DeleteReaction -> {
+            deleteReactionUseCase(command.msgId, command.reaction).subscribeOn(Schedulers.io())
+                .mapEvents(
+                    ChatEvent.Internal.ReactionDeletingSuccess,
+                    ChatEvent.Internal.ReactionDeletingError
+                )
+        }
     }
 }
 

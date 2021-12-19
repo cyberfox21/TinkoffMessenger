@@ -67,7 +67,9 @@ interface Api {
     @DELETE("messages/{message_id}/reactions")
     fun deleteReaction(
         @Path("message_id") messageId: Int,
-        @Query("emoji_name") emojiName: String
+        @Query("emoji_name") emojiName: String,
+        @Query("emoji_code") emojiCode: String,
+        @Query("reaction_type") emojiType: String
     ): Completable
 
 }

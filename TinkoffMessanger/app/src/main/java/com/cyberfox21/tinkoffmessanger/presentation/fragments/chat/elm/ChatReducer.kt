@@ -16,21 +16,24 @@ class ChatReducer : DslReducer<ChatEvent, ChatState, ChatEffect, ChatCommand>() 
                 commands { +ChatCommand.LoadReactionList }
             }
 
-            ChatEvent.Ui.GetMessages -> {
-                state { state.copy(messageStatus = ResourceStatus.LOADING) }
-                commands { +ChatCommand.LoadMessages(LoadType.ANY) }
+            is ChatEvent.Ui.GetMessages -> {
+                if (event.needLoading) {
+                    state { state.copy(messageStatus = ResourceStatus.LOADING) }
+                    commands { +ChatCommand.LoadMessages(LoadType.NETWORK) }
+                } else {
+                    commands { +ChatCommand.LoadMessages(LoadType.ANY) }
+                }
             }
 
             is ChatEvent.Ui.SendMessage -> commands { +ChatCommand.SendMessage(event.msg) }
 
             is ChatEvent.Ui.AddReaction -> {
-                //commands { +ChatCommand.AddReaction() }
+                commands { +ChatCommand.AddReaction(event.msgId, event.reaction) }
             }
 
             is ChatEvent.Ui.DeleteReaction -> {
-                //commands { +ChatCommand.DeleteReaction() }
+                commands { +ChatCommand.DeleteReaction(event.msgId, event.reaction) }
             }
-
 
             is ChatEvent.Internal.UserLoadingSuccess -> {
                 state { state.copy(currentUserId = event.user.id) }
@@ -100,6 +103,11 @@ class ChatReducer : DslReducer<ChatEvent, ChatState, ChatEffect, ChatCommand>() 
 
             is ChatEvent.Internal.MessageSendingError -> effects { +ChatEffect.MessageSendingError }
 
+            ChatEvent.Internal.ReactionAddingError -> effects { +ChatEffect.EmojiAddedError }
+            ChatEvent.Internal.ReactionAddingSuccess -> effects { +ChatEffect.EmojiAddedSuccess }
+
+            ChatEvent.Internal.ReactionDeletingError -> effects { +ChatEffect.EmojiDeletedError }
+            ChatEvent.Internal.ReactionDeletingSuccess -> effects { +ChatEffect.EmojiDeletedSuccess }
         }
     }
 }

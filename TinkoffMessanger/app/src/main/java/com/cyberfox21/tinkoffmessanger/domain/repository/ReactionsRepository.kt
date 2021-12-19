@@ -10,5 +10,10 @@ interface ReactionsRepository {
 
     fun addReaction(messageId: Int, reactionName: String): Completable
 
-    fun deleteReaction(messageId: Int, reactionName: String): Completable
+    fun deleteReaction(
+        messageId: Int,
+        reactionName: String,
+        emojiCode: String,
+        emojiType: String
+    ): Completable
 }

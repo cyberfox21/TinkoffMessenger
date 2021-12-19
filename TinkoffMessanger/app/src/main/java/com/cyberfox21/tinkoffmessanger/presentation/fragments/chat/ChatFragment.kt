@@ -5,7 +5,6 @@ import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,7 +22,7 @@ import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.delegate.
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.delegate.adapter.*
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.delegate.item.ChatDelegateItem
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.elm.*
-import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.reactions.ReactionRecyclerAdapter
+import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.reactions.ReactionListAdapter
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import vivid.money.elmslie.android.base.ElmFragment
 import vivid.money.elmslie.core.store.Store
@@ -49,9 +48,9 @@ class ChatFragment : ElmFragment<ChatEvent, ChatEffect, ChatState>() {
             ?: throw RuntimeException("BottomSheetDialogLayoutBinding = null")
 
     private val chatRecyclerAdapter = MainChatRecyclerAdapter()
-    private val reactionRecyclerAdapter = ReactionRecyclerAdapter()
+    private val emojiListAdapter = ReactionListAdapter()
 
-    private val onLongMessageClickListener = object : OnLongMessageClickListener {
+    private val onLongMsgClickListener = object : OnLongMessageClickListener {
         override fun onLongMessageClick(messageId: Int) {
             showBottomSheetDialog(messageId)
         }
@@ -74,7 +73,7 @@ class ChatFragment : ElmFragment<ChatEvent, ChatEffect, ChatState>() {
     @Inject
     internal lateinit var actor: ChatActor
 
-    override val initEvent: ChatEvent = ChatEvent.Ui.GetMessages
+    override val initEvent: ChatEvent = ChatEvent.Ui.GetMessages(needLoading = true)
 
     override fun createStore(): Store<ChatEvent, ChatEffect, ChatState> =
         ChatStoreFactory(actor).provide()
@@ -97,23 +96,25 @@ class ChatFragment : ElmFragment<ChatEvent, ChatEffect, ChatState>() {
 
     override fun handleEffect(effect: ChatEffect) {
         when (effect) {
-            ChatEffect.EmptyMessageList -> {
-                binding.chatRecycler.isVisible = false
-                binding.emptyLayout.errorLayout.isVisible = true
-                binding.networkErrorLayout.errorLayout.isVisible = false
-            }
-            is ChatEffect.MessagesLoadError -> {
-                binding.chatRecycler.isVisible = false
-                binding.emptyLayout.errorLayout.isVisible = false
-                binding.networkErrorLayout.errorLayout.isVisible = true
-            }
-            ChatEffect.EmptyReactionList -> {
-            }
-            is ChatEffect.ReactionsLoadError -> {
-            }
-            ChatEffect.MessageSendingError -> showErrorDialog()
+            ChatEffect.MessageSendingError -> showErrorDialog(
+                getErrorMessage(R.string.sending_message_dialog_error)
+            ) { sendMessage() }
+
             ChatEffect.PrepareReactionList -> getReactionList()
+
             ChatEffect.StartChatFragmentWork -> getMessageList()
+
+            ChatEffect.EmojiAddedSuccess -> updateMessageList()
+
+            ChatEffect.EmojiAddedError -> showErrorDialog(
+                getErrorMessage(R.string.add_emoji_dialog_error)
+            ) { processAddEmoji() }
+
+            ChatEffect.EmojiDeletedSuccess -> updateMessageList()
+
+            ChatEffect.EmojiDeletedError -> showErrorDialog(
+                getErrorMessage(R.string.delete_emoji_dialog_error)
+            ) { processDeleteEmoji() }
         }
     }
 
@@ -192,10 +193,10 @@ class ChatFragment : ElmFragment<ChatEvent, ChatEffect, ChatState>() {
         setupStatusBar()
         binding.tvTopicTitle.text = setTopic(fragmentTopicName)
         chatRecyclerAdapter.addDelegate(
-            AlienMessageDelegateAdapter(onReactionClickListener, onLongMessageClickListener)
+            AlienMessageDelegateAdapter(onReactionClickListener, onLongMsgClickListener)
         )
         chatRecyclerAdapter.addDelegate(
-            MyMessageDelegateAdapter(onReactionClickListener, onLongMessageClickListener)
+            MyMessageDelegateAdapter(onReactionClickListener, onLongMsgClickListener)
         )
         chatRecyclerAdapter.addDelegate(DateDelegateAdapter())
         binding.chatRecycler.addItemDecoration(
@@ -208,7 +209,7 @@ class ChatFragment : ElmFragment<ChatEvent, ChatEffect, ChatState>() {
     private fun provideMessageSuccess(messages: List<ChatDelegateItem>) {
         binding.pbLoading.isVisible = false
         binding.emptyLayout.errorLayout.isVisible = false
-        binding.networkErrorLayout.errorLayout.isVisible = false
+        binding.errorLayout.errorRoot.isVisible = false
         binding.chatRecycler.isVisible = true
         chatRecyclerAdapter.submitList(messages)
     }
@@ -216,28 +217,28 @@ class ChatFragment : ElmFragment<ChatEvent, ChatEffect, ChatState>() {
     private fun provideMessageLoading() {
         binding.pbLoading.isVisible = true
         binding.emptyLayout.errorLayout.isVisible = false
-        binding.networkErrorLayout.errorLayout.isVisible = false
+        binding.errorLayout.errorRoot.isVisible = false
         binding.chatRecycler.isVisible = false
     }
 
     private fun provideMessageEmpty() {
         binding.pbLoading.isVisible = false
         binding.emptyLayout.errorLayout.isVisible = true
-        binding.networkErrorLayout.errorLayout.isVisible = false
+        binding.errorLayout.errorRoot.isVisible = false
         binding.chatRecycler.isVisible = false
     }
 
     private fun provideMessageError() {
         binding.pbLoading.isVisible = false
         binding.emptyLayout.errorLayout.isVisible = false
-        binding.networkErrorLayout.errorLayout.isVisible = true
+        binding.errorLayout.errorRoot.isVisible = true
         binding.chatRecycler.isVisible = false
     }
 
     private fun provideReactionListSuccess(reactions: List<Reaction>) {
         dialogLayoutBinding.pbLoading.isVisible = false
         dialogLayoutBinding.emojiRecycler.isVisible = true
-        reactionRecyclerAdapter.submitList(reactions)
+        emojiListAdapter.submitList(reactions)
     }
 
     private fun provideReactionListLoading() {
@@ -266,17 +267,18 @@ class ChatFragment : ElmFragment<ChatEvent, ChatEffect, ChatState>() {
 
     private fun addListeners() {
         with(binding) {
-            networkErrorLayout.networkButton.setOnClickListener { store.accept(ChatEvent.Ui.GetMessages) }
-            emptyLayout.btnRefresh.setOnClickListener { store.accept(ChatEvent.Ui.GetMessages) }
+            errorLayout.btnNetwork.setOnClickListener {
+                store.accept(ChatEvent.Ui.GetMessages(needLoading = true))
+            }
+            emptyLayout.btnRefresh.setOnClickListener {
+                store.accept(ChatEvent.Ui.GetMessages(needLoading = true))
+            }
             messageFieldLayout.imageBtnSend.setOnClickListener { sendMessage() }
             messageFieldLayout.etMessageField.addTextChangedListener(object : TextWatcher {
-                override fun beforeTextChanged(
-                    s: CharSequence?, start: Int, count: Int, after: Int
-                ) {
-                }
+                override fun beforeTextChanged(s: CharSequence?, strt: Int, size: Int, aftr: Int) {}
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) =
-                    messageFieldLayout.imageBtnSend.setImageResource(getImageBtnResource(count))
+                    messageFieldLayout.imageBtnSend.setImageResource(getBtnDrawable(s?.isEmpty()))
 
                 override fun afterTextChanged(s: Editable?) {}
 
@@ -291,30 +293,28 @@ class ChatFragment : ElmFragment<ChatEvent, ChatEffect, ChatState>() {
         bottomSheetDialog.setContentView(dialogLayoutBinding.root)
         dialogLayoutBinding.emojiRecycler.layoutManager =
             GridLayoutManager(requireActivity(), 6)
-        dialogLayoutBinding.emojiRecycler.adapter = reactionRecyclerAdapter
+        dialogLayoutBinding.emojiRecycler.adapter = emojiListAdapter
     }
 
     private fun showBottomSheetDialog(messageId: Int) {
-        reactionRecyclerAdapter.onEmojiDialogClickListener =
-            object : ReactionRecyclerAdapter.OnEmojiDialogClickListener {
-                override fun onEmojiDialogClick(emoji: Reaction) {
-//                    viewModel.addNewEmoji(message, emoji)
-                    store.accept(ChatEvent.Ui.AddReaction(emoji, messageId))
-                    Log.d("ChatActivity", "emoji selected $emoji")
-                    bottomSheetDialog.dismiss()
-                }
+        emojiListAdapter.onEmojiListListener = object : ReactionListAdapter.OnEmojiListListener {
+            override fun onEmojiClick(emoji: Reaction) {
+                processAddEmoji(messageId, emoji)
+                bottomSheetDialog.dismiss()
             }
+        }
         bottomSheetDialog.show()
     }
 
-    private fun showErrorDialog() {
+    private fun showErrorDialog(errorMessage: String, action: () -> Unit) {
         alertDialog = AlertDialog.Builder(activity, R.style.CustomAlertDialogStyle)
             .setCancelable(true)
             .setView(
                 SendingMessageErrorDialogLayoutBinding.inflate(LayoutInflater.from(this.context))
                     .apply {
+                        networkText.text = errorMessage
                         btnRetrySendingMessage.setOnClickListener {
-                            sendMessage()
+                            action()
                             alertDialog?.cancel()
                         }
                     }
@@ -328,31 +328,47 @@ class ChatFragment : ElmFragment<ChatEvent, ChatEffect, ChatState>() {
 
     private fun getReactionList() = store.accept(ChatEvent.Ui.GetReactionList)
 
-    private fun getMessageList() = store.accept(ChatEvent.Ui.GetMessages)
+    private fun getMessageList() = store.accept(ChatEvent.Ui.GetMessages(true))
 
-    private fun sendMessage() {
-        store.accept(ChatEvent.Ui.SendMessage(getText()))
-        Log.d("ChatActivity", "text to send ${getText()}")
+    private fun updateMessageList() = store.accept(ChatEvent.Ui.GetMessages(false))
+
+    private fun sendMessage() = store.accept(ChatEvent.Ui.SendMessage(getText()))
+
+    private fun processAddEmoji() {
+        if (checkSelectedArs()) store.currentState.apply {
+            store.accept(ChatEvent.Ui.AddReaction(selectEmoji!!, selectMsgId!!))
+        }
     }
 
     private fun processAddEmoji(messageId: Int, emoji: Reaction) {
+        store.currentState.selectEmoji = emoji
+        store.currentState.selectMsgId = messageId
         store.accept(ChatEvent.Ui.AddReaction(emoji, messageId))
     }
 
+    private fun processDeleteEmoji() {
+        if (checkSelectedArs()) store.currentState.apply {
+            store.accept(ChatEvent.Ui.DeleteReaction(selectEmoji!!, selectMsgId!!))
+        }
+    }
+
     private fun processDeleteEmoji(messageId: Int, emoji: Reaction) {
+        store.currentState.selectEmoji = emoji
+        store.currentState.selectMsgId = messageId
         store.accept(ChatEvent.Ui.DeleteReaction(emoji, messageId))
     }
 
     private fun getText() = binding.messageFieldLayout.etMessageField.text.toString().trim()
 
+    private fun getErrorMessage(id: Int) = resources.getString(id)
 
-    private fun getImageBtnResource(count: Int): Int = when (count) {
-        0 -> {
-            R.drawable.ic_attach
-        }
-        else -> {
-            R.drawable.ic_send
-        }
+    private fun getBtnDrawable(isEmpty: Boolean?) =
+        if (isEmpty == true) R.drawable.ic_attach else R.drawable.ic_send
+
+    private fun checkSelectedArs(): Boolean {
+        val selectedEmoji = store.currentState.selectEmoji
+        val msgId = store.currentState.selectMsgId
+        return selectedEmoji != null && msgId != null
     }
 
     companion object {

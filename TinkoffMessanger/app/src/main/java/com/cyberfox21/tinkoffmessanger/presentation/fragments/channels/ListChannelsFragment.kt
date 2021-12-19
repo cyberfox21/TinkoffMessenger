@@ -46,7 +46,6 @@ class ListChannelsFragment : ElmFragment<ChannelsEvent, ChannelsEffect, Channels
     )
 
     override fun render(state: ChannelsState) {
-        Log.d("ListChannelsFragment", "$state")
         when (state.channelStatus) {
             ResourceStatus.SUCCESS -> provideSuccess(state.delegateItems)
             ResourceStatus.LOADING -> provideLoading()
@@ -59,18 +58,18 @@ class ListChannelsFragment : ElmFragment<ChannelsEvent, ChannelsEffect, Channels
     override fun handleEffect(effect: ChannelsEffect) {
         when (effect) {
             ChannelsEffect.Loading -> {
-                binding.networkErrorLayout.errorLayout.isVisible = false
+                binding.errorLayout.errorRoot.isVisible = false
                 binding.emptyLayout.errorLayout.isVisible = false
             }
             ChannelsEffect.EmptyChannels -> {
                 binding.categoryChannelsRecycler.isVisible = false
-                binding.networkErrorLayout.errorLayout.isVisible = false
+                binding.errorLayout.errorRoot.isVisible = false
                 binding.emptyLayout.errorLayout.isVisible = true
             }
             is ChannelsEffect.ChannelsLoadError -> {
                 binding.categoryChannelsRecycler.isVisible = false
                 binding.emptyLayout.errorLayout.isVisible = false
-                binding.networkErrorLayout.errorLayout.isVisible = true
+                binding.errorLayout.errorRoot.isVisible = true
             }
             ChannelsEffect.EmptyTopics -> {
                 //TODO
@@ -88,7 +87,7 @@ class ListChannelsFragment : ElmFragment<ChannelsEvent, ChannelsEffect, Channels
 
     private fun provideSuccess(items: List<DelegateItem>) {
         binding.channelsShimmerLayout.shimmerViewContainer.isVisible = false
-        binding.networkErrorLayout.errorLayout.isVisible = false
+        binding.errorLayout.errorRoot.isVisible = false
         binding.emptyLayout.errorLayout.isVisible = false
         binding.categoryChannelsRecycler.isVisible = true
         mainAdapter.submitList(items)
@@ -96,21 +95,21 @@ class ListChannelsFragment : ElmFragment<ChannelsEvent, ChannelsEffect, Channels
 
     private fun provideLoading() {
         binding.channelsShimmerLayout.shimmerViewContainer.isVisible = true
-        binding.networkErrorLayout.errorLayout.isVisible = false
+        binding.errorLayout.errorRoot.isVisible = false
         binding.emptyLayout.errorLayout.isVisible = false
         binding.categoryChannelsRecycler.isVisible = false
     }
 
     private fun provideEmpty() {
         binding.channelsShimmerLayout.shimmerViewContainer.isVisible = false
-        binding.networkErrorLayout.errorLayout.isVisible = false
+        binding.errorLayout.errorRoot.isVisible = false
         binding.emptyLayout.errorLayout.isVisible = true
         binding.categoryChannelsRecycler.isVisible = false
     }
 
     private fun provideError() {
         binding.channelsShimmerLayout.shimmerViewContainer.isVisible = false
-        binding.networkErrorLayout.errorLayout.isVisible = true
+        binding.errorLayout.errorRoot.isVisible = true
         binding.emptyLayout.errorLayout.isVisible = false
         binding.categoryChannelsRecycler.isVisible = false
     }
@@ -212,7 +211,7 @@ class ListChannelsFragment : ElmFragment<ChannelsEvent, ChannelsEffect, Channels
                 str?.let { store.accept(ChannelsEvent.Ui.GetChannelsList(it, fragmentCategory)) }
             }
         }
-        binding.networkErrorLayout.networkButton.setOnClickListener {
+        binding.errorLayout.btnNetwork.setOnClickListener {
             store.accept(ChannelsEvent.Ui.GetChannelsList(INITIAL_QUERY, fragmentCategory))
         }
         binding.emptyLayout.btnRefresh.setOnClickListener {

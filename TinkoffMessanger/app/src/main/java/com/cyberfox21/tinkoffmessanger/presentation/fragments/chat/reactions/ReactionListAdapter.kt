@@ -6,13 +6,13 @@ import androidx.recyclerview.widget.ListAdapter
 import com.cyberfox21.tinkoffmessanger.databinding.ItemEmojiBinding
 import com.cyberfox21.tinkoffmessanger.domain.entity.Reaction
 
-class ReactionRecyclerAdapter :
+class ReactionListAdapter :
     ListAdapter<Reaction, ReactionViewHolder>(ReactionDiffUtilCallback()) {
 
-    var onEmojiDialogClickListener: OnEmojiDialogClickListener? = null
+    var onEmojiListListener: OnEmojiListListener? = null
 
-    interface OnEmojiDialogClickListener {
-        fun onEmojiDialogClick(emoji: Reaction)
+    interface OnEmojiListListener {
+        fun onEmojiClick(emoji: Reaction)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ReactionViewHolder {
@@ -30,7 +30,7 @@ class ReactionRecyclerAdapter :
         with(binding) {
             tvEmoji.text = currentList[position].reaction
             root.setOnClickListener {
-                onEmojiDialogClickListener?.onEmojiDialogClick(currentList[position])
+                onEmojiListListener?.onEmojiClick(currentList[position])
             }
         }
 

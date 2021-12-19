@@ -8,6 +8,8 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class ChatState(
+    var selectEmoji: Reaction? = null,
+    var selectMsgId: Int? = null,
     val currentUserId: Int = UNDEFINED_USER_ID,
     val messages: List<ChatDelegateItem> = listOf(),
     val reactions: List<Reaction> = listOf(),

@@ -39,7 +39,10 @@ fun List<Message>.toDelegateChatItemsList(
         val message = this[index]
         val reactions = message.reactions
 
-        val currentUserReactions = reactions.filter { it.userId == userId }
+        val currentUserReactions = reactions
+            .filter { it.userId == userId }
+            .map { it.reaction }
+
         val listReactions = mutableListOf<MessageReactionListItem>()
 
         reactions.distinctBy { it.reaction }.forEach {
@@ -48,9 +51,10 @@ fun List<Message>.toDelegateChatItemsList(
                     name = it.name,
                     code = it.code,
                     type = it.type,
+                    senderId = it.userId,
                     reaction = it.reaction,
                     count = reactions.count { msgEmoji -> msgEmoji.reaction == it.reaction },
-                    isSelected = currentUserReactions.contains(it)
+                    isSelected = currentUserReactions.contains(it.reaction)
                 )
             )
         }

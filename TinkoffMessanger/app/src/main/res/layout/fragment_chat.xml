@@ -50,7 +50,7 @@
         app:stackFromEnd="true" />
 
     <include
-        android:id="@+id/network_error_layout"
+        android:id="@+id/error_layout"
         layout="@layout/layout_error_network"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

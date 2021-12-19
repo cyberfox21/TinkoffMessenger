@@ -69,9 +69,7 @@ class MyMessageDelegateAdapter(
                             )
                         } else {
                             onReactionClickListener.onReactionClick(
-                                ClickEmojiMode.DELETE_EMOJI,
-                                message.id,
-                                listEmoji.mapToReaction()
+                                ClickEmojiMode.DELETE_EMOJI, message.id, listEmoji.mapToReaction()
                             )
                         }
                     }

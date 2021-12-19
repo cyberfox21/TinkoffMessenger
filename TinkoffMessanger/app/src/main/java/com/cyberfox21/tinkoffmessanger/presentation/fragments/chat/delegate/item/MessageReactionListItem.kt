@@ -6,6 +6,7 @@ class MessageReactionListItem(
     val type: String,
     val reaction: String,
     val count: Int,
+    val senderId: Int,
     val isSelected: Boolean
 ) : ChatDelegateItem() {
     override fun id() = name
