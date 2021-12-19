@@ -1,9 +1,8 @@
 package com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.views
 
 import android.content.Context
+import android.content.res.TypedArray
 import android.util.AttributeSet
-import android.util.Log
-import android.view.View
 import android.view.View.MeasureSpec.getSize
 import android.view.ViewGroup
 import com.cyberfox21.tinkoffmessanger.R
@@ -15,108 +14,122 @@ class FlexBoxLayout @JvmOverloads constructor(
     defStyleRes: Int = 0
 ) : ViewGroup(context, attrs, defStyleAttr, defStyleRes) {
 
-    private var marginRight = 0
-    private var marginBottom = 0
-
-    private var endPadding = 0
-
-    override fun onViewAdded(child: View?) {
-        super.onViewAdded(child)
-        Log.d("FlexBoxLayout", "child count $childCount")
-    }
+    var percent = 0f
+        set(value) {
+            field = value
+            requestLayout()
+        }
+    var horizontalMargin = 0
+        set(value) {
+            field = value
+            requestLayout()
+        }
+    var verticalMargin = 0
+        set(value) {
+            field = value
+            requestLayout()
+        }
 
     init {
-        inflate(context, R.layout.flexboxlayout_with_add_button, this)
-        marginRight = FLEXBOX_MARGIN_RIGHT
-        marginBottom = FLEXBOX_MARGIN_BOTTOM
-        endPadding = resources.getDimension(R.dimen.padding10dp).toInt()
+
+        val typedArray: TypedArray = context.obtainStyledAttributes(
+            attrs,
+            R.styleable.FlexBoxLayout,
+            defStyleAttr,
+            defStyleRes
+        )
+        percent = typedArray.getFloat(R.styleable.FlexBoxLayout_percent, DEFAULT_VALUE_PERCENT)
+        horizontalMargin = typedArray.getDimension(
+            R.styleable.FlexBoxLayout_horizontalMargins,
+            DEFAULT_VALUE_HORIZONTAL_MARGIN
+        ).toInt()
+        verticalMargin = typedArray.getDimension(
+            R.styleable.FlexBoxLayout_verticalMargins,
+            DEFAULT_VALUE_VERTICAL_MARGIN
+        ).toInt()
+        typedArray.recycle()
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
 
-        val width = getSize(widthMeasureSpec) - paddingLeft - endPadding - 2 * marginRight
-
-        val btnAdd = getChildAt(0)
-        btnAdd.measure(widthMeasureSpec, heightMeasureSpec)
+        val width = (getSize(widthMeasureSpec) - paddingLeft - paddingRight) * percent
 
         var totalWidth = 0
         var totalHeight = 0
-        var currentWidth: Int
 
-        if (childCount > 1) {
-            totalHeight = btnAdd.measuredHeight
-            currentWidth = btnAdd.measuredWidth
-            var child = getChildAt(1)
-            for (i in 1 until childCount) {
-                child = getChildAt(i)
-                child.measure(widthMeasureSpec, heightMeasureSpec)
-                if (currentWidth != 0) currentWidth += marginRight
-                if (btnAdd.width + child.width + currentWidth + marginRight + endPadding > width) {
-                    if (child.width + currentWidth + marginRight + endPadding <= width) {
-                        currentWidth += child.width
-                        totalHeight += marginBottom + child.height
-                    } else {
-                        totalHeight += marginBottom + child.height
-                        currentWidth = 0
-                    }
-                } else {
-                    currentWidth += child.width
-                    totalWidth = maxOf(currentWidth, totalWidth)
-                }
+        var currentWidth = 0
+        var currentHeight = 0
+
+        var rowMaxHeight = 0
+
+        for (i in 0 until childCount) {
+
+            val child = getChildAt(i)
+            child.measure(widthMeasureSpec, heightMeasureSpec)
+
+            if (currentWidth + child.measuredWidth + horizontalMargin > width) {
+                currentWidth = 0
+                currentHeight += rowMaxHeight
             }
-            totalWidth += marginRight
-            totalHeight += marginBottom + child.measuredHeight
+
+            val isFirstRow = currentHeight == 0
+            val isFirstCol = currentWidth == 0
+
+            if (isFirstCol.not()) currentWidth += horizontalMargin
+            currentWidth += child.measuredWidth
+
+            rowMaxHeight = if (isFirstRow.not()) {
+                maxOf(rowMaxHeight, verticalMargin + child.measuredHeight)
+            } else {
+                maxOf(rowMaxHeight, child.measuredHeight)
+            }
+
+            totalWidth = maxOf(totalWidth, currentWidth)
+            totalHeight = maxOf(totalHeight, currentHeight + rowMaxHeight)
         }
 
-        val resultWidth = resolveSize(
-            paddingLeft + totalWidth + paddingRight,
-            widthMeasureSpec
-        )
-        val resultHeight = resolveSize(
-            paddingBottom + totalHeight + paddingTop,
-            heightMeasureSpec
-        )
-
+        val resultWidth = resolveSize(paddingStart + totalWidth + paddingEnd, widthMeasureSpec)
+        val resultHeight = resolveSize(paddingTop + totalHeight + paddingBottom, heightMeasureSpec)
         setMeasuredDimension(resultWidth, resultHeight)
     }
 
     override fun onLayout(p0: Boolean, p1: Int, p2: Int, p3: Int, p4: Int) {
 
-        var currentBottom = 0
-        var currentRight = 0
+        var currentWidth = 0
+        var currentHeight = 0
 
-        val btnAdd = getChildAt(0)
+        var rowMaxHeight = 0
 
-        if (childCount > 1) {
-            var child = getChildAt(1)
-            for (i in 1 until childCount) {
-                child = getChildAt(i)
-                if (currentRight + child.measuredWidth + endPadding > width) {
-                    currentRight = 0
-                    currentBottom += marginBottom + child.measuredHeight
-                } else if (currentRight != 0) {
-                    currentRight += marginRight
-                }
-                child.layout(
-                    currentRight,
-                    currentBottom,
-                    currentRight + child.measuredWidth,
-                    currentBottom + child.measuredHeight
-                )
-                currentRight += child.measuredWidth
+        for (i in 0 until childCount) {
+            val child = getChildAt(i)
+
+            if (currentWidth + child.measuredWidth + horizontalMargin > measuredWidth) {
+                currentWidth = 0
+                currentHeight += rowMaxHeight
             }
-            if (currentRight + child.measuredWidth > width) {
-                currentRight = 0
-                currentBottom += marginBottom + child.measuredHeight
-            }
-            if (currentRight != 0) currentRight += marginRight
-            btnAdd.layout(
-                currentRight,
-                currentBottom,
-                currentRight + child.measuredWidth,
-                currentBottom + child.measuredHeight
+
+            val isFirstRow = currentHeight == 0
+            val isFirstCol = currentWidth == 0
+
+            if (!isFirstCol) currentWidth += horizontalMargin
+
+            val top = if (isFirstRow) currentHeight else currentHeight + verticalMargin
+            val left = currentWidth
+
+            currentWidth += child.measuredWidth
+
+            rowMaxHeight = if (isFirstRow.not()) {
+                maxOf(rowMaxHeight, child.measuredHeight + verticalMargin)
+            } else maxOf(rowMaxHeight, child.measuredHeight)
+
+            child.layout(
+                left,
+                paddingTop + top,
+                left + child.measuredWidth,
+                paddingTop + top + child.measuredHeight
             )
         }
+
     }
 
     override fun generateLayoutParams(attrs: AttributeSet?): LayoutParams {
@@ -132,8 +145,9 @@ class FlexBoxLayout @JvmOverloads constructor(
     }
 
     companion object {
-        const val FLEXBOX_MARGIN_RIGHT = 20
-        const val FLEXBOX_MARGIN_BOTTOM = 20
+        const val DEFAULT_VALUE_PERCENT = 1.0f
+        const val DEFAULT_VALUE_HORIZONTAL_MARGIN = 0f
+        const val DEFAULT_VALUE_VERTICAL_MARGIN = 0f
     }
 
 }

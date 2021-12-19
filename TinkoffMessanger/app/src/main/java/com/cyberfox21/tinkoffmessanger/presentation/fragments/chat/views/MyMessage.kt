@@ -36,8 +36,8 @@ class MyMessage @JvmOverloads constructor(
             background =
                 ResourcesCompat.getDrawable(resources, R.drawable.my_message_bg, context.theme)
         }
-        val tvTime = (getChildAt(0) as AppCompatTextView).apply { text = time }
-        val tvMessage = (getChildAt(1) as AppCompatTextView).apply { text = message }
+        (getChildAt(0) as AppCompatTextView).apply { text = time }
+        (getChildAt(1) as AppCompatTextView).apply { text = message }
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -56,6 +56,7 @@ class MyMessage @JvmOverloads constructor(
         val messageMargin = (tvMessage.layoutParams as MarginLayoutParams)
 
         totalWidth += tvMessage.measuredWidth + messageMargin.rightMargin
+        totalHeight += tvMessage.measuredHeight
 
         measureChildWithMargins(tvTime, widthMeasureSpec, totalWidth, heightMeasureSpec, 0)
 
@@ -76,8 +77,7 @@ class MyMessage @JvmOverloads constructor(
             isFullWidth = true
 
             totalWidth = maxOf(totalWidth, timeMargin.leftMargin + tvTime.measuredWidth)
-            totalHeight += tvTime.measuredHeight
-            totalHeight += tvMessage.measuredHeight
+            totalHeight += tvTime.measuredHeight + timeMargin.topMargin
         } else {
             isFullWidth = false
 
@@ -103,15 +103,15 @@ class MyMessage @JvmOverloads constructor(
             paddingLeft,
             paddingTop,
             paddingLeft + tvMessage.measuredWidth,
-            tvMessage.measuredHeight
+            paddingTop + tvMessage.measuredHeight
         )
 
         if (isFullWidth) {
             tvTime.layout(
                 measuredWidth - paddingRight - tvTime.measuredWidth,
-                paddingTop + tvMessage.measuredHeight,
+                paddingTop + tvMessage.measuredHeight + timeMargin.topMargin,
                 measuredWidth - paddingRight,
-                paddingTop + tvMessage.measuredHeight + tvTime.measuredHeight
+                paddingTop + tvMessage.measuredHeight + tvTime.measuredHeight + timeMargin.topMargin
             )
         } else {
             tvTime.layout(

@@ -44,9 +44,8 @@ class MessagesRepositoryImpl @Inject constructor(
             narrowFilterArray = Json.encodeToString(narrowList)
         ).map { response -> response.messages.map { it.mapToMessage() } }
             .doOnSuccess {
-                messagesDao.addMessageListToDB(it.map { message ->
-                    message.mapToMessageDBModel(topicName)
-                })
+                messagesDao.addMessageListToDB(
+                    it.map { message -> message.mapToMessageDBModel(topicName) })
             }
             .subscribeOn(Schedulers.io())
     }
@@ -67,7 +66,11 @@ class MessagesRepositoryImpl @Inject constructor(
                 getMessagesFromDB(topicName).toObservable()
                     .map { it.sortedBy { msg -> msg.time } },
                 getMessagesFromNetwork(numBefore, numAfter, channelName, topicName).toObservable()
-                    .map { it.sortedBy { msg -> msg.time } }
+                    .map {
+                        it.sortedBy { msg ->
+                            msg.time
+                        }
+                    }
             ).subscribeOn(Schedulers.io())
         }
 

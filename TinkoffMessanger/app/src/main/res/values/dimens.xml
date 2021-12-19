@@ -1,14 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="circleImageViewAvatarLayoutWidth">50dp</dimen>
-    <dimen name="circleImageViewAvatarLayoutHeight">50dp</dimen>
+    <dimen name="circleImageViewAvatarLayoutWidth">40dp</dimen>
+    <dimen name="circleImageViewAvatarLayoutHeight">40dp</dimen>
     <dimen name="addEmojiBtnPaddingStart">10dp</dimen>
     <dimen name="addEmojiBtnPaddingEnd">10dp</dimen>
     <dimen name="addEmojiBtnPaddingTop">10dp</dimen>
     <dimen name="addEmojiBtnPaddingBottom">10dp</dimen>
+    <dimen name="addEmojiBtnWidth">55dp</dimen>
+    <dimen name="addEmojiBtnHeight">35dp</dimen>
     <dimen name="mergeLayoutMarginBottom">30dp</dimen>
     <dimen name="mergeLayoutMarginEnd">30dp</dimen>
     <dimen name="margin2dp">2dp</dimen>
+    <dimen name="margin8dp">8dp</dimen>
     <dimen name="margin10dp">10dp</dimen>
     <dimen name="margin20dp">20dp</dimen>
     <dimen name="padding2dp">2dp</dimen>
@@ -25,8 +28,6 @@
     <dimen name="textSize20sp">20sp</dimen>
     <dimen name="textSize24sp">24sp</dimen>
     <dimen name="textSize32sp">32sp</dimen>
-    <dimen name="btnAddHeight">14sp</dimen>
-    <dimen name="btnAddWidth">24sp</dimen>
     <dimen name="btn_logout_corner_radius">31dp</dimen>
     <dimen name="profile_photo_dimension">185dp</dimen>
     <dimen name="channel_arrow_dimension">16dp</dimen>
@@ -42,4 +43,5 @@
     <dimen name="margin40dp">40dp</dimen>
     <dimen name="itemDecorationSize">2dp</dimen>
     <dimen name="messageSpaceSize">8dp</dimen>
+    <dimen name="message_radius">18dp</dimen>
 </resources>

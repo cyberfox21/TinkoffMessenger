@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/unselected_emoji"
+    tools:parentTag="android.widget.FrameLayout">
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/margin2dp"
+        android:textColor="@color/green"
+        android:textSize="@dimen/textSize14sp"
+        tools:text="@string/example_name" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/margin8dp"
+        android:background="@android:color/transparent"
+        android:textColor="@color/light_gray"
+        android:textSize="@dimen/textSize14sp"
+        tools:text="@string/example_time" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin8dp"
+        android:textColor="@color/white"
+        android:textSize="@dimen/textSize14sp"
+        tools:text="@string/example_message" />
+
+</merge>

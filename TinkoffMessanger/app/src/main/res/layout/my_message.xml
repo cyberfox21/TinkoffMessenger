@@ -10,17 +10,18 @@
         android:id="@+id/time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="@dimen/margin8dp"
+        android:layout_marginTop="@dimen/margin8dp"
         android:text="@string/example_time"
-        android:textColor="@color/white" />
+        android:textColor="@color/white"
+        android:textSize="@dimen/textSize14sp" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/example_message"
-        android:textColor="@color/bottom_navigation_background"
-        android:textSize="@dimen/textSize14sp"
-        android:textStyle="bold" />
+        android:textColor="@color/white"
+        android:textSize="@dimen/textSize14sp" />
 
 </merge>

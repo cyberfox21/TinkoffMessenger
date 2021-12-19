@@ -5,8 +5,8 @@
 
     <ImageView
         android:id="@+id/iv_add_emoji"
-        android:layout_width="@dimen/btnAddWidth"
-        android:layout_height="@dimen/btnAddHeight"
+        android:layout_width="@dimen/addEmojiBtnWidth"
+        android:layout_height="@dimen/addEmojiBtnHeight"
         android:background="@drawable/custom_emoji_view_bg"
         android:contentDescription="@string/add_emoji_button"
         android:paddingStart="@dimen/addEmojiBtnPaddingStart"
@@ -14,6 +14,5 @@
         android:paddingEnd="@dimen/addEmojiBtnPaddingEnd"
         android:paddingBottom="@dimen/addEmojiBtnPaddingBottom"
         android:src="@drawable/ic_plus" />
-
 
 </merge>

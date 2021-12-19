@@ -6,15 +6,28 @@
     android:layout_height="wrap_content"
     tools:parentTag="android.widget.FrameLayout">
 
-    <com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.views.MyMessage
-        android:id="@+id/my_message_layout"
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/imageView"
+        android:layout_width="@dimen/circleImageViewAvatarLayoutWidth"
+        android:layout_height="@dimen/circleImageViewAvatarLayoutHeight"
+        android:clickable="true"
+        android:contentDescription="@string/profile_photo"
+        android:focusable="true"
+        tools:src="@drawable/ed" />
+
+    <com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.views.AlienMessage
+        android:id="@+id/alien_message_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/margin20dp"
+        android:layout_marginStart="@dimen/margin8dp"
+        android:layout_marginEnd="@dimen/margin20dp"
+        android:background="@drawable/alien_message_bg"
         android:paddingStart="@dimen/padding12dp"
         android:paddingTop="@dimen/padding8dp"
         android:paddingEnd="@dimen/padding12dp"
-        android:paddingBottom="@dimen/padding12dp" />
+        android:paddingBottom="@dimen/padding8dp"
+        app:cornerRadius="@dimen/message_radius" />
+
 
     <com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.views.FlexBoxLayout
         android:id="@+id/emoji_layout"

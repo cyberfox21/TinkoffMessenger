@@ -1,5 +1,6 @@
 package com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.elm
 
+import android.util.Log
 import com.cyberfox21.tinkoffmessanger.domain.enum.LoadType
 import com.cyberfox21.tinkoffmessanger.presentation.common.ResourceStatus
 import vivid.money.elmslie.core.store.dsl_reducer.DslReducer
@@ -70,6 +71,11 @@ class ChatReducer : DslReducer<ChatEvent, ChatState, ChatEffect, ChatCommand>() 
             is ChatEvent.Ui.SendMessage -> commands { +ChatCommand.SendMessage(event.msg) }
 
             is ChatEvent.Ui.AddReaction -> {
+                //commands { +ChatCommand.AddReaction() }
+            }
+
+            is ChatEvent.Ui.DeleteReaction -> {
+                //commands { +ChatCommand.DeleteReaction() }
             }
 
             ChatEvent.Internal.MessageSendingSuccess -> commands {
@@ -78,7 +84,7 @@ class ChatReducer : DslReducer<ChatEvent, ChatState, ChatEffect, ChatCommand>() 
 
             is ChatEvent.Internal.MessageSendingError -> effects { +ChatEffect.MessageSendingError }
             is ChatEvent.Internal.UserLoadingFailed -> {
-                // todo show error
+                Log.d("ChatReducer", "UserLoadingFailed")
             }
             is ChatEvent.Internal.UserLoadingSuccess -> {
                 state { state.copy(currentUserId = event.user.id) }

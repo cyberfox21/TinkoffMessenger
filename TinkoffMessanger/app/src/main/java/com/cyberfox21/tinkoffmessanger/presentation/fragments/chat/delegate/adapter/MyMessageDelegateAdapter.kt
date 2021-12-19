@@ -1,20 +1,24 @@
 package com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.delegate.adapter
 
-import android.util.Log
+import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.text.toSpannable
+import androidx.core.view.size
 import androidx.recyclerview.widget.RecyclerView
+import com.cyberfox21.tinkoffmessanger.R
+import com.cyberfox21.tinkoffmessanger.data.mapToReaction
 import com.cyberfox21.tinkoffmessanger.presentation.commondelegate.AdapterDelegate
 import com.cyberfox21.tinkoffmessanger.presentation.commondelegate.DelegateItem
-import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.delegate.adapter.OnLongMessageClickListener
+import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.ClickEmojiMode
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.delegate.item.MyMessageDelegateItem
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.delegate.viewholder.MyMessageViewHolder
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.views.CustomEmojiView
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.views.MyMessageViewGroup
-import com.cyberfox21.tinkoffmessanger.presentation.util.EmojiFormatter
+import com.cyberfox21.tinkoffmessanger.presentation.util.EmojiFormatter.codeToEmoji
 
-class MyMessageDelegateAdapter(private val onLongMessageClickListener: OnLongMessageClickListener) :
-    AdapterDelegate {
+class MyMessageDelegateAdapter(
+    private val onReactionClickListener: OnReactionClickListener,
+    private val onLongMessageClickListener: OnLongMessageClickListener
+) : AdapterDelegate {
 
     private val lp = ViewGroup.LayoutParams(
         ViewGroup.LayoutParams.MATCH_PARENT,
@@ -22,7 +26,9 @@ class MyMessageDelegateAdapter(private val onLongMessageClickListener: OnLongMes
     )
 
     override fun onCreateViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
-        return MyMessageViewHolder(MyMessageViewGroup(parent.context).apply { layoutParams = lp })
+        return MyMessageViewHolder(MyMessageViewGroup(parent.context)
+            .apply { layoutParams = lp }
+        )
     }
 
     override fun onBindViewHolder(
@@ -36,33 +42,55 @@ class MyMessageDelegateAdapter(private val onLongMessageClickListener: OnLongMes
     private fun bindMessage(holder: RecyclerView.ViewHolder, item: DelegateItem) {
         val message = (item as MyMessageDelegateItem)
         with(holder as MyMessageViewHolder) {
+
             this.myMessage.time = message.time
-            this.myMessage.message = message.text.toSpannable()
+            this.myMessage.message = message.text
 
-            val btnAdd = this.emojiLayout.getChildAt(0)
-            this.emojiLayout.removeView(btnAdd)
-            this.emojiLayout.addView(btnAdd)
+            emojiLayout.apply { removeAllViews() }
 
-            for (i in message.reactions.indices) {
-                val emojiView = CustomEmojiView(this.emojiLayout.context).apply {
-                    onEmojiClickListener = object : CustomEmojiView.OnEmojiClickListener {
-                        override fun onEmojiClick(view: CustomEmojiView) {
-                            view.isSelected = !view.isSelected
+            if (message.reactions.isNotEmpty()) {
+                val btnAdd = LayoutInflater.from(myMessageViewGroup.context)
+                    .inflate(R.layout.btn_add_view, myMessageViewGroup, false)
+                    .apply {
+                        setOnClickListener {
+                            onLongMessageClickListener.onLongMessageClick(
+                                message.id
+                            )
                         }
                     }
-                }
-                EmojiFormatter.stringToEmoji(message.reactions[i].reaction)?.let {
-                    emojiView.apply {
-                        emoji = it
-                        count = ""
+                emojiLayout.addView(btnAdd)
+            }
+
+            message.reactions.forEach { emoji ->
+                val emojiView = (LayoutInflater.from(myMessageViewGroup.context)
+                    .inflate(
+                        R.layout.custom_emoji_view,
+                        myMessageViewGroup,
+                        false
+                    ) as CustomEmojiView)
+                    .apply {
+                        this.emoji = codeToEmoji(emoji.reaction)
+                        this.count = emoji.count
+                        isSelected = emoji.isSelected
+                        setOnClickListener { reactionView ->
+                            if (reactionView.isSelected.not()) {
+                                onReactionClickListener.onReactionClick(
+                                    ClickEmojiMode.ADD_EMOJI, message.id, emoji.mapToReaction()
+                                )
+                            } else {
+                                onReactionClickListener.onReactionClick(
+                                    ClickEmojiMode.DELETE_EMOJI,
+                                    message.id,
+                                    emoji.mapToReaction()
+                                )
+                            }
+                        }
                     }
-                }
-                Log.d("ChatRecyclerAdapter", "childcount ${this.emojiLayout.childCount}")
-                this.emojiLayout.addView(emojiView)
+                emojiLayout.addView(emojiView, emojiLayout.size - 1)
             }
 
             myMessageViewGroup.setOnLongClickListener {
-                onLongMessageClickListener.onLongMessageClick(message)
+                onLongMessageClickListener.onLongMessageClick(message.id)
                 true
             }
         }

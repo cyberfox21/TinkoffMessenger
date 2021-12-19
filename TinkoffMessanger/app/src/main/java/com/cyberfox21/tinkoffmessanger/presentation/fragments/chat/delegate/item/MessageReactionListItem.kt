@@ -4,6 +4,8 @@ import com.cyberfox21.tinkoffmessanger.presentation.commondelegate.DelegateItem
 
 class MessageReactionListItem(
     val name: String,
+    val code: String,
+    val type: String,
     val reaction: String,
     val count: Int,
     val isSelected: Boolean

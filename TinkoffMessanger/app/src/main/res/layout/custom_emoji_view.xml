@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.views.CustomEmojiView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/addEmojiBtnWidth"
+    android:layout_height="@dimen/addEmojiBtnHeight"
+    android:background="@drawable/custom_emoji_view_bg"
+    android:maxWidth="@dimen/addEmojiBtnWidth"
+    android:maxHeight="@dimen/addEmojiBtnHeight"
+    android:minWidth="@dimen/addEmojiBtnWidth"
+    android:minHeight="@dimen/addEmojiBtnHeight"
+    android:scaleType="center" />

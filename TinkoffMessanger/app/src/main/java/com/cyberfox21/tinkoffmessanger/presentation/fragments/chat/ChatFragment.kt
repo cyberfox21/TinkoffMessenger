@@ -20,13 +20,8 @@ import com.cyberfox21.tinkoffmessanger.domain.entity.Message
 import com.cyberfox21.tinkoffmessanger.domain.entity.Reaction
 import com.cyberfox21.tinkoffmessanger.presentation.MainActivity
 import com.cyberfox21.tinkoffmessanger.presentation.common.ResourceStatus
-import com.cyberfox21.tinkoffmessanger.presentation.commondelegate.DelegateItem
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.delegate.SpacesItemDecoration
-import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.delegate.adapter.OnLongMessageClickListener
-import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.delegate.adapter.AlienMessageDelegateAdapter
-import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.delegate.adapter.DateDelegateAdapter
-import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.delegate.adapter.MainChatRecyclerAdapter
-import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.delegate.adapter.MyMessageDelegateAdapter
+import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.delegate.adapter.*
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.elm.*
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.reactions.ReactionRecyclerAdapter
 import com.cyberfox21.tinkoffmessanger.presentation.toDelegateChatItemsList
@@ -58,9 +53,21 @@ class ChatFragment : ElmFragment<ChatEvent, ChatEffect, ChatState>() {
     private val reactionRecyclerAdapter = ReactionRecyclerAdapter()
 
     private val onLongMessageClickListener = object : OnLongMessageClickListener {
-        override fun onLongMessageClick(message: DelegateItem) {
-            showBottomSheetDialog(message)
+        override fun onLongMessageClick(messageId: Int) {
+            showBottomSheetDialog(messageId)
         }
+    }
+
+    private val onReactionClickListener = object : OnReactionClickListener {
+        override fun onReactionClick(
+            clickMode: ClickEmojiMode,
+            messageId: Int,
+            emoji: Reaction
+        ) = when (clickMode) {
+            ClickEmojiMode.ADD_EMOJI -> processAddEmoji(messageId, emoji)
+            ClickEmojiMode.DELETE_EMOJI -> processDeleteEmoji(messageId, emoji)
+        }
+
     }
 
 //  < ---------------------------------------- ELM --------------------------------------------->
@@ -189,8 +196,12 @@ class ChatFragment : ElmFragment<ChatEvent, ChatEffect, ChatState>() {
     private fun setupViews() {
         setupStatusBar()
         binding.tvTopicTitle.text = setTopic(fragmentTopicName)
-        chatRecyclerAdapter.addDelegate(AlienMessageDelegateAdapter(onLongMessageClickListener))
-        chatRecyclerAdapter.addDelegate(MyMessageDelegateAdapter(onLongMessageClickListener))
+        chatRecyclerAdapter.addDelegate(
+            AlienMessageDelegateAdapter(onReactionClickListener, onLongMessageClickListener)
+        )
+        chatRecyclerAdapter.addDelegate(
+            MyMessageDelegateAdapter(onReactionClickListener, onLongMessageClickListener)
+        )
         chatRecyclerAdapter.addDelegate(DateDelegateAdapter())
         binding.chatRecycler.addItemDecoration(
             SpacesItemDecoration(resources.getDimensionPixelOffset(R.dimen.messageSpaceSize))
@@ -290,12 +301,12 @@ class ChatFragment : ElmFragment<ChatEvent, ChatEffect, ChatState>() {
         dialogLayoutBinding.emojiRecycler.adapter = reactionRecyclerAdapter
     }
 
-    private fun showBottomSheetDialog(message: DelegateItem) {
+    private fun showBottomSheetDialog(messageId: Int) {
         reactionRecyclerAdapter.onEmojiDialogClickListener =
             object : ReactionRecyclerAdapter.OnEmojiDialogClickListener {
                 override fun onEmojiDialogClick(emoji: Reaction) {
 //                    viewModel.addNewEmoji(message, emoji)
-                    store.accept(ChatEvent.Ui.AddReaction(emoji, message))
+                    store.accept(ChatEvent.Ui.AddReaction(emoji, messageId))
                     Log.d("ChatActivity", "emoji selected $emoji")
                     bottomSheetDialog.dismiss()
                 }
@@ -329,6 +340,14 @@ class ChatFragment : ElmFragment<ChatEvent, ChatEffect, ChatState>() {
     private fun sendMessage() {
         store.accept(ChatEvent.Ui.SendMessage(getText()))
         Log.d("ChatActivity", "text to send ${getText()}")
+    }
+
+    private fun processAddEmoji(messageId: Int, emoji: Reaction) {
+        store.accept(ChatEvent.Ui.AddReaction(emoji, messageId))
+    }
+
+    private fun processDeleteEmoji(messageId: Int, emoji: Reaction) {
+        store.accept(ChatEvent.Ui.DeleteReaction(emoji, messageId))
     }
 
     private fun getText() = binding.messageFieldLayout.etMessageField.text.toString().trim()

@@ -1,28 +1,33 @@
 package com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.delegate.adapter
 
-import android.util.Log
+import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.view.size
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.cyberfox21.tinkoffmessanger.R
+import com.cyberfox21.tinkoffmessanger.data.mapToReaction
 import com.cyberfox21.tinkoffmessanger.presentation.commondelegate.AdapterDelegate
 import com.cyberfox21.tinkoffmessanger.presentation.commondelegate.DelegateItem
-import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.delegate.adapter.OnLongMessageClickListener
+import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.ClickEmojiMode
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.delegate.item.AlienMessageDelegateItem
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.delegate.viewholder.AlienMessageViewHolder
+import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.views.AlienMessageViewGroup
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.views.CustomEmojiView
-import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.views.EmojiMessageViewGroup
-import com.cyberfox21.tinkoffmessanger.presentation.util.EmojiFormatter
 
-class AlienMessageDelegateAdapter(private val onLongMessageClickListener: OnLongMessageClickListener) :
-    AdapterDelegate {
+class AlienMessageDelegateAdapter(
+    private val onReactionClickListener: OnReactionClickListener,
+    private val onLongMessageClickListener: OnLongMessageClickListener
+) : AdapterDelegate {
+
+    private val lp = ViewGroup.LayoutParams(
+        ViewGroup.LayoutParams.MATCH_PARENT,
+        ViewGroup.LayoutParams.WRAP_CONTENT,
+    )
 
     override fun onCreateViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
-        val view = EmojiMessageViewGroup(parent.context).apply {
-            layoutParams = ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-            )
-        }
+        val view = AlienMessageViewGroup(parent.context)
+            .apply { layoutParams = lp }
         return AlienMessageViewHolder(view)
     }
 
@@ -37,36 +42,56 @@ class AlienMessageDelegateAdapter(private val onLongMessageClickListener: OnLong
     private fun bindMessage(holder: RecyclerView.ViewHolder, item: DelegateItem) {
         val message = item as AlienMessageDelegateItem
         with(holder as AlienMessageViewHolder) {
-            Glide.with(emojiMessageViewGroup.context).load(message.senderAvatarUrl).into(imageView)
-            name.text = message.senderName
-            text.text = message.text
-            time.text = message.time
+            Glide.with(alienMessageViewGroup.context).load(message.senderAvatarUrl).into(imageView)
+            alienMessage.name = message.senderName
+            alienMessage.message = message.text
+            alienMessage.time = message.time
 
-            val btnAdd = emojiLayout.getChildAt(0)
-            emojiLayout.removeView(btnAdd)
-            emojiLayout.addView(btnAdd)
+            emojiLayout.apply { removeAllViews() }
 
-            for (i in message.reactions.indices) {
-                val emojiView = CustomEmojiView(emojiLayout.context).apply {
-                    onEmojiClickListener = object : CustomEmojiView.OnEmojiClickListener {
-                        override fun onEmojiClick(view: CustomEmojiView) {
-                            view.isSelected = !view.isSelected
+            if (message.reactions.isNotEmpty()) {
+                val btnAdd = LayoutInflater.from(alienMessageViewGroup.context)
+                    .inflate(R.layout.btn_add_view, alienMessageViewGroup, false)
+                    .apply {
+                        setOnClickListener {
+                            onLongMessageClickListener.onLongMessageClick(
+                                message.id
+                            )
                         }
                     }
-                }
-                EmojiFormatter.stringToEmoji(message.reactions[i].reaction)?.let{
-                    emojiView.apply {
-                        emoji = it
-                        count = ""
-                    }
-                }
-
-                Log.d("ChatRecyclerAdapter", "childcount ${emojiLayout.childCount}")
-                emojiLayout.addView(emojiView)
+                emojiLayout.addView(btnAdd)
             }
 
-            emojiMessageViewGroup.setOnLongClickListener {
-                onLongMessageClickListener.onLongMessageClick(message)
+            message.reactions.forEach { emoji ->
+                val emojiView = (LayoutInflater.from(alienMessageViewGroup.context)
+                    .inflate(
+                        R.layout.custom_emoji_view,
+                        alienMessageViewGroup,
+                        false
+                    ) as CustomEmojiView)
+                    .apply {
+                        this.emoji = emoji.name
+                        this.count = emoji.count
+                        isSelected = emoji.isSelected
+                        setOnClickListener { reactionView ->
+                            if (reactionView.isSelected.not()) {
+                                onReactionClickListener.onReactionClick(
+                                    ClickEmojiMode.ADD_EMOJI, message.id, emoji.mapToReaction()
+                                )
+                            } else {
+                                onReactionClickListener.onReactionClick(
+                                    ClickEmojiMode.DELETE_EMOJI,
+                                    message.id,
+                                    emoji.mapToReaction()
+                                )
+                            }
+                        }
+                    }
+                emojiLayout.addView(emojiView, emojiLayout.size - 1)
+            }
+
+            alienMessageViewGroup.setOnLongClickListener {
+                onLongMessageClickListener.onLongMessageClick(message.id)
                 true
             }
         }

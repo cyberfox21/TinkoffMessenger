@@ -3,7 +3,6 @@ package com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.elm
 import com.cyberfox21.tinkoffmessanger.domain.entity.Message
 import com.cyberfox21.tinkoffmessanger.domain.entity.Reaction
 import com.cyberfox21.tinkoffmessanger.domain.entity.User
-import com.cyberfox21.tinkoffmessanger.presentation.commondelegate.DelegateItem
 
 sealed class ChatEvent {
     sealed class Ui : ChatEvent() {
@@ -12,7 +11,8 @@ sealed class ChatEvent {
         object GetMessages : Ui()
         object GetReactionList : Ui()
         data class SendMessage(val msg: String) : Ui()
-        data class AddReaction(val reactions: Reaction, val msg: DelegateItem) : Ui()
+        data class AddReaction(val reaction: Reaction, val msgId: Int) : Ui()
+        data class DeleteReaction(val reaction: Reaction, val msgId: Int) : Ui()
     }
 
     sealed class Internal : ChatEvent() {

@@ -4,7 +4,9 @@ import androidx.core.text.HtmlCompat
 import com.cyberfox21.tinkoffmessanger.data.api.response.dto.*
 import com.cyberfox21.tinkoffmessanger.data.database.model.*
 import com.cyberfox21.tinkoffmessanger.domain.entity.*
+import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.delegate.item.MessageReactionListItem
 import com.cyberfox21.tinkoffmessanger.presentation.util.DateFormatter
+import com.cyberfox21.tinkoffmessanger.presentation.util.EmojiFormatter.codeToEmoji
 
 fun MessageDTO.mapToMessage() = Message(
     id = id,
@@ -89,20 +91,35 @@ fun Topic.mapToTopicDBModel(channelId: Int) = TopicDBModel(
 )
 
 fun Reaction.mapToReactionListDBModel() = ReactionListDBModel(
+    userId = userId,
+    code = code,
+    name = name,
     reaction = reaction,
-    name = name
+    type = type
 )
 
 fun ReactionListDBModel.mapToReactionForReactionList() = Reaction(
-    reaction = reaction,
+    userId = userId,
+    code = code,
     name = name,
-    userId = Reaction.UNDEFINED_ID
+    reaction = reaction,
+    type = type
 )
 
 fun ReactionDTO.mapToReaction() = Reaction(
-    reaction = code,
+    userId = userId,
+    code = code,
     name = name,
-    userId = userId
+    reaction = codeToEmoji(code),
+    type = type
+)
+
+fun MessageReactionListItem.mapToReaction() = Reaction(
+    userId = Reaction.UNDEFINED_ID,
+    code = code,
+    name = name,
+    reaction = reaction,
+    type = type
 )
 
 fun UserDBModel.mapToUser() = User(

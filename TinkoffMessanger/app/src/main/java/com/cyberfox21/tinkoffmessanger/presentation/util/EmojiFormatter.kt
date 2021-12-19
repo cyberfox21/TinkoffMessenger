@@ -4,43 +4,61 @@ import com.cyberfox21.tinkoffmessanger.domain.entity.Reaction
 
 object EmojiFormatter {
 
-    private fun codeToEmoji(code: String): String {
+    @Throws(NumberFormatException::class)
+    fun simpleToEmoji(code: String): String {
         return String(Character.toChars(Integer.parseInt(code, 16)))
     }
 
-    fun jsonToEmoji(jsonElement: com.google.gson.JsonElement): String {
-        stringToEmoji(jsonElement.toString())
-        return ""
+    private fun combinedToEmoji(code: String): String {
+        val codes = code.split("-")
+        return simpleToEmoji(codes[0]) + simpleToEmoji(codes[1])
     }
 
-    fun stringToEmoji(emojiCode: String): String? {
-        if (emojiCode == "zulip") return ""
-        if (!emojiCode.contains("-")) {
-            return codeToEmoji(emojiCode.replace("\"", ""))
+    private fun utfToEmoji(code: String): String {
+        return if (code.contains("-")) {
+            combinedToEmoji(code)
+        } else {
+            simpleToEmoji(code)
         }
-        return null
+    }
+
+    fun codeToEmoji(code: String): String {
+        return try {
+            utfToEmoji(code)
+        } catch (e: NumberFormatException) {
+            UNKNOWN_EMOJI
+        }
+    }
+
+    fun jsonToEmoji(code: String): String {
+        return try {
+            codeToEmoji(code.replace("\"", ""))
+        } catch (e: NumberFormatException) {
+            ""
+        }
     }
 
     fun jsonObjectToReactionsList(jsonObject: com.google.gson.JsonObject): List<Reaction> {
-        val reactionList = sortedSetOf(
-            comparator = Comparator<Reaction> { o1, o2 ->
-                (o1.reaction).compareTo(o2.reaction)
-            })
-
-
+        val reactions = mutableListOf<Reaction>()
+        val emojis = mutableSetOf<String>()
         jsonObject.keySet().forEach { key ->
-            val value = jsonObject.get(key)
-            val emojiString = stringToEmoji(value.asString)
-            if (emojiString != null) {
-                reactionList.add(
+            val code = jsonObject[key].toString()
+            val emoji = jsonToEmoji(code)
+            if (emoji.isNotEmpty() && !emojis.contains(emoji)) {
+                reactions.add(
                     Reaction(
-                        reaction = emojiString,
+                        userId = -1,
                         name = key,
-                        userId = Reaction.UNDEFINED_ID
+                        code = code,
+                        type = "",
+                        reaction = emoji
                     )
                 )
+                emojis.add(emoji)
             }
         }
-        return reactionList.toList()
+        return reactions
     }
+
+    private const val UNKNOWN_EMOJI = "⬜"
 }

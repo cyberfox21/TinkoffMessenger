@@ -1,23 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <attr name="message" format="string" />
+    <attr name="time" format="string" />
+
     <declare-styleable name="CustomEmojiView">
-        <attr name="android:background">@drawable/custom_emoji_view_bg</attr>
-        <attr name="android:padding">10dp</attr>
-        <attr name="android:layout_marginRight">8dp</attr>
-        <attr name="android:layout_marginBottom">8dp</attr>
-    </declare-styleable>
-    <declare-styleable name="CustomDateView">
-        <attr name="margin" format="integer" />
-        <attr name="paddingVertical" format="integer" />
-        <attr name="paddingHorizontal" format="integer" />
+        <attr name="emoji" format="string" />
+        <attr name="count" format="string" />
+        <attr name="countTextColor" format="color" />
+        <attr name="countTextSize" format="dimension" />
     </declare-styleable>
     <declare-styleable name="MyMessageViewGroup">
-        <attr name="message" format="string" />
-        <attr name="time" format="string" />
+        <attr name="message" />
+        <attr name="time" />
     </declare-styleable>
-    <declare-styleable name="MyMessage">
+    <declare-styleable name="AlienMessageViewGroup">
+        <attr name="avatar" format="string" />
+        <attr name="name" format="string" />
+        <attr name="message" />
+        <attr name="time" />
+    </declare-styleable>
+    <declare-styleable name="FlexBoxLayout">
         <attr name="horizontalMargins" format="dimension" />
         <attr name="verticalMargins" format="dimension" />
-        <attr name="percentWidth" format="float" />
+        <attr name="percent" format="float" />
     </declare-styleable>
 </resources>
