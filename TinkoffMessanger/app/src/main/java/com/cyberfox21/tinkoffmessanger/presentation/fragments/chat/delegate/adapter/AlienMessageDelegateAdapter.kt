@@ -42,6 +42,7 @@ class AlienMessageDelegateAdapter(
     private fun bindMessage(holder: RecyclerView.ViewHolder, item: DelegateItem) {
         val message = item as AlienMessageDelegateItem
         with(holder as AlienMessageViewHolder) {
+
             Glide.with(alienMessageViewGroup.context).load(message.senderAvatarUrl).into(imageView)
             alienMessage.name = message.senderName
             alienMessage.message = message.text

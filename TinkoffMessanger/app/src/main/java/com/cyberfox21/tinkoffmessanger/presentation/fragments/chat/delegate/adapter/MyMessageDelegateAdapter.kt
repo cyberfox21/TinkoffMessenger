@@ -13,7 +13,6 @@ import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.delegate.item
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.delegate.viewholder.MyMessageViewHolder
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.views.CustomEmojiView
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.views.MyMessageViewGroup
-import com.cyberfox21.tinkoffmessanger.presentation.util.EmojiFormatter.codeToEmoji
 
 class MyMessageDelegateAdapter(
     private val onReactionClickListener: OnReactionClickListener,
@@ -51,41 +50,32 @@ class MyMessageDelegateAdapter(
             if (message.reactions.isNotEmpty()) {
                 val btnAdd = LayoutInflater.from(myMessageViewGroup.context)
                     .inflate(R.layout.btn_add_view, myMessageViewGroup, false)
-                    .apply {
-                        setOnClickListener {
-                            onLongMessageClickListener.onLongMessageClick(
-                                message.id
-                            )
-                        }
-                    }
+                btnAdd.setOnClickListener { onLongMessageClickListener.onLongMessageClick(message.id) }
                 emojiLayout.addView(btnAdd)
             }
 
-            message.reactions.forEach { emoji ->
+            message.reactions.forEach { listEmoji ->
                 val emojiView = (LayoutInflater.from(myMessageViewGroup.context)
-                    .inflate(
-                        R.layout.custom_emoji_view,
-                        myMessageViewGroup,
-                        false
-                    ) as CustomEmojiView)
-                    .apply {
-                        this.emoji = codeToEmoji(emoji.reaction)
-                        this.count = emoji.count
-                        isSelected = emoji.isSelected
-                        setOnClickListener { reactionView ->
-                            if (reactionView.isSelected.not()) {
-                                onReactionClickListener.onReactionClick(
-                                    ClickEmojiMode.ADD_EMOJI, message.id, emoji.mapToReaction()
-                                )
-                            } else {
-                                onReactionClickListener.onReactionClick(
-                                    ClickEmojiMode.DELETE_EMOJI,
-                                    message.id,
-                                    emoji.mapToReaction()
-                                )
-                            }
+                    .inflate(R.layout.custom_emoji_view, myMessageViewGroup, false)
+                        as CustomEmojiView)
+                emojiView.apply {
+                    emoji = listEmoji.reaction
+                    count = listEmoji.count
+                    isSelected = listEmoji.isSelected
+                    setOnClickListener { reactionView ->
+                        if (reactionView.isSelected.not()) {
+                            onReactionClickListener.onReactionClick(
+                                ClickEmojiMode.ADD_EMOJI, message.id, listEmoji.mapToReaction()
+                            )
+                        } else {
+                            onReactionClickListener.onReactionClick(
+                                ClickEmojiMode.DELETE_EMOJI,
+                                message.id,
+                                listEmoji.mapToReaction()
+                            )
                         }
                     }
+                }
                 emojiLayout.addView(emojiView, emojiLayout.size - 1)
             }
 
