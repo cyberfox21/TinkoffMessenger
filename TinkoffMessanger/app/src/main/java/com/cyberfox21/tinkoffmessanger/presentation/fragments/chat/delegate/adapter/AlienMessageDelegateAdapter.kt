@@ -52,41 +52,30 @@ class AlienMessageDelegateAdapter(
             if (message.reactions.isNotEmpty()) {
                 val btnAdd = LayoutInflater.from(alienMessageViewGroup.context)
                     .inflate(R.layout.btn_add_view, alienMessageViewGroup, false)
-                    .apply {
-                        setOnClickListener {
-                            onLongMessageClickListener.onLongMessageClick(
-                                message.id
-                            )
-                        }
-                    }
+                btnAdd.setOnClickListener { onLongMessageClickListener.onLongMessageClick(message.id) }
                 emojiLayout.addView(btnAdd)
             }
 
-            message.reactions.forEach { emoji ->
+            message.reactions.forEach { listEmoji ->
                 val emojiView = (LayoutInflater.from(alienMessageViewGroup.context)
-                    .inflate(
-                        R.layout.custom_emoji_view,
-                        alienMessageViewGroup,
-                        false
-                    ) as CustomEmojiView)
-                    .apply {
-                        this.emoji = emoji.name
-                        this.count = emoji.count
-                        isSelected = emoji.isSelected
-                        setOnClickListener { reactionView ->
-                            if (reactionView.isSelected.not()) {
-                                onReactionClickListener.onReactionClick(
-                                    ClickEmojiMode.ADD_EMOJI, message.id, emoji.mapToReaction()
-                                )
-                            } else {
-                                onReactionClickListener.onReactionClick(
-                                    ClickEmojiMode.DELETE_EMOJI,
-                                    message.id,
-                                    emoji.mapToReaction()
-                                )
-                            }
+                    .inflate(R.layout.custom_emoji_view, alienMessageViewGroup, false)
+                        as CustomEmojiView)
+                emojiView.apply {
+                    emoji = listEmoji.reaction
+                    count = listEmoji.count
+                    isSelected = listEmoji.isSelected
+                    setOnClickListener { reactionView ->
+                        if (reactionView.isSelected.not()) {
+                            onReactionClickListener.onReactionClick(
+                                ClickEmojiMode.ADD_EMOJI, message.id, listEmoji.mapToReaction()
+                            )
+                        } else {
+                            onReactionClickListener.onReactionClick(
+                                ClickEmojiMode.DELETE_EMOJI, message.id, listEmoji.mapToReaction()
+                            )
                         }
                     }
+                }
                 emojiLayout.addView(emojiView, emojiLayout.size - 1)
             }
 

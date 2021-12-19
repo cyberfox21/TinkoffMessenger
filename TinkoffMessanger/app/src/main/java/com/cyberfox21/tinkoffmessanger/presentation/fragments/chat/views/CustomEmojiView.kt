@@ -18,13 +18,13 @@ class CustomEmojiView @JvmOverloads constructor(
     defStyleRes: Int = 0
 ) : View(context, attrs, defStyleAttr, defStyleRes) {
 
-    var count = 0
+    var emoji = ""
         set(value) {
             field = value
             requestLayout()
         }
 
-    var emoji = ""
+    var count = 0
         set(value) {
             field = value
             requestLayout()
@@ -41,16 +41,15 @@ class CustomEmojiView @JvmOverloads constructor(
             requestLayout()
         }
 
-    private val textBoundsRectangle = Rect()
-    private val emojiBoundsRectangle = Rect()
-
-    private val textCoordinate = PointF()
-    private val emojiCoordinate = PointF()
-
     private val textPaint = Paint().apply { ANTI_ALIAS_FLAG }
 
-    init {
+    private val emojiBoundsRectangle = Rect()
+    private val textBoundsRectangle = Rect()
 
+    private val emojiCoordinate = PointF()
+    private val textCoordinate = PointF()
+
+    init {
         val typedArray: TypedArray = context.obtainStyledAttributes(
             attrs,
             R.styleable.CustomEmojiView,
@@ -79,17 +78,17 @@ class CustomEmojiView @JvmOverloads constructor(
         textPaint.getTextBounds(emoji, 0, emoji.length, emojiBoundsRectangle)
         textPaint.getTextBounds(count.toString(), 0, count.toString().length, textBoundsRectangle)
 
-        val textTotalWidth =
+        val totalWidth =
             paddingLeft + emojiBoundsRectangle.width() + textBoundsRectangle.width() + paddingRight
-        val textTotalHeight = paddingTop + maxOf(
+        val totalHeight = paddingTop + maxOf(
             emojiBoundsRectangle.height(),
             textBoundsRectangle.height()
         ) + paddingBottom
 
-        val resultWidth = resolveSize(maxOf(textTotalWidth, layoutParams.width), widthMeasureSpec)
+        val resultWidth = resolveSize(maxOf(totalWidth, layoutParams.width), widthMeasureSpec)
 
         val resultHeight =
-            resolveSize(maxOf(textTotalHeight, layoutParams.height), heightMeasureSpec)
+            resolveSize(maxOf(totalHeight, layoutParams.height), heightMeasureSpec)
 
         setMeasuredDimension(resultWidth, resultHeight)
     }
@@ -98,7 +97,7 @@ class CustomEmojiView @JvmOverloads constructor(
 
         emojiCoordinate.x = w / 2f - emojiBoundsRectangle.width() / 2f
         emojiCoordinate.y =
-            measuredHeight / 2f + emojiBoundsRectangle.height() / 2
+            measuredHeight / 2f + emojiBoundsRectangle.height() / 3
 
         textCoordinate.x = w / 2f + emojiBoundsRectangle.width() / 2f
         textCoordinate.y = measuredHeight / 2f + textBoundsRectangle.height() / 2
@@ -108,7 +107,6 @@ class CustomEmojiView @JvmOverloads constructor(
         canvas.drawText(emoji, emojiCoordinate.x, emojiCoordinate.y, textPaint)
         canvas.drawText(count.toString(), textCoordinate.x, textCoordinate.y, textPaint)
     }
-
 
     override fun onCreateDrawableState(extraSpace: Int): IntArray {
         val drawableState =
