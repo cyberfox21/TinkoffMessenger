@@ -33,6 +33,10 @@ class UseCaseModule {
         GetMyUserUseCase(usersRepositoryImpl)
 
     @Provides
+    fun provideGetUserPresenceUseCase(usersRepositoryImpl: UsersRepository): GetUserPresenceUseCase =
+        GetUserPresenceUseCase(usersRepositoryImpl)
+
+    @Provides
     fun provideGetReactionListUseCase(reactionsRepositoryImpl: ReactionsRepository): GetReactionListUseCase =
         GetReactionListUseCase(reactionsRepositoryImpl)
 

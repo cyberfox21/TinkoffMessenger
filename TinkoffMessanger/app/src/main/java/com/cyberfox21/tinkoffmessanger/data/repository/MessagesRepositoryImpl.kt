@@ -7,7 +7,7 @@ import com.cyberfox21.tinkoffmessanger.data.database.dao.MessagesDao
 import com.cyberfox21.tinkoffmessanger.data.mapToMessage
 import com.cyberfox21.tinkoffmessanger.data.mapToMessageDBModel
 import com.cyberfox21.tinkoffmessanger.domain.entity.Message
-import com.cyberfox21.tinkoffmessanger.domain.enum.LoadType
+import com.cyberfox21.tinkoffmessanger.domain.enums.LoadType
 import com.cyberfox21.tinkoffmessanger.domain.repository.MessagesRepository
 import io.reactivex.Completable
 import io.reactivex.Observable

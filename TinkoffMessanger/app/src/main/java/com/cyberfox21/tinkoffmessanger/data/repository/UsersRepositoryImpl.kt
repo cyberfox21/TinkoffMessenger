@@ -3,9 +3,11 @@ package com.cyberfox21.tinkoffmessanger.data.repository
 import com.cyberfox21.tinkoffmessanger.data.api.Api
 import com.cyberfox21.tinkoffmessanger.data.database.dao.UsersDao
 import com.cyberfox21.tinkoffmessanger.data.mapToCurrentUserDBModel
+import com.cyberfox21.tinkoffmessanger.data.mapToStatus
 import com.cyberfox21.tinkoffmessanger.data.mapToUser
 import com.cyberfox21.tinkoffmessanger.data.mapToUserDBModel
 import com.cyberfox21.tinkoffmessanger.domain.entity.User
+import com.cyberfox21.tinkoffmessanger.domain.enums.UserStatus
 import com.cyberfox21.tinkoffmessanger.domain.repository.UsersRepository
 import io.reactivex.Observable
 import io.reactivex.Single
@@ -34,6 +36,13 @@ class UsersRepositoryImpl @Inject constructor(
             getUsersListFromNetwork().toObservable(),
             getUsersListFromDB().toObservable()
         ).subscribeOn(Schedulers.io())
+
+    override fun getUserPresence(id: Int): Observable<Result<UserStatus>> =
+        Observable.concat(
+            getUserPresenceFromNetwork(id).toObservable(),
+            getUserPresenceFromDB().toObservable()
+        ).subscribeOn(Schedulers.io())
+
 
     private fun getMyUserFromDB(): Single<Result<User>> {
         return usersDao.getMyUser()
@@ -90,4 +99,16 @@ class UsersRepositoryImpl @Inject constructor(
             }.onErrorReturn { Result.failure(it) }
             .subscribeOn(Schedulers.io())
     }
+
+    private fun getUserPresenceFromNetwork(id: Int): Single<Result<UserStatus>> =
+        api.getUserPresence(id)
+            .map { response ->
+                Result.success(response.presence.client.mapToStatus())
+            }
+            .onErrorReturn { Result.failure(it) }
+            .subscribeOn(Schedulers.io())
+
+    private fun getUserPresenceFromDB(): Single<Result<UserStatus>> =
+        Single.just(UserStatus.OFFLINE).map { status -> Result.success(status) }
+
 }

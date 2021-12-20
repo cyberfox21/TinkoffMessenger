@@ -4,6 +4,7 @@ import androidx.core.text.HtmlCompat
 import com.cyberfox21.tinkoffmessanger.data.api.response.dto.*
 import com.cyberfox21.tinkoffmessanger.data.database.model.*
 import com.cyberfox21.tinkoffmessanger.domain.entity.*
+import com.cyberfox21.tinkoffmessanger.domain.enums.UserStatus
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.delegate.item.MessageReactionListItem
 import com.cyberfox21.tinkoffmessanger.presentation.util.DateFormatter
 import com.cyberfox21.tinkoffmessanger.presentation.util.EmojiFormatter.codeToEmoji
@@ -161,3 +162,11 @@ fun UserDTO.mapToUser() = User(
     email = email,
     status = is_active
 )
+
+fun UserPresenceClientDTO.mapToStatus(): UserStatus {
+    return when (status) {
+        UserStatus.ONLINE.apiName -> UserStatus.ONLINE
+        UserStatus.IDLE.apiName -> UserStatus.IDLE
+        else -> UserStatus.OFFLINE
+    }
+}

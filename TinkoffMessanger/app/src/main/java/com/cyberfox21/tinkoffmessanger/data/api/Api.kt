@@ -33,7 +33,7 @@ interface Api {
     fun getMyUser(): Single<UserDTO>
 
     @GET("users/{user_id}/presence")
-    fun getUserPresence(@Path(value = "user_id") userId: Int): Single<UserPresenceResponse>
+    fun getUserPresence(@Path("user_id") userId: Int): Single<UserPresenceResponse>
 
     @GET("streams")
     fun getChannels(): Single<ChannelsResponse>
@@ -54,14 +54,6 @@ interface Api {
         @Field("topic") topic: String,
         @Field("content") content: String,
         @Field("type") type: String = "stream",
-    ): Completable
-
-    @FormUrlEncoded
-    @POST("messages")
-    fun sendPrivateMessage(
-        @Field("to") recipientsIdIntArray: String,
-        @Field("content") content: String,
-        @Field("type") type: String = "private",
     ): Completable
 
     @FormUrlEncoded

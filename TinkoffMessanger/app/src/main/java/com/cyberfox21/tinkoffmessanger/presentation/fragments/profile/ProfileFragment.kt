@@ -2,6 +2,7 @@ package com.cyberfox21.tinkoffmessanger.presentation.fragments.profile
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +12,7 @@ import com.bumptech.glide.Glide
 import com.cyberfox21.tinkoffmessanger.R
 import com.cyberfox21.tinkoffmessanger.databinding.FragmentProfileBinding
 import com.cyberfox21.tinkoffmessanger.domain.entity.User
+import com.cyberfox21.tinkoffmessanger.domain.enums.UserStatus
 import com.cyberfox21.tinkoffmessanger.presentation.common.MainActivity
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.profile.elm.*
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.profile.enums.ProfileMode
@@ -60,6 +62,16 @@ class ProfileFragment() : ElmFragment<ProfileEvent, ProfileEffect, ProfileState>
             is ProfileEffect.UserEmpty -> {
                 binding.errorLayout.errorRoot.isVisible = false
                 binding.emptyLayout.errorLayout.isVisible = true
+            }
+            is ProfileEffect.UserPresenceLoadedSuccess -> {
+                binding.tvProfileStatus.isVisible = true
+                binding.tvProfileStatus.setTextColor(
+                    ContextCompat.getColor(
+                        requireActivity(),
+                        getStatusColor(effect.status)
+                    )
+                )
+                binding.tvProfileStatus.text = effect.status.apiName
             }
         }
     }
@@ -119,7 +131,7 @@ class ProfileFragment() : ElmFragment<ProfileEvent, ProfileEffect, ProfileState>
 
     private fun launchRightMode() = when (screenMode) {
         ProfileMode.YOUR -> {
-            store.accept(ProfileEvent.Ui.GetCurrentUser)
+            getCurrentUser()
             showBottomNavigation()
             binding.btnLogout.isVisible =
                 screenMode == ProfileMode.YOUR &&
@@ -146,6 +158,10 @@ class ProfileFragment() : ElmFragment<ProfileEvent, ProfileEffect, ProfileState>
         store.accept(ProfileEvent.Ui.GetSelectedUser(fragmentUser))
     }
 
+    private fun getCurrentUser() {
+        store.accept(ProfileEvent.Ui.GetCurrentUser)
+    }
+
     private fun bindUser(user: User) {
         Glide.with(requireContext()).load(user.avatar).into(binding.ivProfilePhoto)
         binding.tvProfileName.text = user.name
@@ -166,6 +182,12 @@ class ProfileFragment() : ElmFragment<ProfileEvent, ProfileEffect, ProfileState>
     private fun addListeners() {
         binding.errorLayout.btnNetwork.setOnClickListener { launchRightMode() }
         binding.emptyLayout.btnRefresh.setOnClickListener { launchRightMode() }
+    }
+
+    private fun getStatusColor(status: UserStatus): Int = when (status) {
+        UserStatus.IDLE -> R.color.orange
+        UserStatus.ONLINE -> R.color.green
+        UserStatus.OFFLINE -> R.color.light_gray
     }
 
     companion object {

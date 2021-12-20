@@ -1,5 +1,6 @@
 package com.cyberfox21.tinkoffmessanger.presentation.fragments.profile.elm
 
+import com.cyberfox21.tinkoffmessanger.domain.enums.UserStatus
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.profile.enums.ProfileMode
 import vivid.money.elmslie.core.store.dsl_reducer.DslReducer
 
@@ -32,6 +33,7 @@ class ProfileReducer : DslReducer<ProfileEvent, ProfileState, ProfileEffect, Pro
                             profileScreenMode = ProfileMode.YOUR
                         )
                     }
+                    commands { +state.user?.let { ProfileCommand.GetUserPresence(it.id) } }
                 }
             }
             is ProfileEvent.Internal.ErrorLoading -> {
@@ -67,6 +69,16 @@ class ProfileReducer : DslReducer<ProfileEvent, ProfileState, ProfileEffect, Pro
                         profileScreenMode = ProfileMode.STRANGER
                     )
                 }
+                commands { +state.user?.let { ProfileCommand.GetUserPresence(it.id) } }
+            }
+            is ProfileEvent.Internal.UserPresenceLoaded -> effects {
+                if (state.userStatus != UserStatus.OFFLINE && event.status == UserStatus.OFFLINE) {
+                } else {
+                    state { copy(userStatus = event.status) }
+                    event.status.let { +ProfileEffect.UserPresenceLoadedSuccess(it) }
+                }
+            }
+            is ProfileEvent.Internal.UserPresenceLoadedError -> {
             }
         }
     }

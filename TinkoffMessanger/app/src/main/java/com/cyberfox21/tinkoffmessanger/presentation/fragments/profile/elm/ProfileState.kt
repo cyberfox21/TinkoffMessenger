@@ -2,6 +2,7 @@ package com.cyberfox21.tinkoffmessanger.presentation.fragments.profile.elm
 
 import android.os.Parcelable
 import com.cyberfox21.tinkoffmessanger.domain.entity.User
+import com.cyberfox21.tinkoffmessanger.domain.enums.UserStatus
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.profile.enums.ProfileMode
 import kotlinx.parcelize.Parcelize
 
@@ -11,5 +12,6 @@ data class ProfileState(
     val isEmptyState: Boolean = true,
     val isLoading: Boolean = false,
     val error: Throwable? = null,
-    var profileScreenMode: ProfileMode = ProfileMode.YOUR
+    var profileScreenMode: ProfileMode = ProfileMode.YOUR,
+    val userStatus: UserStatus = UserStatus.OFFLINE
 ) : Parcelable

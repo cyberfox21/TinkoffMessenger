@@ -12,8 +12,11 @@ import dagger.Provides
 class ActorModule {
 
     @Provides
-    fun provideProfileActor(getMyUserUseCase: GetMyUserUseCase): ProfileActor =
-        ProfileActor(getMyUserUseCase)
+    fun provideProfileActor(
+        getMyUserUseCase: GetMyUserUseCase,
+        getUserPresenceUseCase: GetUserPresenceUseCase
+    ): ProfileActor =
+        ProfileActor(getMyUserUseCase, getUserPresenceUseCase)
 
     @Provides
     fun providePeopleActor(getUsersListUseCase: GetUsersListUseCase): PeopleActor =

@@ -1,6 +1,6 @@
 package com.cyberfox21.tinkoffmessanger.domain.usecase
 
-import com.cyberfox21.tinkoffmessanger.domain.enum.LoadType
+import com.cyberfox21.tinkoffmessanger.domain.enums.LoadType
 import com.cyberfox21.tinkoffmessanger.domain.repository.MessagesRepository
 import javax.inject.Inject
 

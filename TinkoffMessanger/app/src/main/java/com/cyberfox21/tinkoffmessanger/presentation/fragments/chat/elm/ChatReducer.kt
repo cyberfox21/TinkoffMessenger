@@ -1,7 +1,7 @@
 package com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.elm
 
 import android.util.Log
-import com.cyberfox21.tinkoffmessanger.domain.enum.LoadType
+import com.cyberfox21.tinkoffmessanger.domain.enums.LoadType
 import com.cyberfox21.tinkoffmessanger.presentation.common.ResourceStatus
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.delegate.item.LoadingDelegateItem
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.enums.PaginationStatus

@@ -2,7 +2,7 @@ package com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.elm
 
 import com.cyberfox21.tinkoffmessanger.domain.entity.Message
 import com.cyberfox21.tinkoffmessanger.domain.entity.Reaction
-import com.cyberfox21.tinkoffmessanger.domain.enum.LoadType
+import com.cyberfox21.tinkoffmessanger.domain.enums.LoadType
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.enums.UpdateType
 
 sealed class ChatCommand {

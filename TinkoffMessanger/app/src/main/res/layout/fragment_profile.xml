@@ -68,19 +68,10 @@
                 android:id="@+id/tv_profile_status"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:layout_marginEnd="@dimen/margin10dp"
-                android:textColor="@color/white"
                 android:textSize="@dimen/textSize16sp"
                 tools:text="@string/example_status" />
-
-            <TextView
-                android:id="@+id/tv_online"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin10dp"
-                android:textColor="@color/neon_green"
-                android:textSize="@dimen/textSize16sp"
-                tools:text="@string/online" />
 
         </LinearLayout>
 
