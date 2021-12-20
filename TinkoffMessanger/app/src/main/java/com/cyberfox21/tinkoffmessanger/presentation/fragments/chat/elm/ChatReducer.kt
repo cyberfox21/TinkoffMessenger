@@ -1,9 +1,12 @@
 package com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.elm
 
+import android.util.Log
 import com.cyberfox21.tinkoffmessanger.domain.enum.LoadType
 import com.cyberfox21.tinkoffmessanger.presentation.common.ResourceStatus
+import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.delegate.item.LoadingDelegateItem
+import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.enums.PaginationStatus
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.enums.ScrollStatus
-import com.cyberfox21.tinkoffmessanger.presentation.toDelegateChatItemsList
+import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.enums.UpdateType
 import vivid.money.elmslie.core.store.dsl_reducer.DslReducer
 
 class ChatReducer : DslReducer<ChatEvent, ChatState, ChatEffect, ChatCommand>() {
@@ -18,10 +21,60 @@ class ChatReducer : DslReducer<ChatEvent, ChatState, ChatEffect, ChatCommand>() 
 
             is ChatEvent.Ui.GetMessages -> {
                 if (event.needLoading) {
-                    state { state.copy(messageStatus = ResourceStatus.LOADING) }
-                    commands { +ChatCommand.LoadMessages(LoadType.ANY) }
+                    state {
+                        state.copy(
+                            messageStatus = ResourceStatus.LOADING,
+                            updateType = UpdateType.INITIAL
+                        )
+                    }
+                    commands {
+                        +ChatCommand.LoadMessages(
+                            loadType = LoadType.ANY,
+                            updateType = UpdateType.INITIAL,
+                            lastMessageId = if (state.messages.isNotEmpty()) state.messages.last().id
+                            else ChatCommand.UNDEFINED_LAST_MESSAGE_ID
+                        )
+                    }
                 } else {
-                    commands { +ChatCommand.LoadMessages(LoadType.NETWORK) }
+                    state {
+                        state.copy(
+                            messageStatus = ResourceStatus.LOADING,
+                            updateType = UpdateType.RELOAD
+                        )
+                    }
+                    commands {
+                        +ChatCommand.LoadMessages(
+                            loadType = LoadType.NETWORK,
+                            updateType = UpdateType.RELOAD,
+                            lastMessageId = if (state.messages.isNotEmpty()) state.messages.last().id
+                            else ChatCommand.UNDEFINED_LAST_MESSAGE_ID
+                        )
+                    }
+                }
+            }
+
+            is ChatEvent.Ui.LoadNextMessages -> {
+                if (state.messageStatus != ResourceStatus.LOADING
+                    && state.paginationStatus != PaginationStatus.FULL
+                ) {
+                    state {
+                        state.copy(
+                            messageStatus = ResourceStatus.LOADING,
+                            updateType = UpdateType.PAGINATION,
+                            chatItems = chatItems + listOf(LoadingDelegateItem()),
+                            savedPosition = event.position
+                        )
+                    }
+                    commands {
+                        +ChatCommand.LoadNextMessages(
+                            LoadType.NETWORK,
+                            state.reactions,
+                            state.messages,
+                            UpdateType.PAGINATION,
+                            state.messages.last().id
+                        )
+                    }
+                } else {
                 }
             }
 
@@ -71,20 +124,28 @@ class ChatReducer : DslReducer<ChatEvent, ChatState, ChatEffect, ChatCommand>() 
                 }
             }
 
-            is ChatEvent.Internal.MessagesLoaded -> {
-                state {
-                    state.copy(
-                        messages = event.messages.toDelegateChatItemsList(
-                            state.currentUserId,
-                            state.reactions
-                        ),
-                        messageStatus = ResourceStatus.SUCCESS
+            is ChatEvent.Internal.MessagesLoadedSuccess -> {
+                if (event.updateType == UpdateType.PAGINATION) {
+                    if (state.messages.isNotEmpty() &&
+                        event.messages.last().id == state.messages.last().id
+                    ) {
+                        state { copy(paginationStatus = PaginationStatus.FULL) }
+                    } else {
+                        state { copy(paginationStatus = PaginationStatus.PART) }
+                    }
+                }
+                commands {
+                    +ChatCommand.LoadChatItems(
+                        state.currentUserId,
+                        state.reactions,
+                        event.messages,
+                        event.updateType
                     )
                 }
             }
 
             ChatEvent.Internal.MessagesLoadEmpty -> {
-                if (state.messages.isEmpty()) {
+                if (state.chatItems.isEmpty()) {
                     state { state.copy(messageStatus = ResourceStatus.EMPTY) }
                 } else {
                     state { state.copy(messageStatus = ResourceStatus.SUCCESS) }
@@ -92,7 +153,7 @@ class ChatReducer : DslReducer<ChatEvent, ChatState, ChatEffect, ChatCommand>() 
             }
 
             is ChatEvent.Internal.MessageLoadError -> {
-                if (state.messages.isEmpty()) {
+                if (state.chatItems.isEmpty()) {
                     state {
                         state.copy(
                             messageStatus = ResourceStatus.ERROR,
@@ -104,22 +165,94 @@ class ChatReducer : DslReducer<ChatEvent, ChatState, ChatEffect, ChatCommand>() 
                 }
             }
 
+            is ChatEvent.Internal.ChatItemsLoadedSuccess -> {
+                state {
+                    state.copy(
+                        messages = event.messages.distinctBy { it.id },
+                        chatItems = event.items,
+                        messageStatus = ResourceStatus.SUCCESS
+                    )
+                }
+                if (event.messages.isNotEmpty()) {
+                    when (event.updateType) {
+                        UpdateType.INITIAL -> {
+                            state { copy(scrollStatus = ScrollStatus.SCROLL_TO_BOTTOM) }
+                            effects { +ChatEffect.ScrollToBottom }
+                        }
+                        UpdateType.RELOAD -> {
+                            state { copy(scrollStatus = ScrollStatus.SCROLL_TO_BOTTOM) }
+                            effects { +ChatEffect.ScrollToBottom }
+                        }
+                        UpdateType.PAGINATION -> {
+                            state { copy(scrollStatus = ScrollStatus.SCROLL_TO_POSITION) }
+                        }
+                        UpdateType.UPDATE -> {
+
+                        }
+                    }
+                } else {
+                    Log.d("ChatReducer", "Messages list is empty")
+                }
+
+            }
+
+            is ChatEvent.Internal.ChatItemsLoadedError -> {
+                state {
+                    state.copy(
+                        messageStatus = ResourceStatus.ERROR,
+                        messageError = event.error
+                    )
+                }
+            }
+
             ChatEvent.Internal.MessageSendingSuccess -> {
-                commands { +ChatCommand.LoadMessages(LoadType.NETWORK) }
+                state {
+                    copy(
+                        savedPosition = 0,
+                        messageStatus = ResourceStatus.LOADING,
+                        updateType = UpdateType.RELOAD
+                    )
+                }
+                commands {
+                    +ChatCommand.LoadMessages(
+                        LoadType.NETWORK,
+                        updateType = UpdateType.RELOAD,
+                        ChatCommand.UNDEFINED_LAST_MESSAGE_ID
+                    )
+                }
                 effects { +ChatEffect.MessageSendingSuccess }
             }
 
             is ChatEvent.Internal.MessageSendingError -> effects { +ChatEffect.MessageSendingError }
 
             ChatEvent.Internal.ReactionAddingError -> effects { +ChatEffect.EmojiAddedError }
-            ChatEvent.Internal.ReactionAddingSuccess -> effects { +ChatEffect.EmojiAddedSuccess }
+            is ChatEvent.Internal.ReactionAddingSuccess -> {
+                commands {
+                    +ChatCommand.LoadMessage(
+                        state.currentUserId,
+                        state.reactions,
+                        state.messages,
+                        event.msgId
+                    )
+                }
+            }
 
             ChatEvent.Internal.ReactionDeletingError -> effects { +ChatEffect.EmojiDeletedError }
-            ChatEvent.Internal.ReactionDeletingSuccess -> effects { +ChatEffect.EmojiDeletedSuccess }
+            is ChatEvent.Internal.ReactionDeletingSuccess -> {
+                commands {
+                    +ChatCommand.LoadMessage(
+                        state.currentUserId,
+                        state.reactions,
+                        state.messages,
+                        event.msgId
+                    )
+                }
+
+            }
 
             ChatEvent.Ui.OnDataInserted -> {
                 when (state.scrollStatus) {
-                    ScrollStatus.SCROLL_TO_TOP -> effects { +ChatEffect.ScrollToTop }
+                    ScrollStatus.SCROLL_TO_BOTTOM -> effects { +ChatEffect.ScrollToBottom }
                     ScrollStatus.SCROLL_TO_POSITION -> {
                         effects { +ChatEffect.ScrollToPosition(state.savedPosition) }
                     }

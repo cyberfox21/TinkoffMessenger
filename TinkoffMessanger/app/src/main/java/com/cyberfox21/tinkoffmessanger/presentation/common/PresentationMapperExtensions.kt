@@ -1,4 +1,4 @@
-package com.cyberfox21.tinkoffmessanger.presentation
+package com.cyberfox21.tinkoffmessanger.presentation.common
 
 import android.text.SpannableString
 import androidx.core.text.HtmlCompat
@@ -28,6 +28,21 @@ fun String.mapMessageContent(emojis: List<Reaction>): SpannableString {
             HtmlCompat.FROM_HTML_MODE_COMPACT
         ).trim()
     )
+}
+
+fun List<Message>.replaceMessage(newMessage: Message): List<Message> {
+    return this.toMutableList().apply {
+        val index = this.indexOfFirst { message -> message.id == newMessage.id }
+        removeAt(index)
+        addAll(index, listOf(newMessage))
+    }
+}
+
+fun List<Message>.mergeMessages(newMessages: List<Message>): List<Message> {
+    return this.toMutableList().apply {
+        removeAt(this.lastIndex)
+        addAll(newMessages)
+    }
 }
 
 fun List<Message>.toDelegateChatItemsList(
@@ -60,10 +75,6 @@ fun List<Message>.toDelegateChatItemsList(
         }
         listReactions.sortByDescending { it.count }
 
-        if (index == 0 || !DateFormatter.isTheSameDay(message.time, this[index - 1].time)) {
-            delegateItemList.add(DateDelegateItem(DateFormatter.getDateForChatItem(message.time)))
-        }
-
         val listMessage = when (message.senderId == userId) {
             true -> {
                 MyMessageDelegateItem(
@@ -86,6 +97,10 @@ fun List<Message>.toDelegateChatItemsList(
             }
         }
         delegateItemList.add(listMessage)
+
+        if (index == lastIndex || !DateFormatter.isTheSameDay(message.time, this[index + 1].time)) {
+            delegateItemList.add(DateDelegateItem(DateFormatter.getDateForChatItem(message.time)))
+        }
     }
     return delegateItemList
 }

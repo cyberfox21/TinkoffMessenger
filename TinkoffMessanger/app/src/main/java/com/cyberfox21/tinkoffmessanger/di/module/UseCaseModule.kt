@@ -25,6 +25,10 @@ class UseCaseModule {
         GetMessageListUseCase(messagesRepositoryImpl)
 
     @Provides
+    fun provideGetMessageUseCase(messagesRepositoryImpl: MessagesRepository): GetMessageUseCase =
+        GetMessageUseCase(messagesRepositoryImpl)
+
+    @Provides
     fun provideGetMyUserUseCase(usersRepositoryImpl: UsersRepository): GetMyUserUseCase =
         GetMyUserUseCase(usersRepositoryImpl)
 

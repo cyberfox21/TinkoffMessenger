@@ -5,7 +5,9 @@ import com.cyberfox21.tinkoffmessanger.presentation.commondelegate.DelegateItem
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-open class ChatDelegateItem : DelegateItem, Parcelable {
+open class ChatDelegateItem(
+    open val id: Int,
+) : DelegateItem, Parcelable {
     override fun content() = Any()
 
     override fun id() = Any()

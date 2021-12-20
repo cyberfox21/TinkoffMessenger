@@ -1,5 +1,7 @@
 package com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.delegate.item
 
+import com.cyberfox21.tinkoffmessanger.presentation.commondelegate.DelegateItem
+
 class MessageReactionListItem(
     val name: String,
     val code: String,
@@ -8,7 +10,7 @@ class MessageReactionListItem(
     val count: Int,
     val senderId: Int,
     val isSelected: Boolean
-) : ChatDelegateItem() {
+) : DelegateItem {
     override fun id() = name
     override fun content() = count
 }

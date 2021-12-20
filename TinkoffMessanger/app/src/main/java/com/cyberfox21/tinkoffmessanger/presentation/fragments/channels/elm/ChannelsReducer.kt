@@ -3,10 +3,10 @@ package com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.elm
 import com.cyberfox21.tinkoffmessanger.domain.entity.Channel
 import com.cyberfox21.tinkoffmessanger.domain.entity.Topic
 import com.cyberfox21.tinkoffmessanger.presentation.common.ResourceStatus
+import com.cyberfox21.tinkoffmessanger.presentation.common.mapToChannelDelegateItem
+import com.cyberfox21.tinkoffmessanger.presentation.common.mapToTopicDelegateItem
 import com.cyberfox21.tinkoffmessanger.presentation.commondelegate.DelegateItem
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.delegate.item.ChannelDelegateItem
-import com.cyberfox21.tinkoffmessanger.presentation.mapToChannelDelegateItem
-import com.cyberfox21.tinkoffmessanger.presentation.mapToTopicDelegateItem
 import vivid.money.elmslie.core.store.dsl_reducer.DslReducer
 
 class ChannelsReducer :
@@ -47,7 +47,6 @@ class ChannelsReducer :
                         selectedChannelName = event.channelName,
                         selectedChannelId = event.channelId,
                         delegateItems = getDelegateItemsList(
-                            state.delegateItems,
                             state.delegateChannels,
                             event.topics,
                             event.channelId,
@@ -59,7 +58,6 @@ class ChannelsReducer :
                 effects {
                     ChannelsEffect.RefreshTopics(
                         getDelegateItemsList(
-                            state.delegateItems,
                             state.delegateChannels,
                             event.topics,
                             event.channelId,
@@ -112,7 +110,6 @@ class ChannelsReducer :
 
 
     private fun getDelegateItemsList(
-        delegateItems: List<DelegateItem>,
         delegateChannels: List<ChannelDelegateItem>,
         topics: List<Topic>,
         channelId: Int,

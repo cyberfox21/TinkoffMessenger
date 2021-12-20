@@ -8,14 +8,12 @@ sealed class ChatEffect {
     object MessageSendingError : ChatEffect()
     object MessageSendingSuccess : ChatEffect()
 
-    object EmojiAddedSuccess : ChatEffect()
     object EmojiAddedError : ChatEffect()
 
-    object EmojiDeletedSuccess : ChatEffect()
     object EmojiDeletedError : ChatEffect()
 
     object ShowNetworkError : ChatEffect()
 
-    object ScrollToTop : ChatEffect()
+    object ScrollToBottom : ChatEffect()
     data class ScrollToPosition(val position: Int) : ChatEffect()
 }

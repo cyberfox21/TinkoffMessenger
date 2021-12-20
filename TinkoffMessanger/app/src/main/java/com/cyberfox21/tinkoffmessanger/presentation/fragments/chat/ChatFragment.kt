@@ -19,13 +19,13 @@ import com.cyberfox21.tinkoffmessanger.databinding.SendingMessageErrorDialogLayo
 import com.cyberfox21.tinkoffmessanger.domain.entity.Reaction
 import com.cyberfox21.tinkoffmessanger.presentation.common.MainActivity
 import com.cyberfox21.tinkoffmessanger.presentation.common.ResourceStatus
-import com.cyberfox21.tinkoffmessanger.presentation.commondelegate.MainRecyclerAdapter
-import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.delegate.SpacesItemDecoration
+import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.delegate.ChatItemDecoration
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.delegate.adapter.*
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.delegate.item.ChatDelegateItem
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.elm.*
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.enums.ClickEmojiMode
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.enums.RefreshStatus
+import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.enums.UpdateType
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.reactions.ReactionListAdapter
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import vivid.money.elmslie.android.base.ElmFragment
@@ -53,7 +53,9 @@ class ChatFragment : ElmFragment<ChatEvent, ChatEffect, ChatState>() {
         get() = _dialogLayoutBinding
             ?: throw RuntimeException("BottomSheetDialogLayoutBinding = null")
 
-    private val chatRecyclerAdapter = MainRecyclerAdapter()
+    private val chatRecyclerAdapter = PaginationDelegateAdapter { position ->
+        loadNextMessages(position)
+    }
     private val emojiListAdapter = ReactionListAdapter()
 
     private val onLongMsgClickListener = object : OnLongMessageClickListener {
@@ -93,8 +95,8 @@ class ChatFragment : ElmFragment<ChatEvent, ChatEffect, ChatState>() {
 
     override fun render(state: ChatState) {
         when (state.messageStatus) {
-            ResourceStatus.SUCCESS -> provideMessageSuccess(state.messages)
-            ResourceStatus.LOADING -> provideMessageLoading()
+            ResourceStatus.SUCCESS -> provideMessageSuccess(state.chatItems)
+            ResourceStatus.LOADING -> provideMessageLoading(state.updateType)
             ResourceStatus.EMPTY -> provideMessageEmpty()
             ResourceStatus.ERROR -> provideMessageError()
         }
@@ -125,13 +127,9 @@ class ChatFragment : ElmFragment<ChatEvent, ChatEffect, ChatState>() {
                 getErrorMessage(R.string.sending_message_dialog_error)
             ) { sendMessage() }
 
-            ChatEffect.EmojiAddedSuccess -> updateMessageList()
-
             ChatEffect.EmojiAddedError -> showErrorDialog(
                 getErrorMessage(R.string.add_emoji_dialog_error)
             ) { processAddEmoji() }
-
-            ChatEffect.EmojiDeletedSuccess -> updateMessageList()
 
             ChatEffect.EmojiDeletedError -> showErrorDialog(
                 getErrorMessage(R.string.delete_emoji_dialog_error)
@@ -139,7 +137,7 @@ class ChatFragment : ElmFragment<ChatEvent, ChatEffect, ChatState>() {
 
             ChatEffect.ShowNetworkError -> provideReactionListError()
 
-            ChatEffect.ScrollToTop -> scrollToTop()
+            ChatEffect.ScrollToBottom -> scrollToBottom()
             is ChatEffect.ScrollToPosition -> scrollToPosition(effect.position)
         }
     }
@@ -219,11 +217,9 @@ class ChatFragment : ElmFragment<ChatEvent, ChatEffect, ChatState>() {
         setupStatusBar()
         binding.tvTopicTitle.text = setTopic(fragmentTopicName)
         with(chatRecyclerAdapter) {
+            addDelegate(LoadingDelegateAdapter())
             addDelegate(
-                AlienMessageDelegateAdapter(
-                    onReactionClickListener,
-                    onLongMsgClickListener
-                )
+                AlienMessageDelegateAdapter(onReactionClickListener, onLongMsgClickListener)
             )
             addDelegate(MyMessageDelegateAdapter(onReactionClickListener, onLongMsgClickListener))
             addDelegate(DateDelegateAdapter())
@@ -231,7 +227,7 @@ class ChatFragment : ElmFragment<ChatEvent, ChatEffect, ChatState>() {
         }
         with(binding.chatRecycler) {
             addItemDecoration(
-                SpacesItemDecoration(resources.getDimensionPixelOffset(R.dimen.messageSpaceSize))
+                ChatItemDecoration(resources.getDimensionPixelOffset(R.dimen.messageSpaceSize))
             )
             setHasFixedSize(true)
             adapter = chatRecyclerAdapter
@@ -246,11 +242,21 @@ class ChatFragment : ElmFragment<ChatEvent, ChatEffect, ChatState>() {
         chatRecyclerAdapter.submitList(messages)
     }
 
-    private fun provideMessageLoading() {
-        binding.pbLoading.isVisible = true
+    private fun provideMessageLoading(updateType: UpdateType) {
+        when (updateType) {
+            UpdateType.INITIAL -> {
+                binding.pbLoading.isVisible = true
+                binding.chatRecycler.isVisible = false
+            }
+            UpdateType.RELOAD, UpdateType.PAGINATION, UpdateType.UPDATE -> {
+                binding.pbLoading.isVisible = false
+                binding.chatRecycler.isVisible = true
+            }
+
+        }
         binding.emptyLayout.errorLayout.isVisible = false
         binding.errorLayout.errorRoot.isVisible = false
-        binding.chatRecycler.isVisible = false
+
     }
 
     private fun provideMessageEmpty() {
@@ -372,6 +378,8 @@ class ChatFragment : ElmFragment<ChatEvent, ChatEffect, ChatState>() {
 
     private fun updateMessageList() = store.accept(ChatEvent.Ui.GetMessages(false))
 
+    private fun loadNextMessages(pos: Int) = store.accept(ChatEvent.Ui.LoadNextMessages(pos))
+
     private fun sendMessage() = store.accept(ChatEvent.Ui.SendMessage(getText()))
 
     private fun processAddEmoji() {
@@ -400,7 +408,7 @@ class ChatFragment : ElmFragment<ChatEvent, ChatEffect, ChatState>() {
 
     private fun processScroll() = store.accept(ChatEvent.Ui.OnDataInserted)
 
-    private fun scrollToTop() = binding.chatRecycler.scrollToPosition(START_SCROLL_POSITION)
+    private fun scrollToBottom() = binding.chatRecycler.scrollToPosition(START_SCROLL_POSITION)
 
     private fun scrollToPosition(position: Int) = binding.chatRecycler.scrollToPosition(position)
 

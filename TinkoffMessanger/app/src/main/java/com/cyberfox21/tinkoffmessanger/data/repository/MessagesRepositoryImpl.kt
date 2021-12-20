@@ -31,6 +31,7 @@ class MessagesRepositoryImpl @Inject constructor(
                     .map { it.mapToMessage() }
                     .sortedBy { msg -> msg.time }
                     .takeLast(DB_LOAD_SIZE)
+                    .reversed()
                 )
             }
             .onErrorReturn { Result.failure(it) }
@@ -40,7 +41,7 @@ class MessagesRepositoryImpl @Inject constructor(
     private fun getMessagesFromNetwork(
         channelName: String,
         topicName: String,
-        lastMessageId: Int = UNDEFINED_LAST_MESSAGE_ID
+        lastMessageId: Int
     ): Single<Result<List<Message>>> {
         val narrowList = listOf(
             Narrow(STREAM_KEY, channelName),
@@ -54,6 +55,7 @@ class MessagesRepositoryImpl @Inject constructor(
                     .map { it.mapToMessage() }
                     .sortedBy { msg -> msg.time }
                     .takeLast(SERVER_LOAD_SIZE)
+                    .reversed()
                 )
             }
             .doOnSuccess { result ->
@@ -70,11 +72,12 @@ class MessagesRepositoryImpl @Inject constructor(
         lastMessageId: Int,
         narrowList: List<Narrow>
     ): Single<MessagesResponse> = api.getMessages(
+        anchor = lastMessageId,
         messagesNumberBefore = SERVER_LOAD_SIZE,
         messagesNumberAfter = AFTER_MESSAGES_COUNT,
         narrowFilterArray = Json.encodeToString(narrowList),
-        anchor = lastMessageId
-    )
+
+        )
 
 
     private fun getMessagesWithoutAnchor(narrowList: List<Narrow>): Single<MessagesResponse> =
@@ -83,6 +86,31 @@ class MessagesRepositoryImpl @Inject constructor(
             messagesNumberAfter = AFTER_MESSAGES_COUNT,
             narrowFilterArray = Json.encodeToString(narrowList)
         )
+
+    override fun getMessageFromServer(
+        channelName: String,
+        topicName: String,
+        messageId: Int
+    ): Single<Result<Message>> {
+        val narrowList: List<Narrow> = listOf(
+            Narrow(STREAM_KEY, channelName), Narrow(TOPIC_KEY, topicName)
+        )
+        return api.getMessages(
+            anchor = messageId,
+            messagesNumberBefore = AFTER_MESSAGES_COUNT,
+            messagesNumberAfter = AFTER_MESSAGES_COUNT,
+            narrowFilterArray = Json.encodeToString(narrowList)
+        ).map { response -> Result.success(response.messages.first().mapToMessage()) }
+            .onErrorReturn { error -> Result.failure(error) }
+            .doOnSuccess { result ->
+                if (result.isSuccess) {
+                    val message = result.getOrNull()
+                    if (message != null) messagesDao.addMessageListToDB(
+                        listOf(message.mapToMessageDBModel(topicName))
+                    )
+                }
+            }.subscribeOn(Schedulers.io())
+    }
 
     override fun getMessageList(
         channelName: String,
@@ -96,7 +124,7 @@ class MessagesRepositoryImpl @Inject constructor(
                 getMessagesFromNetwork(channelName, topicName, lastMessageId)
                     .toObservable()
                     .subscribeOn(Schedulers.io())
-            else getMessagesFromNetwork(channelName, topicName)
+            else getMessagesFromNetwork(channelName, topicName, UNDEFINED_LAST_MESSAGE_ID)
                 .toObservable()
                 .subscribeOn(Schedulers.io())
         }
@@ -108,7 +136,11 @@ class MessagesRepositoryImpl @Inject constructor(
                     getMessagesFromDB(topicName).toObservable()
                 ).subscribeOn(Schedulers.io())
             else Observable.concat(
-                getMessagesFromNetwork(channelName, topicName).toObservable(),
+                getMessagesFromNetwork(
+                    channelName,
+                    topicName,
+                    UNDEFINED_LAST_MESSAGE_ID
+                ).toObservable(),
                 getMessagesFromDB(topicName).toObservable()
             ).subscribeOn(Schedulers.io())
         }

@@ -28,6 +28,7 @@ class ActorModule {
     @Provides
     fun provideChatActor(
         getMessageListUseCase: GetMessageListUseCase,
+        getMessageUseCase: GetMessageUseCase,
         addMessageUseCase: AddMessageUseCase,
         getReactionListUseCase: GetReactionListUseCase,
         addReactionUseCase: AddReactionUseCase,
@@ -35,6 +36,7 @@ class ActorModule {
         getMyUserUseCase: GetMyUserUseCase
     ): ChatActor = ChatActor(
         getMessageListUseCase,
+        getMessageUseCase,
         addMessageUseCase,
         getReactionListUseCase,
         addReactionUseCase,
