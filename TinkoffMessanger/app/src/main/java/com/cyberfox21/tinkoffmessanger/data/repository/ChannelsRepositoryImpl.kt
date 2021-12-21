@@ -86,5 +86,4 @@ class ChannelsRepositoryImpl @Inject constructor(
             }
             .subscribeOn(Schedulers.io())
     }
-
 }

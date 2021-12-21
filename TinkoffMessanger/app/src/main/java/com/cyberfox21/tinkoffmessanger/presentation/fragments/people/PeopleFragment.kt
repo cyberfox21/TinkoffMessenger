@@ -32,8 +32,6 @@ class PeopleFragment : ElmFragment<PeopleEvent, PeopleEffect, PeopleState>() {
 
     private val peopleRecyclerAdapter = PeopleRecyclerAdapter()
 
-//  < ---------------------------------------- ELM --------------------------------------------->
-
     @Inject
     internal lateinit var actor: PeopleActor
 
@@ -67,8 +65,6 @@ class PeopleFragment : ElmFragment<PeopleEvent, PeopleEffect, PeopleState>() {
             }
         }
     }
-
-//  < ---------------------------------------- ELM --------------------------------------------->
 
     override fun onAttach(context: Context) {
         (activity as MainActivity).component.injectPeopleFragment(this)
@@ -160,10 +156,7 @@ class PeopleFragment : ElmFragment<PeopleEvent, PeopleEffect, PeopleState>() {
 
     private fun showUserProfile(user: User) {
         (requireActivity() as NavigationHolder).startFragment(
-            ProfileFragment.newInstanceStranger(
-                user
-            ),
-            PEOPLE_FRAGMENT_NAME
+            ProfileFragment.newInstanceStranger(user), PEOPLE_FRAGMENT_NAME
         )
     }
 

@@ -2,7 +2,6 @@ package com.cyberfox21.tinkoffmessanger.presentation.fragments.people.recycler
 
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import com.bumptech.glide.Glide
@@ -30,15 +29,9 @@ class PeopleRecyclerAdapter : ListAdapter<User, UserViewHolder>(UserDIffUtilCall
             Glide.with(binding.root).load(user.avatar).into(ivUserAvatar)
             tvUserName.text = user.name
             tvUserEmail.text = user.email
-//            online.visibility = getStatus(user.status)
             root.setOnClickListener {
                 onPersonClickListener?.onPersonClick(user)
             }
         }
-    }
-
-    private fun getStatus(status: Boolean) = when (status) {
-        true -> View.VISIBLE
-        false -> View.GONE
     }
 }

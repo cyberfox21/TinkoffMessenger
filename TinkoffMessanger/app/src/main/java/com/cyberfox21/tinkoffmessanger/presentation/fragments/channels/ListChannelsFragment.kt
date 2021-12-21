@@ -71,12 +71,6 @@ class ListChannelsFragment : ElmFragment<ChannelsEvent, ChannelsEffect, Channels
                 binding.emptyLayout.errorLayout.isVisible = false
                 binding.errorLayout.errorRoot.isVisible = true
             }
-            ChannelsEffect.EmptyTopics -> {
-                //TODO
-            }
-            is ChannelsEffect.TopicsLoadError -> {
-                //TODO
-            }
             is ChannelsEffect.RefreshTopics -> {
                 mainAdapter.submitList(effect.items)
             }

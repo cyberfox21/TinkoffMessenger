@@ -13,6 +13,10 @@ class ChatItemDecoration(private val space: Int) : RecyclerView.ItemDecoration()
     ) {
         outRect.top = space
 
-        if (parent.getChildAdapterPosition(view) == 0) outRect.bottom = space
+        if (parent.getChildAdapterPosition(view) == START_POSITION) outRect.bottom = space
+    }
+
+    companion object {
+        const val START_POSITION = 0
     }
 }

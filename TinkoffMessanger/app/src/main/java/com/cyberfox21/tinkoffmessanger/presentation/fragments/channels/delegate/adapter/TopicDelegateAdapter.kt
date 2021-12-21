@@ -23,10 +23,7 @@ class TopicDelegateAdapter(private val onTopicClick: OnTopicDelegateClickListene
             ViewGroup.LayoutParams.WRAP_CONTENT
         )
         return TopicViewHolder(
-            binding.apply {
-                root.layoutParams = lp
-            },
-            onTopicClick
+            binding.apply { root.layoutParams = lp }, onTopicClick
         )
     }
 

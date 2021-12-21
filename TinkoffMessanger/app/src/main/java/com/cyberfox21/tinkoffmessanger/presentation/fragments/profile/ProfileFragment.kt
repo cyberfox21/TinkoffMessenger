@@ -2,7 +2,6 @@ package com.cyberfox21.tinkoffmessanger.presentation.fragments.profile
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -28,8 +27,6 @@ class ProfileFragment() : ElmFragment<ProfileEvent, ProfileEffect, ProfileState>
     private var _binding: FragmentProfileBinding? = null
     private val binding: FragmentProfileBinding
         get() = _binding ?: throw RuntimeException("FragmentProfileBinding = null")
-
-//  < ---------------------------------------- ELM --------------------------------------------->
 
     @Inject
     internal lateinit var actor: ProfileActor
@@ -75,8 +72,6 @@ class ProfileFragment() : ElmFragment<ProfileEvent, ProfileEffect, ProfileState>
             }
         }
     }
-
-//  < ---------------------------------------- ELM --------------------------------------------->
 
     override fun onAttach(context: Context) {
         (activity as MainActivity).component.injectProfileFragment(this)

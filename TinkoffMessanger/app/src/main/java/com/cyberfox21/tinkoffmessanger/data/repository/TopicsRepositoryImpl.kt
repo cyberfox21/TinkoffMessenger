@@ -22,7 +22,7 @@ class TopicsRepositoryImpl @Inject constructor(
             .subscribeOn(Schedulers.io())
     }
 
-    private fun getTopicsFromNetwork(channelId: Int) =
+    private fun getTopicsFromNetwork(channelId: Int): Single<List<Topic>> =
         api.getChannelTopics(channelId)
             .map { response -> response.topics.map { it.mapToTopic() } }
             .doOnSuccess { topics ->

@@ -1,6 +1,5 @@
 package com.cyberfox21.tinkoffmessanger.presentation.fragments.people.elm
 
-import android.util.Log
 import vivid.money.elmslie.core.store.dsl_reducer.DslReducer
 
 class PeopleReducer : DslReducer<PeopleEvent, PeopleState, PeopleEffect, PeopleCommand>() {
@@ -8,7 +7,6 @@ class PeopleReducer : DslReducer<PeopleEvent, PeopleState, PeopleEffect, PeopleC
         return when (event) {
             is PeopleEvent.Internal.UserListLoaded -> {
                 if (event.users.isNotEmpty()) {
-                    Log.d("UsersLoaded not empty", "${event.users.size}")
                     state {
                         copy(
                             users = event.users,

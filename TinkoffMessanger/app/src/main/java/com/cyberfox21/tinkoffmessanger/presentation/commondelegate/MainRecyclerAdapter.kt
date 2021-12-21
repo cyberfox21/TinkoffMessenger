@@ -10,7 +10,7 @@ open class MainRecyclerAdapter :
     private val delegates = mutableListOf<AdapterDelegate>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return if (viewType >= 0 && viewType < delegates.size) {
+        return if (viewType >= EMPTY_SIZE && viewType < delegates.size) {
             delegates[viewType].onCreateViewHolder(parent)
         } else {
             EmptyViewHolder(parent.context)
@@ -34,5 +34,9 @@ open class MainRecyclerAdapter :
 
     fun addDelegate(delegate: AdapterDelegate) {
         delegates.add(delegate)
+    }
+
+    companion object {
+        const val EMPTY_SIZE = 0
     }
 }

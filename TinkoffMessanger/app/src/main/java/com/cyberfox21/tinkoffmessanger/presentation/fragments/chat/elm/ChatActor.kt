@@ -110,8 +110,7 @@ class ChatActor(
             .map { result ->
                 result.fold({
                     ChatEvent.Internal.MessagesLoadedSuccess(
-                        command.messages.replaceMessage(it),
-                        UpdateType.UPDATE
+                        command.messages.replaceMessage(it), UpdateType.UPDATE
                     )
                 }, { ChatEvent.Internal.ReactionAddingError }
                 )

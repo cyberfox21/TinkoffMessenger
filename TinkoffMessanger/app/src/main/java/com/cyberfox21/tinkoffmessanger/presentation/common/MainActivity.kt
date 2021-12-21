@@ -77,12 +77,11 @@ class MainActivity : AppCompatActivity(), NavigationHolder {
 
     private fun navigateFragment(fragment: Fragment, tag: String) {
         if (supportFragmentManager.findFragmentByTag(tag) == null) {
-            if (supportFragmentManager.backStackEntryCount > 0)
+            if (supportFragmentManager.backStackEntryCount > EMPTY_BACKSTACK_COUNT)
                 supportFragmentManager.popBackStack()
 
             supportFragmentManager.beginTransaction()
                 .replace(R.id.main_fragment_container, fragment, tag)
-
                 .commit()
         }
     }
@@ -93,6 +92,10 @@ class MainActivity : AppCompatActivity(), NavigationHolder {
         } else {
             finish()
         }
+    }
+
+    companion object {
+        const val EMPTY_BACKSTACK_COUNT = 0
     }
 
 }

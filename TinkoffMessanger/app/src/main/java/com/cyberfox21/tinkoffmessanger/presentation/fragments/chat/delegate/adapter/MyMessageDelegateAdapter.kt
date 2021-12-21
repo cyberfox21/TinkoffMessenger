@@ -8,6 +8,8 @@ import com.cyberfox21.tinkoffmessanger.R
 import com.cyberfox21.tinkoffmessanger.data.mapToReaction
 import com.cyberfox21.tinkoffmessanger.presentation.commondelegate.AdapterDelegate
 import com.cyberfox21.tinkoffmessanger.presentation.commondelegate.DelegateItem
+import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.delegate.clicklisteners.OnLongMessageClickListener
+import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.delegate.clicklisteners.OnReactionClickListener
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.delegate.item.MyMessageDelegateItem
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.delegate.viewholder.MyMessageViewHolder
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.enums.BottomDialogMode

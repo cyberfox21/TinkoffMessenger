@@ -29,7 +29,8 @@ class ReactionsRepositoryImpl @Inject constructor(
         .map {
             val jObject = it.reactionsObject
             EmojiFormatter.jsonObjectToReactionsList(jObject)
-        }.doOnSuccess { reactionList ->
+        }
+        .doOnSuccess { reactionList ->
             reactionListDao.addReactionListToDB(reactionList.map {
                 it.mapToReactionListDBModel()
             })

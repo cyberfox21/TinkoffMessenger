@@ -22,6 +22,8 @@ import com.cyberfox21.tinkoffmessanger.presentation.common.ResourceStatus
 import com.cyberfox21.tinkoffmessanger.presentation.common.copyToClipboard
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.delegate.ChatItemDecoration
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.delegate.adapter.*
+import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.delegate.clicklisteners.OnLongMessageClickListener
+import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.delegate.clicklisteners.OnReactionClickListener
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.delegate.item.ChatDelegateItem
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.delegate.item.MessageDelegateItem
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.elm.*

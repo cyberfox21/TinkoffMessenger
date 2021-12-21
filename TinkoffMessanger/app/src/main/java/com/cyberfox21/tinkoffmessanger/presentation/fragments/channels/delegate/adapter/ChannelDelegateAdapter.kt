@@ -23,10 +23,7 @@ class ChannelDelegateAdapter(private val onChannelClick: OnChannelDelegateClickL
             ViewGroup.LayoutParams.WRAP_CONTENT
         )
         return ChannelViewHolder(
-            binding.apply {
-                root.layoutParams = lp
-            },
-            onChannelClick
+            binding.apply { root.layoutParams = lp }, onChannelClick
         )
     }
 

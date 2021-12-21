@@ -129,10 +129,10 @@ class ChannelsFragment : Fragment() {
         }
     }
 
-    fun showMatchingChat(chnlName: String, topicName: String) {
+    fun showMatchingChat(channelName: String, topicName: String) {
         (requireActivity() as NavigationHolder).startFragment(
             ChatFragment.newInstance(
-                chnlName,
+                channelName,
                 topicName
             ),
             CHANNELS_FRAGMENT_NAME

@@ -8,8 +8,5 @@ sealed class ChannelsEffect {
 
     object Loading : ChannelsEffect()
 
-    object EmptyTopics : ChannelsEffect()
-    data class TopicsLoadError(val error: Throwable) : ChannelsEffect()
-
     data class RefreshTopics(val items: List<DelegateItem>) : ChannelsEffect()
 }
