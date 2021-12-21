@@ -13,6 +13,18 @@ class UseCaseModule {
         AddMessageUseCase(messagesRepositoryImpl)
 
     @Provides
+    fun provideEditMessageUseCase(messagesRepositoryImpl: MessagesRepository): EditMessageUseCase =
+        EditMessageUseCase(messagesRepositoryImpl)
+
+    @Provides
+    fun provideChangeTopicUseCase(messagesRepositoryImpl: MessagesRepository): ChangeTopicUseCase =
+        ChangeTopicUseCase(messagesRepositoryImpl)
+
+    @Provides
+    fun provideDeleteMessageUseCase(messagesRepositoryImpl: MessagesRepository): DeleteMessageUseCase =
+        DeleteMessageUseCase(messagesRepositoryImpl)
+
+    @Provides
     fun provideAddReactionUseCase(reactionsRepositoryImpl: ReactionsRepository): AddReactionUseCase =
         AddReactionUseCase(reactionsRepositoryImpl)
 

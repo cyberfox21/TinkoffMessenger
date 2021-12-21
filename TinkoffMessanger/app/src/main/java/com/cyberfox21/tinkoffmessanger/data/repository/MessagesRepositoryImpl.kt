@@ -75,10 +75,8 @@ class MessagesRepositoryImpl @Inject constructor(
         anchor = lastMessageId,
         messagesNumberBefore = SERVER_LOAD_SIZE,
         messagesNumberAfter = AFTER_MESSAGES_COUNT,
-        narrowFilterArray = Json.encodeToString(narrowList),
-
-        )
-
+        narrowFilterArray = Json.encodeToString(narrowList)
+    )
 
     private fun getMessagesWithoutAnchor(narrowList: List<Narrow>): Single<MessagesResponse> =
         api.getMessages(
@@ -146,14 +144,22 @@ class MessagesRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun addMessage(channelName: String, topicName: String, msg: String)
-            : Completable {
-        return api.sendMessageToChannel(
+    override fun addMessage(channelName: String, topicName: String, msg: String): Completable {
+        return api.sendMessage(
             channel = channelName,
             topic = topicName,
             content = msg
         ).subscribeOn(Schedulers.io())
     }
+
+    override fun deleteMessage(msgId: Int): Completable =
+        api.deleteMessage(msgId).subscribeOn(Schedulers.io())
+
+    override fun editMessage(msgId: Int, text: String): Completable =
+        api.editMessage(msgId, text).subscribeOn(Schedulers.io())
+
+    override fun changeMessageTopic(msgId: Int, topic: String): Completable =
+        api.changeMessageTopic(msgId, topic).subscribeOn(Schedulers.io())
 
     private companion object {
         private const val UNDEFINED_LAST_MESSAGE_ID = -1

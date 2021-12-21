@@ -37,7 +37,14 @@ sealed class ChatCommand {
     ) : ChatCommand()
 
     object LoadReactionList : ChatCommand()
+
     data class SendMessage(val msg: String) : ChatCommand()
+
+    data class EditMessage(val msg: String, val msgId: Int) : ChatCommand()
+
+    data class ChangeMessageTopic(val topic: String, val msgId: Int) : ChatCommand()
+
+    data class DeleteMessage(val msgId: Int) : ChatCommand()
 
     data class AddReaction(val msgId: Int, val reaction: Reaction) : ChatCommand()
     data class DeleteReaction(val msgId: Int, val reaction: Reaction) : ChatCommand()

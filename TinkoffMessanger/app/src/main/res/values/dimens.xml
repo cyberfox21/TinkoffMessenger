@@ -44,4 +44,6 @@
     <dimen name="itemDecorationSize">2dp</dimen>
     <dimen name="messageSpaceSize">8dp</dimen>
     <dimen name="message_radius">18dp</dimen>
+    <dimen name="width84dp">84dp</dimen>
+    <dimen name="height6dp">6dp</dimen>
 </resources>

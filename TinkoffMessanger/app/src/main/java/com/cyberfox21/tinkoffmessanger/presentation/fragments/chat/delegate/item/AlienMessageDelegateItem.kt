@@ -4,13 +4,19 @@ import android.text.SpannableString
 
 class AlienMessageDelegateItem(
     override val id: Int,
-    val text: SpannableString,
-    val time: String,
-    val senderId: Int,
+    override val text: SpannableString,
+    override val time: String,
+    override val senderId: Int,
     val senderName: String,
     val senderAvatarUrl: String,
-    val reactions: List<MessageReactionListItem>
-) : ChatDelegateItem(id = id) {
+    override val reactions: List<MessageReactionListItem>
+) : MessageDelegateItem(
+    id = id,
+    text = text,
+    time = time,
+    reactions = reactions,
+    senderId = senderId
+) {
 
     override fun id(): Int = id
 

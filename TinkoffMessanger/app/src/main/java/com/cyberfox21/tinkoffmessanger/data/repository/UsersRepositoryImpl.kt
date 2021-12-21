@@ -92,11 +92,13 @@ class UsersRepositoryImpl @Inject constructor(
             .map { response ->
                 Result.success(response.members.map { it.mapToUser() }
                     .sortedBy { user -> user.name })
-            }.doOnSuccess { result ->
+            }
+            .doOnSuccess { result ->
                 result.getOrNull()?.let { list ->
                     usersDao.addUsersListToDB(list.map { it.mapToUserDBModel() })
                 }
-            }.onErrorReturn { Result.failure(it) }
+            }
+            .onErrorReturn { Result.failure(it) }
             .subscribeOn(Schedulers.io())
     }
 

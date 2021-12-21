@@ -23,6 +23,12 @@ interface MessagesRepository {
 
     fun addMessage(channelName: String, topicName: String, msg: String): Completable
 
+    fun deleteMessage(msgId: Int): Completable
+
+    fun editMessage(msgId: Int, text: String): Completable
+
+    fun changeMessageTopic(msgId: Int, topic: String): Completable
+
     companion object {
         private const val UNDEFINED_LAST_MESSAGE_ID = -1
     }

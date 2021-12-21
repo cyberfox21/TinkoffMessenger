@@ -4,12 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="@dimen/padding10dp">
+    android:paddingStart="@dimen/padding10dp"
+    android:paddingEnd="@dimen/padding10dp">
 
     <TextView
         android:id="@+id/tv_channel_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/margin10dp"
         android:textColor="#FAFAFA"
         android:textSize="@dimen/textSize20sp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -22,10 +24,23 @@
         android:layout_width="@dimen/channel_arrow_dimension"
         android:layout_height="@dimen/channel_arrow_dimension"
         android:layout_margin="@dimen/margin10dp"
+        android:layout_marginBottom="@dimen/margin10dp"
         android:contentDescription="@string/expand_channel_to_see_topics"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_unselected_channel" />
+
+    <include
+        layout="@layout/divider"
+        android:layout_width="wrap_content"
+        android:layout_height="1dp"
+        android:layout_marginTop="@dimen/margin20dp"
+        android:paddingLeft="@dimen/padding20dp"
+        android:paddingRight="@dimen/padding20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_channel_title" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

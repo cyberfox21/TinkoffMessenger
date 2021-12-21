@@ -10,6 +10,7 @@ import com.cyberfox21.tinkoffmessanger.presentation.commondelegate.AdapterDelega
 import com.cyberfox21.tinkoffmessanger.presentation.commondelegate.DelegateItem
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.delegate.item.MyMessageDelegateItem
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.delegate.viewholder.MyMessageViewHolder
+import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.enums.BottomDialogMode
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.enums.ClickEmojiMode
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.views.CustomEmojiView
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.views.MyMessageViewGroup
@@ -48,16 +49,25 @@ class MyMessageDelegateAdapter(
             emojiLayout.apply { removeAllViews() }
 
             if (message.reactions.isNotEmpty()) {
-                val btnAdd = LayoutInflater.from(myMessageViewGroup.context)
-                    .inflate(R.layout.btn_add_view, myMessageViewGroup, false)
-                btnAdd.setOnClickListener { onLongMessageClickListener.onLongMessageClick(message.id) }
+                val btnAdd = (LayoutInflater.from(myMessageViewGroup.context)
+                    .inflate(R.layout.btn_add_view, myMessageViewGroup, false))
+                    .apply {
+                        setOnClickListener {
+                            onLongMessageClickListener.onLongMessageClick(
+                                message,
+                                BottomDialogMode.REACTION_LIST
+                            )
+                        }
+                    }
                 emojiLayout.addView(btnAdd)
             }
 
             message.reactions.forEach { listEmoji ->
+
                 val emojiView = (LayoutInflater.from(myMessageViewGroup.context)
                     .inflate(R.layout.custom_emoji_view, myMessageViewGroup, false)
                         as CustomEmojiView)
+
                 emojiView.apply {
                     emoji = listEmoji.reaction
                     count = listEmoji.count
@@ -74,11 +84,12 @@ class MyMessageDelegateAdapter(
                         }
                     }
                 }
+
                 emojiLayout.addView(emojiView, emojiLayout.size - 1)
             }
 
             myMessageViewGroup.setOnLongClickListener {
-                onLongMessageClickListener.onLongMessageClick(message.id)
+                onLongMessageClickListener.onLongMessageClick(message, BottomDialogMode.OPTIONS)
                 true
             }
         }

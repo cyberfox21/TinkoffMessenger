@@ -1,5 +1,8 @@
 package com.cyberfox21.tinkoffmessanger.presentation.common
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.text.SpannableString
 import androidx.core.text.HtmlCompat
 import com.cyberfox21.tinkoffmessanger.domain.entity.Channel
@@ -79,6 +82,7 @@ fun List<Message>.toDelegateChatItemsList(
             true -> {
                 MyMessageDelegateItem(
                     message.id,
+                    myId = userId,
                     message.message.mapMessageContent(reactionList),
                     DateFormatter.getTimeForMessage(message.time),
                     listReactions
@@ -115,3 +119,9 @@ fun Topic.mapToTopicDelegateItem() = TopicDelegateItem(
     name = title,
     msgCount = messagesCount
 )
+
+fun Context.copyToClipboard(text: CharSequence) {
+    val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+    val clip = ClipData.newPlainText("label", text)
+    clipboard.setPrimaryClip(clip)
+}

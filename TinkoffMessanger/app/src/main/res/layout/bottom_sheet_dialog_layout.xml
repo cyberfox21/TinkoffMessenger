@@ -7,18 +7,97 @@
 
     <View
         android:id="@+id/view"
-        android:layout_width="64dp"
-        android:layout_height="8dp"
+        android:layout_width="@dimen/width84dp"
+        android:layout_height="@dimen/height6dp"
         android:layout_marginTop="@dimen/margin20dp"
         android:background="@drawable/view_bottom_sheet_layout_bg"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <LinearLayout
+        android:id="@+id/options_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin20dp"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/view">
+
+        <TextView
+            android:id="@+id/add_reaction"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/add_reaction"
+            android:theme="@style/BottomSheetItemsStyle" />
+
+        <include layout="@layout/divider" />
+
+        <TextView
+            android:id="@+id/delete_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/delete_message"
+            android:theme="@style/BottomSheetItemsStyle" />
+
+        <include layout="@layout/divider" />
+
+        <TextView
+            android:id="@+id/edit_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/edit_message"
+            android:theme="@style/BottomSheetItemsStyle" />
+
+        <include layout="@layout/divider" />
+
+        <TextView
+            android:id="@+id/change_topic"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/change_topic"
+            android:theme="@style/BottomSheetItemsStyle" />
+
+        <include layout="@layout/divider" />
+
+        <TextView
+            android:id="@+id/copy_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/copy_message"
+            android:theme="@style/BottomSheetItemsStyle" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/input_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/padding20dp"
+        android:orientation="vertical"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/view">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/enter_new_topic_name"
+            android:theme="@style/BottomSheetItemsStyle" />
+
+        <include
+            android:id="@+id/field"
+            layout="@layout/message_field" />
+
+    </LinearLayout>
+
     <ProgressBar
         android:id="@+id/pb_loading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -29,6 +108,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin20dp"
+        android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/view" />

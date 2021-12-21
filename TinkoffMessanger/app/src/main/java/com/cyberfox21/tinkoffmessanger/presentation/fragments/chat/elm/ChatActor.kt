@@ -13,6 +13,9 @@ class ChatActor(
     private val getMessageListUseCase: GetMessageListUseCase,
     private val getMessageUseCase: GetMessageUseCase,
     private val addMessageUseCase: AddMessageUseCase,
+    private val editMessageUseCase: EditMessageUseCase,
+    private val changeTopicUseCase: ChangeTopicUseCase,
+    private val deleteMessageUseCase: DeleteMessageUseCase,
     private val getReactionListUseCase: GetReactionListUseCase,
     private val addReactionUseCase: AddReactionUseCase,
     private val deleteReactionUseCase: DeleteReactionUseCase,
@@ -122,26 +125,54 @@ class ChatActor(
                     { error -> ChatEvent.Internal.ReactionsLoadError(error) }
                 )
         }
+
         is ChatCommand.SendMessage -> {
             addMessageUseCase(channelName, topicName, command.msg).subscribeOn(Schedulers.io())
                 .mapEvents(ChatEvent.Internal.MessageSendingSuccess) { error ->
                     ChatEvent.Internal.MessageSendingError(error)
                 }
         }
+
+        is ChatCommand.EditMessage -> {
+            editMessageUseCase(command.msgId, command.msg)
+                .subscribeOn(Schedulers.io())
+                .mapEvents(
+                    ChatEvent.Internal.MessageEditingSuccess(command.msgId)
+                )
+                { ChatEvent.Internal.MessageEditingError(command.msgId, command.msg) }
+        }
+
+        is ChatCommand.ChangeMessageTopic -> {
+            changeTopicUseCase(command.msgId, command.topic)
+                .subscribeOn(Schedulers.io())
+                .mapEvents(
+                    ChatEvent.Internal.ChangeTopicSuccess(command.msgId),
+                    ChatEvent.Internal.ChangeTopicError(command.msgId, command.topic)
+                )
+        }
+
+        is ChatCommand.DeleteMessage -> deleteMessageUseCase(command.msgId)
+            .subscribeOn(Schedulers.io())
+            .mapEvents(
+                ChatEvent.Internal.MessageDeletingSuccess,
+                ChatEvent.Internal.MessageDeletingError(command.msgId)
+            )
+
         is ChatCommand.AddReaction -> addReactionUseCase(command.msgId, command.reaction.name)
             .subscribeOn(Schedulers.io())
             .mapEvents(
                 ChatEvent.Internal.ReactionAddingSuccess(command.msgId),
                 ChatEvent.Internal.ReactionAddingError
             )
+
         is ChatCommand.DeleteReaction -> {
-            deleteReactionUseCase(command.msgId, command.reaction).subscribeOn(Schedulers.io())
+            deleteReactionUseCase(command.msgId, command.reaction)
+                .subscribeOn(Schedulers.io())
                 .mapEvents(
                     ChatEvent.Internal.ReactionDeletingSuccess(command.msgId),
                     ChatEvent.Internal.ReactionDeletingError
                 )
         }
-
     }
 }
 

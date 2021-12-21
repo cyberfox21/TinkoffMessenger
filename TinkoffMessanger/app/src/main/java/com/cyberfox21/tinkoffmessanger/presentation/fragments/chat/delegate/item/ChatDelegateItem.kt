@@ -6,9 +6,11 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 open class ChatDelegateItem(
-    open val id: Int,
+    open val id: Int
 ) : DelegateItem, Parcelable {
-    override fun content() = Any()
 
-    override fun id() = Any()
+    override fun id(): Any = id
+
+    override fun content(): Any = "chatDelegateItem"
+
 }

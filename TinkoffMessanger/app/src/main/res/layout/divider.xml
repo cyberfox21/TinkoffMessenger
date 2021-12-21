@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<View xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/divider"
+    android:layout_width="match_parent"
+    android:layout_height="1dp"
+    android:layout_marginLeft="@dimen/margin20dp"
+    android:layout_marginRight="@dimen/margin20dp"
+    android:background="@color/selected_emoji"
+    android:backgroundTint="@color/selected_emoji" />

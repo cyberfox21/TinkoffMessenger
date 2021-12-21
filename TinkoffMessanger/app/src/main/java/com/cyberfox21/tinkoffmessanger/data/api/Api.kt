@@ -49,11 +49,25 @@ interface Api {
 
     @FormUrlEncoded
     @POST("messages")
-    fun sendMessageToChannel(
+    fun sendMessage(
         @Field("to") channel: String,
         @Field("topic") topic: String,
         @Field("content") content: String,
         @Field("type") type: String = "stream",
+    ): Completable
+
+    @FormUrlEncoded
+    @PATCH("messages/{message_id}")
+    fun editMessage(
+        @Path("message_id") message_id: Int,
+        @Field("content") content: String
+    ): Completable
+
+    @FormUrlEncoded
+    @PATCH("messages/{message_id}")
+    fun changeMessageTopic(
+        @Path("message_id") message_id: Int,
+        @Field("topic") topic: String
     ): Completable
 
     @FormUrlEncoded
@@ -63,6 +77,8 @@ interface Api {
         @Field("emoji_name") emojiName: String,
     ): Completable
 
+    @DELETE("messages/{msg_id}")
+    fun deleteMessage(@Path("msg_id") msgId: Int): Completable
 
     @DELETE("messages/{message_id}/reactions")
     fun deleteReaction(

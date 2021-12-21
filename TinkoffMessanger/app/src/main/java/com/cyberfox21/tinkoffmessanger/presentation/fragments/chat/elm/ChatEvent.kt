@@ -10,9 +10,13 @@ sealed class ChatEvent {
     sealed class Ui : ChatEvent() {
         object GetCurrentUserId : Ui()
 
-        data class GetMessages(val needLoading: Boolean) : Ui()
+        data class GetMessages(val updateType: UpdateType) : Ui()
         object GetReactionList : Ui()
+
         data class SendMessage(val msg: String) : Ui()
+        data class EditMessage(val text: String) : Ui()
+        data class ChangeMessageTopic(val msgId: Int, val topic: String) : Ui()
+        data class DeleteMessage(val msgId: Int) : Ui()
 
         data class LoadNextMessages(val position: Int) : Ui()
 
@@ -46,11 +50,19 @@ sealed class ChatEvent {
         object MessageSendingSuccess : Internal()
         data class MessageSendingError(val error: Throwable) : Internal()
 
+        object MessageDeletingSuccess : Internal()
+        data class MessageDeletingError(val msgId: Int) : Internal()
+
+        data class MessageEditingSuccess(val msgId: Int) : Internal()
+        data class MessageEditingError(val msgId: Int, val text: String) : Internal()
+
+        data class ChangeTopicSuccess(val msgId: Int) : Internal()
+        data class ChangeTopicError(val msgId: Int, val topic: String) : Internal()
+
         data class ReactionAddingSuccess(val msgId: Int) : Internal()
         object ReactionAddingError : Internal()
 
         data class ReactionDeletingSuccess(val msgId: Int) : Internal()
         object ReactionDeletingError : Internal()
-
     }
 }
