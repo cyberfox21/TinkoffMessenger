@@ -524,6 +524,8 @@ class ChatFragment : ElmFragment<ChatEvent, ChatEffect, ChatState>() {
 
     companion object {
 
+        const val CHAT_FRAGMENT_NAME = "chat_fragment"
+
         const val CHANNEL_EXTRA = "channel_extra"
         const val TOPIC_EXTRA = "topic_extra"
 

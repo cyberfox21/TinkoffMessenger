@@ -46,7 +46,6 @@ class ChannelsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupStatusBar()
-        setupNavigation()
         setupViewPager()
         setupTabLayout()
         setupSearchPanel()
@@ -55,15 +54,6 @@ class ChannelsFragment : Fragment() {
     private fun setupStatusBar() {
         activity?.window?.statusBarColor =
             ContextCompat.getColor(requireContext(), R.color.bottom_navigation_background)
-    }
-
-    private fun setupNavigation() {
-        (activity as NavigationHolder).showNavigation()
-    }
-
-    override fun onStart() {
-        super.onStart()
-        setupNavigation()
     }
 
     override fun onDestroyView() {
@@ -131,11 +121,9 @@ class ChannelsFragment : Fragment() {
 
     fun showMatchingChat(channelName: String, topicName: String) {
         (requireActivity() as NavigationHolder).startFragment(
-            ChatFragment.newInstance(
-                channelName,
-                topicName
-            ),
-            CHANNELS_FRAGMENT_NAME
+            ChatFragment.newInstance(channelName, topicName),
+            CHANNELS_FRAGMENT_NAME,
+            ChatFragment.CHAT_FRAGMENT_NAME
         )
     }
 

@@ -20,43 +20,46 @@ class MainActivity : AppCompatActivity(), NavigationHolder {
 
     private lateinit var binding: ActivityMainBinding
 
+    private lateinit var fragments: Map<MainFragments, Fragment>
+    private lateinit var activeFragment: Fragment
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        initFragments()
         setBottomNavigationListeners()
     }
 
-    private fun setBottomNavigationListeners() {
-        binding.bottomNavigationView.setOnItemSelectedListener {
-            onNavigationItemSelected(it)
-            true
+    private fun initFragments() {
+        fragments = mapOf(
+            MainFragments.CHANNELS to ChannelsFragment.newInstance(),
+            MainFragments.PEOPLE to PeopleFragment.newInstance(),
+            MainFragments.PROFILE to ProfileFragment.newInstanceYour()
+        )
+        fragments.entries.reversed().forEach { pair ->
+            supportFragmentManager.beginTransaction()
+                .addToBackStack(pair.key.tag)
+                .commit()
         }
+        activeFragment = fragments.getValue(MainFragments.CHANNELS)
     }
 
-    private fun onNavigationItemSelected(item: MenuItem) {
-        when (item.itemId) {
-            R.id.channels -> {
-                ChannelsFragment.newInstance()
-                navigateFragment(
-                    ChannelsFragment.newInstance(),
-                    ChannelsFragment.CHANNELS_FRAGMENT_NAME
-                )
-            }
-            R.id.people -> {
-                navigateFragment(
-                    PeopleFragment.newInstance(),
-                    PeopleFragment.PEOPLE_FRAGMENT_NAME
-                )
-            }
-            R.id.profile -> {
-                navigateFragment(
-                    ProfileFragment.newInstanceYour(),
-                    ProfileFragment.PROFILE_FRAGMENT_NAME
-                )
-            }
+    private fun setBottomNavigationListeners() {
+        binding.bottomNavigationView.setOnItemSelectedListener { onNavigationItemSelected(it) }
+    }
+
+    private fun onNavigationItemSelected(item: MenuItem): Boolean {
+        val key = when (item.itemId) {
+            R.id.channels -> MainFragments.CHANNELS
+            R.id.people -> MainFragments.PEOPLE
+            R.id.profile -> MainFragments.PROFILE
             else -> throw RuntimeException("Unknown menu item $item")
         }
+        val fragment = fragments.getValue(key)
+        navigateFragment(fragment, key.tag)
+        activeFragment = fragment
+        return true
     }
 
     override fun showNavigation() {
@@ -67,35 +70,46 @@ class MainActivity : AppCompatActivity(), NavigationHolder {
         binding.bottomNavigationView.isVisible = false
     }
 
-    override fun startFragment(fragment: Fragment, tag: String) {
+
+    override fun startFragment(fragment: Fragment, oldTag: String, newFragmentTag: String) {
         supportFragmentManager.beginTransaction()
-            .replace(R.id.main_fragment_container, fragment, tag)
-            .addToBackStack(tag)
+            .addToBackStack(oldTag)
+            .add(R.id.main_fragment_container, fragment, newFragmentTag)
             .commit()
+        activeFragment = fragment
         hideNavigation()
     }
 
     private fun navigateFragment(fragment: Fragment, tag: String) {
         if (supportFragmentManager.findFragmentByTag(tag) == null) {
-            if (supportFragmentManager.backStackEntryCount > EMPTY_BACKSTACK_COUNT)
-                supportFragmentManager.popBackStack()
-
             supportFragmentManager.beginTransaction()
-                .replace(R.id.main_fragment_container, fragment, tag)
+                .hide(activeFragment)
+                .add(R.id.main_fragment_container, fragment, tag)
+                .commit()
+        } else {
+            supportFragmentManager.beginTransaction()
+                .hide(activeFragment)
+                .show(fragment)
                 .commit()
         }
     }
 
     override fun onBackPressed() {
-        if (supportFragmentManager.backStackEntryCount >= 1) {
+        if (fragments.containsValue(activeFragment)) finish()
+        else if (supportFragmentManager.backStackEntryCount >= 1) {
+            val index = supportFragmentManager.backStackEntryCount - 1
+            val backStackEntry = supportFragmentManager.getBackStackEntryAt(index)
+            val name = backStackEntry.name ?: EMPTY_FRAGMENT_TAG
+            val key = MainFragments.values().filter { it.tag == name }[0]
             super.onBackPressed()
-        } else {
-            finish()
+            if (fragments.containsKey(key)) {
+                showNavigation()
+                fragments[key]?.let { activeFragment = it }
+            }
         }
     }
 
     companion object {
-        const val EMPTY_BACKSTACK_COUNT = 0
+        const val EMPTY_FRAGMENT_TAG = ""
     }
-
 }

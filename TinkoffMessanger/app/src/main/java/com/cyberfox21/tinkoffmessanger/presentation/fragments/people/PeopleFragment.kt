@@ -83,7 +83,6 @@ class PeopleFragment : ElmFragment<PeopleEvent, PeopleEffect, PeopleState>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupStatusBar()
-        setupNavigation()
         setupSearchPanel()
         setupRecyclerView()
         addListeners()
@@ -97,10 +96,6 @@ class PeopleFragment : ElmFragment<PeopleEvent, PeopleEffect, PeopleState>() {
     private fun setupStatusBar() {
         activity?.window?.statusBarColor =
             ContextCompat.getColor(requireContext(), R.color.bottom_navigation_background)
-    }
-
-    private fun setupNavigation() {
-        (activity as NavigationHolder).showNavigation()
     }
 
     private fun setupSearchPanel() {
@@ -156,7 +151,9 @@ class PeopleFragment : ElmFragment<PeopleEvent, PeopleEffect, PeopleState>() {
 
     private fun showUserProfile(user: User) {
         (requireActivity() as NavigationHolder).startFragment(
-            ProfileFragment.newInstanceStranger(user), PEOPLE_FRAGMENT_NAME
+            ProfileFragment.newInstanceStranger(user),
+            PEOPLE_FRAGMENT_NAME,
+            ProfileFragment.PROFILE_FRAGMENT_NAME
         )
     }
 
