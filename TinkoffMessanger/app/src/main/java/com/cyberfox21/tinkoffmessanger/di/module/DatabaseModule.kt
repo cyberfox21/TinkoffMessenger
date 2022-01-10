@@ -4,43 +4,43 @@ import android.content.Context
 import androidx.room.Room
 import com.cyberfox21.tinkoffmessanger.data.database.AppDatabase
 import com.cyberfox21.tinkoffmessanger.data.database.dao.*
-import com.cyberfox21.tinkoffmessanger.di.ApplicationScope
 import dagger.Module
 import dagger.Provides
+import javax.inject.Singleton
 
 @Module
 class DatabaseModule {
 
     @Provides
-    @ApplicationScope
+    @Singleton
     fun provideDatabase(context: Context): AppDatabase =
         Room.databaseBuilder(context, AppDatabase::class.java, "database").build()
 
     @Provides
-    @ApplicationScope
+    @Singleton
     fun provideMessagesDao(appDatabase: AppDatabase): MessagesDao = appDatabase.messagesDao()
 
     @Provides
-    @ApplicationScope
+    @Singleton
     fun provideAllChannelsDao(appDatabase: AppDatabase): AllChannelsDao =
         appDatabase.allChannelsDao()
 
     @Provides
-    @ApplicationScope
+    @Singleton
     fun provideSubscribedChannelsDao(appDatabase: AppDatabase): SubscribedChannelsDao =
         appDatabase.subscribedChannelsDao()
 
     @Provides
-    @ApplicationScope
+    @Singleton
     fun provideReactionListDao(appDatabase: AppDatabase): ReactionListDao =
         appDatabase.reactionListDao()
 
     @Provides
-    @ApplicationScope
+    @Singleton
     fun provideTopicsDao(appDatabase: AppDatabase): TopicsDao = appDatabase.topicsDao()
 
     @Provides
-    @ApplicationScope
+    @Singleton
     fun provideUsersDao(appDatabase: AppDatabase): UsersDao = appDatabase.usersDao()
 
 }

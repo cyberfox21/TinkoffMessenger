@@ -15,12 +15,13 @@ import com.cyberfox21.tinkoffmessanger.databinding.FragmentPeopleBinding
 import com.cyberfox21.tinkoffmessanger.domain.entity.User
 import com.cyberfox21.tinkoffmessanger.presentation.common.MainActivity
 import com.cyberfox21.tinkoffmessanger.presentation.common.NavigationHolder
-import com.cyberfox21.tinkoffmessanger.presentation.fragments.people.elm.*
+import com.cyberfox21.tinkoffmessanger.presentation.fragments.people.elm.PeopleEffect
+import com.cyberfox21.tinkoffmessanger.presentation.fragments.people.elm.PeopleEvent
+import com.cyberfox21.tinkoffmessanger.presentation.fragments.people.elm.PeopleState
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.people.recycler.PeopleRecyclerAdapter
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.profile.ProfileFragment
 import vivid.money.elmslie.android.base.ElmFragment
 import vivid.money.elmslie.core.store.Store
-import javax.inject.Inject
 
 class PeopleFragment : ElmFragment<PeopleEvent, PeopleEffect, PeopleState>() {
 
@@ -32,13 +33,32 @@ class PeopleFragment : ElmFragment<PeopleEvent, PeopleEffect, PeopleState>() {
 
     private val peopleRecyclerAdapter = PeopleRecyclerAdapter()
 
-    @Inject
-    internal lateinit var actor: PeopleActor
-
     override val initEvent: PeopleEvent = PeopleEvent.Ui.GetUserList(PeopleState.INITIAL_QUERY)
 
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentPeopleBinding.inflate(inflater)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setupStatusBar()
+        setupSearchPanel()
+        setupRecyclerView()
+        addListeners()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
     override fun createStore(): Store<PeopleEvent, PeopleEffect, PeopleState> =
-        PeopleStoreFactory(actor).provide()
+        (activity as MainActivity).component.peopleStore
 
     override fun render(state: PeopleState) {
         with(binding) {
@@ -64,33 +84,6 @@ class PeopleFragment : ElmFragment<PeopleEvent, PeopleEffect, PeopleState>() {
                 binding.emptyLayout.errorLayout.isVisible = true
             }
         }
-    }
-
-    override fun onAttach(context: Context) {
-        (activity as MainActivity).component.injectPeopleFragment(this)
-        super.onAttach(context)
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentPeopleBinding.inflate(inflater)
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        setupStatusBar()
-        setupSearchPanel()
-        setupRecyclerView()
-        addListeners()
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 
     private fun setupStatusBar() {

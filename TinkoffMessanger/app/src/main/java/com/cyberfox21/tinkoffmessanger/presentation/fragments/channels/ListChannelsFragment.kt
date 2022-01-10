@@ -1,6 +1,5 @@
 package com.cyberfox21.tinkoffmessanger.presentation.fragments.channels
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -16,12 +15,13 @@ import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.ChannelsF
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.delegate.SpacesItemDecoration
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.delegate.adapter.ChannelDelegateAdapter
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.delegate.adapter.TopicDelegateAdapter
-import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.elm.*
+import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.elm.ChannelsEffect
+import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.elm.ChannelsEvent
+import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.elm.ChannelsState
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.elm.ChannelsState.Companion.UNDEFINED_CHANNEL_NAME
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.enums.Category
 import vivid.money.elmslie.android.base.ElmFragment
 import vivid.money.elmslie.core.store.Store
-import javax.inject.Inject
 
 class ListChannelsFragment : ElmFragment<ChannelsEvent, ChannelsEffect, ChannelsState>() {
 
@@ -33,17 +33,39 @@ class ListChannelsFragment : ElmFragment<ChannelsEvent, ChannelsEffect, Channels
     private val binding
         get() = _binding ?: throw RuntimeException("FragmentListChannelsBinding = null")
 
-//  < ---------------------------------------- ELM --------------------------------------------->
-
-    @Inject
-    internal lateinit var actor: ChannelsActor
-
-    override fun createStore(): Store<ChannelsEvent, ChannelsEffect, ChannelsState> =
-        ChannelsStoreFactory(actor).provide()
-
     override val initEvent: ChannelsEvent = ChannelsEvent.Ui.GetChannelsList(
         INITIAL_QUERY, Category.SUBSCRIBED
     )
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        parseArguments()
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentListChannelsBinding.inflate(layoutInflater)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setupRecyclerView()
+        addListeners()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+//  < ---------------------------------------- ELM --------------------------------------------->
+
+    override fun createStore(): Store<ChannelsEvent, ChannelsEffect, ChannelsState> =
+        (activity as MainActivity).component.channelsStore
 
     override fun render(state: ChannelsState) {
         when (state.channelStatus) {
@@ -106,36 +128,6 @@ class ListChannelsFragment : ElmFragment<ChannelsEvent, ChannelsEffect, Channels
         binding.errorLayout.errorRoot.isVisible = true
         binding.emptyLayout.errorLayout.isVisible = false
         binding.categoryChannelsRecycler.isVisible = false
-    }
-
-    override fun onAttach(context: Context) {
-        (activity as MainActivity).component.injectChannelsFragment(this)
-        super.onAttach(context)
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        parseArguments()
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentListChannelsBinding.inflate(layoutInflater)
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        setupRecyclerView()
-        addListeners()
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 
     private fun parseArguments() {

@@ -22,9 +22,6 @@ class ChatActor(
     private val getMyUserUseCase: GetMyUserUseCase
 ) : ActorCompat<ChatCommand, ChatEvent> {
 
-    lateinit var channelName: String
-    lateinit var topicName: String
-
     override fun execute(command: ChatCommand): Observable<ChatEvent> = when (command) {
         ChatCommand.LoadCurrentUser -> getMyUserUseCase().subscribeOn(Schedulers.io())
             .map { result ->
@@ -55,14 +52,14 @@ class ChatActor(
         is ChatCommand.LoadMessages -> {
             (if (command.lastMessageId != ChatCommand.UNDEFINED_LAST_MESSAGE_ID)
                 getMessageListUseCase(
-                    channelName,
-                    topicName,
+                    command.channelName,
+                    command.topicName,
                     command.loadType,
                     command.lastMessageId
                 )
             else getMessageListUseCase(
-                channelName,
-                topicName,
+                command.channelName,
+                command.topicName,
                 command.loadType,
                 ChatCommand.UNDEFINED_LAST_MESSAGE_ID
             ))
@@ -83,8 +80,8 @@ class ChatActor(
 
         is ChatCommand.LoadNextMessages -> {
             getMessageListUseCase(
-                channelName,
-                topicName,
+                command.channelName,
+                command.topicName,
                 command.loadType,
                 command.lastMessageId
             ).subscribeOn(Schedulers.io())
@@ -103,8 +100,8 @@ class ChatActor(
         }
 
         is ChatCommand.LoadMessage -> getMessageUseCase(
-            channelName,
-            topicName,
+            command.channelName,
+            command.topicName,
             command.msgId
         ).toObservable().subscribeOn(Schedulers.io())
             .map { result ->
@@ -126,7 +123,9 @@ class ChatActor(
         }
 
         is ChatCommand.SendMessage -> {
-            addMessageUseCase(channelName, topicName, command.msg).subscribeOn(Schedulers.io())
+            addMessageUseCase(command.channelName, command.topicName, command.msg).subscribeOn(
+                Schedulers.io()
+            )
                 .mapEvents(ChatEvent.Internal.MessageSendingSuccess) { error ->
                     ChatEvent.Internal.MessageSendingError(error)
                 }

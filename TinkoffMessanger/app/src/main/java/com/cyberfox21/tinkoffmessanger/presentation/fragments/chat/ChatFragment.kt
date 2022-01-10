@@ -26,7 +26,10 @@ import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.delegate.clic
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.delegate.clicklisteners.OnReactionClickListener
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.delegate.item.ChatDelegateItem
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.delegate.item.MessageDelegateItem
-import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.elm.*
+import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.elm.ChatActor
+import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.elm.ChatEffect
+import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.elm.ChatEvent
+import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.elm.ChatState
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.enums.*
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.reactions.ReactionListAdapter
 import com.cyberfox21.tinkoffmessanger.presentation.util.KeyboardHelper
@@ -38,8 +41,8 @@ import javax.inject.Inject
 
 class ChatFragment : ElmFragment<ChatEvent, ChatEffect, ChatState>() {
 
-    @Inject
-    internal lateinit var actor: ChatActor
+//    @Inject
+//    internal lateinit var actor: ChatActor
 
     override val initEvent: ChatEvent = ChatEvent.Ui.GetCurrentUserId
 
@@ -86,16 +89,10 @@ class ChatFragment : ElmFragment<ChatEvent, ChatEffect, ChatState>() {
         }
     }
 
-
-    override fun onAttach(context: Context) {
-        (activity as MainActivity).component.injectChatFragment(this)
-        super.onAttach(context)
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         parseArguments()
-        setActorFields()
+        setSelectedParams()
         getCurrentUserId()
     }
 
@@ -123,9 +120,8 @@ class ChatFragment : ElmFragment<ChatEvent, ChatEffect, ChatState>() {
         _bottomSheetBinding = null
     }
 
-
     override fun createStore(): Store<ChatEvent, ChatEffect, ChatState> =
-        ChatStoreFactory(actor).provide()
+        (activity as MainActivity).component.chatStore
 
     override fun render(state: ChatState) {
         when (state.messageStatus) {
@@ -200,9 +196,9 @@ class ChatFragment : ElmFragment<ChatEvent, ChatEffect, ChatState>() {
         channel?.let { fragmentChannelName = it }
     }
 
-    private fun setActorFields() {
-        actor.channelName = fragmentChannelName
-        actor.topicName = fragmentTopicName
+    private fun setSelectedParams() {
+        store.currentState.channelName = fragmentChannelName
+        store.currentState.topicName = fragmentTopicName
     }
 
     private fun configureToolbar() {

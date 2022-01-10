@@ -1,6 +1,5 @@
 package com.cyberfox21.tinkoffmessanger.presentation.fragments.profile
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,11 +12,12 @@ import com.cyberfox21.tinkoffmessanger.databinding.FragmentProfileBinding
 import com.cyberfox21.tinkoffmessanger.domain.entity.User
 import com.cyberfox21.tinkoffmessanger.domain.enums.UserStatus
 import com.cyberfox21.tinkoffmessanger.presentation.common.MainActivity
-import com.cyberfox21.tinkoffmessanger.presentation.fragments.profile.elm.*
+import com.cyberfox21.tinkoffmessanger.presentation.fragments.profile.elm.ProfileEffect
+import com.cyberfox21.tinkoffmessanger.presentation.fragments.profile.elm.ProfileEvent
+import com.cyberfox21.tinkoffmessanger.presentation.fragments.profile.elm.ProfileState
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.profile.enums.ProfileMode
 import vivid.money.elmslie.android.base.ElmFragment
 import vivid.money.elmslie.core.store.Store
-import javax.inject.Inject
 
 class ProfileFragment() : ElmFragment<ProfileEvent, ProfileEffect, ProfileState>() {
 
@@ -28,13 +28,37 @@ class ProfileFragment() : ElmFragment<ProfileEvent, ProfileEffect, ProfileState>
     private val binding: FragmentProfileBinding
         get() = _binding ?: throw RuntimeException("FragmentProfileBinding = null")
 
-    @Inject
-    internal lateinit var actor: ProfileActor
-
     override val initEvent: ProfileEvent = ProfileEvent.Ui.GetCurrentUser
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        parseArguments()
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentProfileBinding.inflate(inflater)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setupStatusBar()
+        configureToolbar()
+        launchRightMode()
+        addListeners()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
     override fun createStore(): Store<ProfileEvent, ProfileEffect, ProfileState> =
-        ProfileStoreFactory(actor).provide()
+        (activity as MainActivity).component.profileStore
 
     override fun render(state: ProfileState) {
         with(binding) {
@@ -71,38 +95,6 @@ class ProfileFragment() : ElmFragment<ProfileEvent, ProfileEffect, ProfileState>
                 binding.tvProfileStatus.text = effect.status.apiName
             }
         }
-    }
-
-    override fun onAttach(context: Context) {
-        (activity as MainActivity).component.injectProfileFragment(this)
-        super.onAttach(context)
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        parseArguments()
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentProfileBinding.inflate(inflater)
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        setupStatusBar()
-        configureToolbar()
-        launchRightMode()
-        addListeners()
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 
     private fun parseArguments() {

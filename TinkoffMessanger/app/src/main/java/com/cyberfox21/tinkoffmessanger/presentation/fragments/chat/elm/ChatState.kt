@@ -13,6 +13,8 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class ChatState(
+    var channelName: String = EMPTY_CHANNEL_NAME,
+    var topicName: String = EMPTY_TOPIC_NAME,
     var selectEmoji: Reaction? = null,
     var selectMsgId: Int? = null,
     var selectMsgIdForEmoji: Int? = null,
@@ -33,5 +35,7 @@ data class ChatState(
     companion object {
         const val INITIAL_SAVED_POSITION = 0
         const val UNDEFINED_USER_ID = -1
+        const val EMPTY_CHANNEL_NAME = ""
+        const val EMPTY_TOPIC_NAME = ""
     }
 }

@@ -1,7 +1,6 @@
 package com.cyberfox21.tinkoffmessanger.di.module
 
 import com.cyberfox21.tinkoffmessanger.data.api.Api
-import com.cyberfox21.tinkoffmessanger.di.ApplicationScope
 import dagger.Module
 import dagger.Provides
 import okhttp3.Credentials
@@ -10,12 +9,13 @@ import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Named
+import javax.inject.Singleton
 
 @Module
 class NetworkModule {
 
     @Provides
-    @ApplicationScope
+    @Singleton
     fun provideOkHttpClient(): OkHttpClient {
         return OkHttpClient.Builder().addInterceptor { chain ->
             val request =
@@ -30,7 +30,7 @@ class NetworkModule {
 
     @Provides
     @Named("MESSENGER")
-    @ApplicationScope
+    @Singleton
     fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
             .addConverterFactory(GsonConverterFactory.create())
@@ -41,7 +41,7 @@ class NetworkModule {
     }
 
     @Provides
-    @ApplicationScope
+    @Singleton
     fun provideApi(@Named("MESSENGER") retrofit: Retrofit): Api = retrofit.create(Api::class.java)
 
     companion object {

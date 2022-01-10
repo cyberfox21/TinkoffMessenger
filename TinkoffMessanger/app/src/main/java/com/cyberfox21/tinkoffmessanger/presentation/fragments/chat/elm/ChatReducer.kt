@@ -34,13 +34,17 @@ class ChatReducer : DslReducer<ChatEvent, ChatState, ChatEffect, ChatCommand>() 
                             loadType = LoadType.ANY,
                             updateType = UpdateType.INITIAL,
                             lastMessageId = if (state.messages.isNotEmpty()) state.messages.last().id
-                            else ChatCommand.UNDEFINED_LAST_MESSAGE_ID
+                            else ChatCommand.UNDEFINED_LAST_MESSAGE_ID,
+                            state.channelName,
+                            state.topicName
                         )
                         UpdateType.RELOAD -> +ChatCommand.LoadMessages(
                             loadType = LoadType.NETWORK,
                             updateType = UpdateType.RELOAD,
                             lastMessageId = if (state.messages.isNotEmpty()) state.messages.last().id
-                            else ChatCommand.UNDEFINED_LAST_MESSAGE_ID
+                            else ChatCommand.UNDEFINED_LAST_MESSAGE_ID,
+                            state.channelName,
+                            state.topicName
                         )
                         UpdateType.PAGINATION -> {
                         }
@@ -68,14 +72,18 @@ class ChatReducer : DslReducer<ChatEvent, ChatState, ChatEffect, ChatCommand>() 
                             state.reactions,
                             state.messages,
                             UpdateType.PAGINATION,
-                            state.messages.last().id
+                            state.messages.last().id,
+                            state.channelName,
+                            state.topicName
                         )
                     }
                 } else {
                 }
             }
 
-            is ChatEvent.Ui.SendMessage -> commands { +ChatCommand.SendMessage(event.msg) }
+            is ChatEvent.Ui.SendMessage -> commands {
+                +ChatCommand.SendMessage(event.msg, state.channelName, state.topicName)
+            }
 
             is ChatEvent.Ui.EditMessage -> commands {
                 if (state.selectMsgId != null)
@@ -156,7 +164,9 @@ class ChatReducer : DslReducer<ChatEvent, ChatState, ChatEffect, ChatCommand>() 
                         state.currentUserId,
                         state.reactions,
                         event.messages,
-                        event.updateType
+                        event.updateType,
+                        state.channelName,
+                        state.topicName
                     )
                 }
             }
@@ -233,7 +243,9 @@ class ChatReducer : DslReducer<ChatEvent, ChatState, ChatEffect, ChatCommand>() 
                     +ChatCommand.LoadMessages(
                         LoadType.NETWORK,
                         updateType = UpdateType.RELOAD,
-                        ChatCommand.UNDEFINED_LAST_MESSAGE_ID
+                        ChatCommand.UNDEFINED_LAST_MESSAGE_ID,
+                        state.channelName,
+                        state.topicName
                     )
                 }
                 effects { +ChatEffect.MessageSendingSuccess }
@@ -253,7 +265,9 @@ class ChatReducer : DslReducer<ChatEvent, ChatState, ChatEffect, ChatCommand>() 
                         state.currentUserId,
                         state.reactions,
                         state.messages,
-                        event.msgId
+                        event.msgId,
+                        state.channelName,
+                        state.topicName
                     )
                 }
                 effects { +ChatEffect.MessageEditingSuccess }
@@ -266,7 +280,9 @@ class ChatReducer : DslReducer<ChatEvent, ChatState, ChatEffect, ChatCommand>() 
                 +ChatCommand.LoadMessages(
                     LoadType.NETWORK,
                     updateType = UpdateType.RELOAD,
-                    ChatCommand.UNDEFINED_LAST_MESSAGE_ID
+                    ChatCommand.UNDEFINED_LAST_MESSAGE_ID,
+                    state.channelName,
+                    state.topicName
                 )
             }
 
@@ -286,7 +302,9 @@ class ChatReducer : DslReducer<ChatEvent, ChatState, ChatEffect, ChatCommand>() 
                     +ChatCommand.LoadMessages(
                         LoadType.NETWORK,
                         updateType = UpdateType.RELOAD,
-                        ChatCommand.UNDEFINED_LAST_MESSAGE_ID
+                        ChatCommand.UNDEFINED_LAST_MESSAGE_ID,
+                        state.channelName,
+                        state.topicName
                     )
                 }
             }
@@ -302,7 +320,9 @@ class ChatReducer : DslReducer<ChatEvent, ChatState, ChatEffect, ChatCommand>() 
                         state.currentUserId,
                         state.reactions,
                         state.messages,
-                        event.msgId
+                        event.msgId,
+                        state.channelName,
+                        state.topicName
                     )
                 }
             }
@@ -314,7 +334,9 @@ class ChatReducer : DslReducer<ChatEvent, ChatState, ChatEffect, ChatCommand>() 
                         state.currentUserId,
                         state.reactions,
                         state.messages,
-                        event.msgId
+                        event.msgId,
+                        state.channelName,
+                        state.topicName
                     )
                 }
 
