@@ -1,7 +1,7 @@
 package com.cyberfox21.tinkoffmessanger.data
 
 import androidx.core.text.HtmlCompat
-import com.cyberfox21.tinkoffmessanger.data.api.response.dto.*
+import com.cyberfox21.tinkoffmessanger.data.network.response.dto.*
 import com.cyberfox21.tinkoffmessanger.data.database.model.*
 import com.cyberfox21.tinkoffmessanger.domain.entity.*
 import com.cyberfox21.tinkoffmessanger.domain.enums.UserStatus

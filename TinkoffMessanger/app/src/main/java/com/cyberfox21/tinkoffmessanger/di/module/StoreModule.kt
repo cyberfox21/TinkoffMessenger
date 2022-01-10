@@ -7,7 +7,6 @@ import com.cyberfox21.tinkoffmessanger.presentation.fragments.profile.elm.*
 import dagger.Module
 import dagger.Provides
 import vivid.money.elmslie.core.ElmStoreCompat
-import javax.inject.Singleton
 
 @Module
 class StoreModule {

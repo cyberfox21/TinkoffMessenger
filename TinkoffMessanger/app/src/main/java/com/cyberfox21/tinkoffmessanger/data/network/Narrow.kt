@@ -1,4 +1,4 @@
-package com.cyberfox21.tinkoffmessanger.data.api
+package com.cyberfox21.tinkoffmessanger.data.network
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

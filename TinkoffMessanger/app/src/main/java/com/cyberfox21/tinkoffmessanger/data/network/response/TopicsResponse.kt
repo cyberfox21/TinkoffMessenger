@@ -1,6 +1,6 @@
-package com.cyberfox21.tinkoffmessanger.data.api.response
+package com.cyberfox21.tinkoffmessanger.data.network.response
 
-import com.cyberfox21.tinkoffmessanger.data.api.response.dto.TopicDTO
+import com.cyberfox21.tinkoffmessanger.data.network.response.dto.TopicDTO
 import com.google.gson.annotations.SerializedName
 
 data class TopicsResponse(

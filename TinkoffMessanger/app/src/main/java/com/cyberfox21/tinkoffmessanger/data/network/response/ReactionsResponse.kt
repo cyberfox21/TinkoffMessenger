@@ -1,4 +1,4 @@
-package com.cyberfox21.tinkoffmessanger.data.api.response
+package com.cyberfox21.tinkoffmessanger.data.network.response
 
 import com.google.gson.JsonObject
 import com.google.gson.annotations.SerializedName

@@ -1,6 +1,6 @@
 package com.cyberfox21.tinkoffmessanger.di.module
 
-import com.cyberfox21.tinkoffmessanger.data.api.Api
+import com.cyberfox21.tinkoffmessanger.data.network.api.*
 import dagger.Module
 import dagger.Provides
 import okhttp3.Credentials
@@ -29,8 +29,8 @@ class NetworkModule {
     }
 
     @Provides
-    @Named("MESSENGER")
     @Singleton
+    @Named("MESSENGER")
     fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
             .addConverterFactory(GsonConverterFactory.create())
@@ -42,7 +42,33 @@ class NetworkModule {
 
     @Provides
     @Singleton
-    fun provideApi(@Named("MESSENGER") retrofit: Retrofit): Api = retrofit.create(Api::class.java)
+    @Named("ChannelsApi")
+    fun provideChannelsApi(@Named("MESSENGER") retrofit: Retrofit): ChannelsApi =
+        retrofit.create(ChannelsApi::class.java)
+
+    @Provides
+    @Singleton
+    @Named("MessagesApi")
+    fun provideMessagesApi(@Named("MESSENGER") retrofit: Retrofit): MessagesApi =
+        retrofit.create(MessagesApi::class.java)
+
+    @Provides
+    @Singleton
+    @Named("ReactionsApi")
+    fun provideReactionsApi(@Named("MESSENGER") retrofit: Retrofit): ReactionsApi =
+        retrofit.create(ReactionsApi::class.java)
+
+    @Provides
+    @Singleton
+    @Named("TopicsApi")
+    fun provideTopicsApi(@Named("MESSENGER") retrofit: Retrofit): TopicsApi =
+        retrofit.create(TopicsApi::class.java)
+
+    @Provides
+    @Singleton
+    @Named("UsersApi")
+    fun provideUsersApi(@Named("MESSENGER") retrofit: Retrofit): UsersApi =
+        retrofit.create(UsersApi::class.java)
 
     companion object {
         const val AUTHORIZATION = "Authorization"

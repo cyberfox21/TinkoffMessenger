@@ -1,6 +1,6 @@
-package com.cyberfox21.tinkoffmessanger.data.api.response
+package com.cyberfox21.tinkoffmessanger.data.network.response
 
-import com.cyberfox21.tinkoffmessanger.data.api.response.dto.UserPresenceDTO
+import com.cyberfox21.tinkoffmessanger.data.network.response.dto.UserPresenceDTO
 import com.google.gson.annotations.SerializedName
 
 data class UserPresenceResponse(

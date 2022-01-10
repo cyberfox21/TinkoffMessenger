@@ -1,11 +1,11 @@
 package com.cyberfox21.tinkoffmessanger.data.repository
 
-import com.cyberfox21.tinkoffmessanger.data.api.Api
 import com.cyberfox21.tinkoffmessanger.data.database.dao.UsersDao
 import com.cyberfox21.tinkoffmessanger.data.mapToCurrentUserDBModel
 import com.cyberfox21.tinkoffmessanger.data.mapToStatus
 import com.cyberfox21.tinkoffmessanger.data.mapToUser
 import com.cyberfox21.tinkoffmessanger.data.mapToUserDBModel
+import com.cyberfox21.tinkoffmessanger.data.network.api.UsersApi
 import com.cyberfox21.tinkoffmessanger.domain.entity.User
 import com.cyberfox21.tinkoffmessanger.domain.enums.UserStatus
 import com.cyberfox21.tinkoffmessanger.domain.repository.UsersRepository
@@ -13,9 +13,10 @@ import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
+import javax.inject.Named
 
 class UsersRepositoryImpl @Inject constructor(
-    private val api: Api,
+    @Named("UsersApi") private val api: UsersApi,
     private val usersDao: UsersDao
 ) : UsersRepository {
 
