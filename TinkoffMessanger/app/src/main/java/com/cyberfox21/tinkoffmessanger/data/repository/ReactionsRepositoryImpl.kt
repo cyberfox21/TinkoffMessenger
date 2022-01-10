@@ -4,6 +4,7 @@ import com.cyberfox21.tinkoffmessanger.data.database.dao.ReactionListDao
 import com.cyberfox21.tinkoffmessanger.data.mapToReactionForReactionList
 import com.cyberfox21.tinkoffmessanger.data.mapToReactionListDBModel
 import com.cyberfox21.tinkoffmessanger.data.network.api.ReactionsApi
+import com.cyberfox21.tinkoffmessanger.di.qualifier.ReactionsApiQualifier
 import com.cyberfox21.tinkoffmessanger.domain.entity.Reaction
 import com.cyberfox21.tinkoffmessanger.domain.repository.ReactionsRepository
 import com.cyberfox21.tinkoffmessanger.presentation.util.EmojiFormatter
@@ -12,10 +13,9 @@ import io.reactivex.Flowable
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
-import javax.inject.Named
 
 class ReactionsRepositoryImpl @Inject constructor(
-    @Named("ReactionsApi") private val api: ReactionsApi,
+    @ReactionsApiQualifier private val api: ReactionsApi,
     private val reactionListDao: ReactionListDao
 ) : ReactionsRepository {
 

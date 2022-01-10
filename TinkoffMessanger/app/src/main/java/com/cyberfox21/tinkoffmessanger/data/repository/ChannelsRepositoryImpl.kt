@@ -6,6 +6,7 @@ import com.cyberfox21.tinkoffmessanger.data.mapToChannel
 import com.cyberfox21.tinkoffmessanger.data.mapToChannelDBModel
 import com.cyberfox21.tinkoffmessanger.data.mapToSubscribedChannelDBModel
 import com.cyberfox21.tinkoffmessanger.data.network.api.ChannelsApi
+import com.cyberfox21.tinkoffmessanger.di.qualifier.ChannelsApiQualifier
 import com.cyberfox21.tinkoffmessanger.domain.entity.Channel
 import com.cyberfox21.tinkoffmessanger.domain.repository.ChannelsRepository
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.channels.enums.Category
@@ -13,10 +14,9 @@ import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
-import javax.inject.Named
 
 class ChannelsRepositoryImpl @Inject constructor(
-    @Named("ChannelsApi") private val api: ChannelsApi,
+    @ChannelsApiQualifier private val api: ChannelsApi,
     private val channelsDao: AllChannelsDao,
     private val subscribedChannelsDao: SubscribedChannelsDao
 ) : ChannelsRepository {

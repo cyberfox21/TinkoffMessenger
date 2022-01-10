@@ -6,6 +6,7 @@ import com.cyberfox21.tinkoffmessanger.data.mapToMessageDBModel
 import com.cyberfox21.tinkoffmessanger.data.network.Narrow
 import com.cyberfox21.tinkoffmessanger.data.network.api.MessagesApi
 import com.cyberfox21.tinkoffmessanger.data.network.response.MessagesResponse
+import com.cyberfox21.tinkoffmessanger.di.qualifier.MessagesApiQualifier
 import com.cyberfox21.tinkoffmessanger.domain.entity.Message
 import com.cyberfox21.tinkoffmessanger.domain.enums.LoadType
 import com.cyberfox21.tinkoffmessanger.domain.repository.MessagesRepository
@@ -17,11 +18,10 @@ import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import javax.inject.Inject
-import javax.inject.Named
 
 @ExperimentalSerializationApi
 class MessagesRepositoryImpl @Inject constructor(
-    @Named("MessagesApi") private val api: MessagesApi,
+    @MessagesApiQualifier private val api: MessagesApi,
     private val messagesDao: MessagesDao
 ) : MessagesRepository {
 

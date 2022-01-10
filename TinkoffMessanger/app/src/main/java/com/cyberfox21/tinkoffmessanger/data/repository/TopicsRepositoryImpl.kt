@@ -4,16 +4,16 @@ import com.cyberfox21.tinkoffmessanger.data.database.dao.TopicsDao
 import com.cyberfox21.tinkoffmessanger.data.mapToTopic
 import com.cyberfox21.tinkoffmessanger.data.mapToTopicDBModel
 import com.cyberfox21.tinkoffmessanger.data.network.api.TopicsApi
+import com.cyberfox21.tinkoffmessanger.di.qualifier.TopicsApiQualifier
 import com.cyberfox21.tinkoffmessanger.domain.entity.Topic
 import com.cyberfox21.tinkoffmessanger.domain.repository.TopicsRepository
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
-import javax.inject.Named
 
 class TopicsRepositoryImpl @Inject constructor(
-    @Named("TopicsApi") private val api: TopicsApi,
+    @TopicsApiQualifier private val api: TopicsApi,
     private val topicsDao: TopicsDao
 ) : TopicsRepository {
 
