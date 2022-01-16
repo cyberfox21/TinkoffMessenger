@@ -1,12 +1,12 @@
 package com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.delegate.item
 
-import android.text.SpannableString
 import com.cyberfox21.tinkoffmessanger.presentation.commondelegate.DelegateItem
 
 open class MessageDelegateItem(
     override val id: Int,
     open val senderId: Int,
-    open val text: SpannableString,
+    open val text: String,
+    open val timeAsId: Long,
     open val time: String,
     open val reactions: List<MessageReactionListItem>
 ) : ChatDelegateItem(id), DelegateItem {

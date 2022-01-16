@@ -93,5 +93,9 @@ dependencies {
     implementation "com.google.dagger:dagger:$dagger2Version"
     kapt "com.google.dagger:dagger-compiler:$dagger2Version"
 
+    //JUnit
+    testImplementation "junit:junit:$junitVersion"
+    androidTestImplementation "androidx.test.ext:junit:$junitAndroidVersion"
+
 
 }

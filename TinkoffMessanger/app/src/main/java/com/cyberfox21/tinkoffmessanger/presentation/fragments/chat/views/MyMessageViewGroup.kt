@@ -2,8 +2,6 @@ package com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.views
 
 import android.content.Context
 import android.content.res.TypedArray
-import android.text.SpannableString
-import android.text.Spanned
 import android.util.AttributeSet
 import android.view.ViewGroup
 import androidx.core.view.marginTop
@@ -26,7 +24,7 @@ class MyMessageViewGroup @JvmOverloads constructor(
             myMessage.time = value
         }
 
-    var message: Spanned = SpannableString("")
+    var message: String = ""
         set(value) {
             field = value
             val myMessage = getChildAt(0) as MyMessage
@@ -44,11 +42,10 @@ class MyMessageViewGroup @JvmOverloads constructor(
             defStyleAttr,
             defStyleRes
         )
-        message =
-            SpannableString(typedArray.getString(R.styleable.MyMessageViewGroup_message).orEmpty())
+        message = typedArray.getString(R.styleable.MyMessageViewGroup_message).orEmpty()
         time = typedArray.getString(R.styleable.MyMessageViewGroup_time).orEmpty()
         typedArray.recycle()
-//
+
         myMessage = (getChildAt(0) as MyMessage).apply {
             this.time = time
             this.message = message
@@ -84,7 +81,6 @@ class MyMessageViewGroup @JvmOverloads constructor(
 
         totalWidth = maxOf(totalWidth, flexBoxMargin.leftMargin + flexBoxLayout.measuredWidth)
 
-        // должно быть if (flexBoxLayout.measuredHeight != 0) totalHeight += flexBoxLayout.topMargin + flexBoxLayout.measuredHeight
         if (flexBoxLayout.measuredHeight != 0) totalHeight += flexBoxLayout.marginTop + flexBoxLayout.measuredHeight
 
         val resultWidth = resolveSize(paddingLeft + totalWidth + paddingRight, widthMeasureSpec)

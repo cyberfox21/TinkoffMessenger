@@ -1,10 +1,9 @@
 package com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.delegate.item
 
-import android.text.SpannableString
-
-class AlienMessageDelegateItem(
+data class AlienMessageDelegateItem(
     override val id: Int,
-    override val text: SpannableString,
+    override val text: String,
+    override val timeAsId: Long,
     override val time: String,
     override val senderId: Int,
     val senderName: String,
@@ -14,11 +13,12 @@ class AlienMessageDelegateItem(
     id = id,
     text = text,
     time = time,
+    timeAsId = timeAsId,
     reactions = reactions,
     senderId = senderId
 ) {
 
-    override fun id(): Int = id
+    override fun id(): Any = id
 
     override fun content() = reactions
 

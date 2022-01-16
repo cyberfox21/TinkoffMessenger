@@ -30,7 +30,7 @@ object EmojiFormatter {
         }
     }
 
-    fun jsonToEmoji(code: String): String {
+    private fun jsonToEmoji(code: String): String {
         return try {
             codeToEmoji(code.replace("\"", ""))
         } catch (e: NumberFormatException) {

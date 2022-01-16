@@ -2,7 +2,7 @@ package com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.delegate.ite
 
 import com.cyberfox21.tinkoffmessanger.presentation.commondelegate.DelegateItem
 
-class MessageReactionListItem(
+data class MessageReactionListItem(
     val name: String,
     val code: String,
     val type: String,

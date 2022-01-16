@@ -7,7 +7,7 @@ import android.view.inputmethod.InputMethodManager
 
 object KeyboardHelper {
 
-    const val EMPTY_FLAGS = 0
+    private const val EMPTY_FLAGS = 0
 
     fun hideKeyboard(activity: Activity?) {
         activity?.currentFocus?.let { view ->

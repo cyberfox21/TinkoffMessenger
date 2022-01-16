@@ -1,8 +1,6 @@
 package com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.views
 
 import android.content.Context
-import android.text.SpannableString
-import android.text.Spanned
 import android.util.AttributeSet
 import android.view.ViewGroup
 import android.widget.TextView
@@ -23,7 +21,7 @@ class MyMessage @JvmOverloads constructor(
             (getChildAt(0) as TextView).text = value
         }
 
-    var message: Spanned = SpannableString("")
+    var message: String = ""
         set(value) {
             field = value
             (getChildAt(1) as TextView).text = value

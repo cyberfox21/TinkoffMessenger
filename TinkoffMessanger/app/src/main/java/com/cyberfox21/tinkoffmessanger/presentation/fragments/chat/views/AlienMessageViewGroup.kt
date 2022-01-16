@@ -2,8 +2,6 @@ package com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.views
 
 import android.content.Context
 import android.content.res.TypedArray
-import android.text.SpannableString
-import android.text.Spanned
 import android.util.AttributeSet
 import android.view.ViewGroup
 import com.bumptech.glide.Glide
@@ -40,7 +38,7 @@ class AlienMessageViewGroup @JvmOverloads constructor(
             val alienMessage = getChildAt(1) as AlienMessage
             alienMessage.time = value
         }
-    var message: Spanned = SpannableString("")
+    var message: String = ""
         set(value) {
             field = value
             val alienMessage = getChildAt(1) as AlienMessage
@@ -57,9 +55,8 @@ class AlienMessageViewGroup @JvmOverloads constructor(
         )
         avatar = typedArray.getString(R.styleable.AlienMessageViewGroup_avatar) ?: ""
         name = typedArray.getString(R.styleable.AlienMessageViewGroup_name).orEmpty()
-        message = SpannableString(
-            typedArray.getString(R.styleable.AlienMessageViewGroup_message).orEmpty()
-        )
+        message = typedArray.getString(R.styleable.AlienMessageViewGroup_message).orEmpty()
+
         time = typedArray.getString(R.styleable.AlienMessageViewGroup_time).orEmpty()
         typedArray.recycle()
 

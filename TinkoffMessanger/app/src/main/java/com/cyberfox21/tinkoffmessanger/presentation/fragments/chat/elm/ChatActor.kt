@@ -1,10 +1,10 @@
 package com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.elm
 
 import com.cyberfox21.tinkoffmessanger.domain.usecase.*
-import com.cyberfox21.tinkoffmessanger.presentation.common.mergeMessages
-import com.cyberfox21.tinkoffmessanger.presentation.common.replaceMessage
-import com.cyberfox21.tinkoffmessanger.presentation.common.toDelegateChatItemsList
+import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.ChatItemsMapper
 import com.cyberfox21.tinkoffmessanger.presentation.fragments.chat.enums.UpdateType
+import com.cyberfox21.tinkoffmessanger.presentation.util.DateFormatterImpl
+import com.cyberfox21.tinkoffmessanger.presentation.util.MessageHelperImpl
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
 import vivid.money.elmslie.core.ActorCompat
@@ -22,6 +22,14 @@ class ChatActor(
     private val getMyUserUseCase: GetMyUserUseCase
 ) : ActorCompat<ChatCommand, ChatEvent> {
 
+    // todo provide dependencies with DI
+
+    private val helper = MessageHelperImpl()
+
+    private val formatter = DateFormatterImpl()
+
+    private val mapper = ChatItemsMapper(helper, formatter)
+
     override fun execute(command: ChatCommand): Observable<ChatEvent> = when (command) {
         ChatCommand.LoadCurrentUser -> getMyUserUseCase().subscribeOn(Schedulers.io())
             .map { result ->
@@ -34,7 +42,7 @@ class ChatActor(
         is ChatCommand.LoadChatItems -> {
             Observable.just(command.messages).map { messages ->
                 Pair(
-                    messages.toDelegateChatItemsList(command.userId, command.reactions),
+                    mapper.mapToChatDelegateItemsList(messages, command.userId, command.reactions),
                     command.messages
                 )
             }.mapEvents(
@@ -90,7 +98,7 @@ class ChatActor(
                         { messages ->
                             if (messages.isEmpty()) ChatEvent.Internal.MessagesLoadEmpty
                             else ChatEvent.Internal.MessagesLoadedSuccess(
-                                command.messages.mergeMessages(messages),
+                                helper.mergeMessages(command.messages, messages),
                                 command.updateType
                             )
                         },
@@ -107,7 +115,10 @@ class ChatActor(
             .map { result ->
                 result.fold({
                     ChatEvent.Internal.MessagesLoadedSuccess(
-                        command.messages.replaceMessage(it), UpdateType.UPDATE
+                        helper.replaceMessage(
+                            command.messages,
+                            it
+                        ), UpdateType.UPDATE
                     )
                 }, { ChatEvent.Internal.ReactionAddingError }
                 )

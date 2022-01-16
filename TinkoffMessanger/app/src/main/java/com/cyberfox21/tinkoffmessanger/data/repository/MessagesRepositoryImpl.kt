@@ -29,10 +29,10 @@ class MessagesRepositoryImpl @Inject constructor(
         messagesDao.getMessageList(topicName)
             .map { dbModels ->
                 Result.success(dbModels
-                    .map { it.mapToMessage() }
                     .sortedBy { msg -> msg.time }
+                    .map { it.mapToMessage() }
                     .takeLast(DB_LOAD_SIZE)
-                    .reversed()
+//                    .reversed()
                 )
             }
             .onErrorReturn { Result.failure(it) }
@@ -53,16 +53,17 @@ class MessagesRepositoryImpl @Inject constructor(
         else getMessagesWithoutAnchor(narrowList))
             .map { response ->
                 Result.success(response.messages
+                    .sortedBy { msg -> msg.timestamp }
                     .map { it.mapToMessage() }
-                    .sortedBy { msg -> msg.time }
                     .takeLast(SERVER_LOAD_SIZE)
-                    .reversed()
+//                    .reversed()
                 )
             }
             .doOnSuccess { result ->
                 result.map { message ->
                     messagesDao.addMessageListToDB(message.map { it.mapToMessageDBModel(topicName) }
-                        .sortedBy { msg -> msg.time })
+                        .sortedBy { msg -> msg.time }
+                    )
                 }
             }
             .onErrorReturn { Result.failure(it) }
@@ -142,10 +143,12 @@ class MessagesRepositoryImpl @Inject constructor(
                 ).toObservable(),
                 getMessagesFromDB(topicName).toObservable()
             ).subscribeOn(Schedulers.io())
+
         }
     }
 
-    override fun addMessage(channelName: String, topicName: String, msg: String): Completable {
+    override fun addMessage(channelName: String, topicName: String, msg: String)
+            : Completable {
         return api.sendMessage(
             channel = channelName,
             topic = topicName,
@@ -153,13 +156,16 @@ class MessagesRepositoryImpl @Inject constructor(
         ).subscribeOn(Schedulers.io())
     }
 
-    override fun deleteMessage(msgId: Int): Completable =
+    override fun deleteMessage(msgId: Int)
+            : Completable =
         api.deleteMessage(msgId).subscribeOn(Schedulers.io())
 
-    override fun editMessage(msgId: Int, text: String): Completable =
+    override fun editMessage(msgId: Int, text: String)
+            : Completable =
         api.editMessage(msgId, text).subscribeOn(Schedulers.io())
 
-    override fun changeMessageTopic(msgId: Int, topic: String): Completable =
+    override fun changeMessageTopic(msgId: Int, topic: String)
+            : Completable =
         api.changeMessageTopic(msgId, topic).subscribeOn(Schedulers.io())
 
     private companion object {
