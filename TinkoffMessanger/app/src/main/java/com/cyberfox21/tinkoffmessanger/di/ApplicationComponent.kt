@@ -27,26 +27,23 @@ import javax.inject.Singleton
 @Singleton
 
 @Component(
-    modules = [DatabaseModule::class, NetworkModule::class,
-        ActorModule::class, RepositoryModule::class, StoreModule::class]
+    modules = [DatabaseModule::class, NetworkModule::class, UsersModule::class, PeopleModule::class,
+        ProfileModule::class, ChannelsModule::class, ChatModule::class,
+        UsersBindsModule::class, ChannelsBindsModule::class, ChatBindsModule::class]
 )
 interface ApplicationComponent {
 
     @Named("channelsStore")
-    val channelsStore
-            : ElmStoreCompat<ChannelsEvent, ChannelsState, ChannelsEffect, ChannelsCommand>
+    val channelsStore: ElmStoreCompat<ChannelsEvent, ChannelsState, ChannelsEffect, ChannelsCommand>
 
     @Named("peopleStore")
-    val peopleStore
-            : ElmStoreCompat<PeopleEvent, PeopleState, PeopleEffect, PeopleCommand>
+    val peopleStore: ElmStoreCompat<PeopleEvent, PeopleState, PeopleEffect, PeopleCommand>
 
     @Named("profileStore")
-    val profileStore
-            : ElmStoreCompat<ProfileEvent, ProfileState, ProfileEffect, ProfileCommand>
+    val profileStore: ElmStoreCompat<ProfileEvent, ProfileState, ProfileEffect, ProfileCommand>
 
     @Named("chatStore")
-    val chatStore
-            : ElmStoreCompat<ChatEvent, ChatState, ChatEffect, ChatCommand>
+    val chatStore: ElmStoreCompat<ChatEvent, ChatState, ChatEffect, ChatCommand>
 
     @Component.Factory
     interface ApplicationComponentFactory {

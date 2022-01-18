@@ -5,9 +5,9 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath "com.android.tools.build:gradle:7.0.3"
+        classpath "com.android.tools.build:gradle:7.0.4"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.30"
-        classpath "org.jetbrains.kotlin:kotlin-serialization:1.5.31"
+        classpath "org.jetbrains.kotlin:kotlin-serialization:1.6.0"
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
@@ -19,7 +19,7 @@ task clean(type: Delete) {
 
 ext {
     // App dependencies
-    appCompatVersion = '1.4.0'
+    appCompatVersion = '1.4.1'
     androidXCoreVersion = '1.7.0'
 
     materialVersion = '1.4.0'
@@ -39,16 +39,19 @@ ext {
 
     gsonVersion = '2.8.9'
 
-    kotlinxSerializationVersion = "1.2.2"
-    kotlinxSerializationConverterVersion = "0.8.0"
+    kotlinxSerializationVersion = '1.2.2'
+    kotlinxSerializationConverterVersion = '0.8.0'
 
-    glideVersion = "4.12.0"
+    glideVersion = '4.12.0'
 
-    roomVersion = "2.3.0"
+    roomVersion = '2.4.1'
 
-    elmslieVersion = "1.2.0"
+    elmslieVersion = '1.2.0'
 
-    shimmerVersion = "0.5.0"
+    shimmerVersion = '0.5.0'
 
     dagger2Version = '2.40.2'
+
+    junitVersion = '4.13.2'
+    junitAndroidVersion = '1.1.3'
 }

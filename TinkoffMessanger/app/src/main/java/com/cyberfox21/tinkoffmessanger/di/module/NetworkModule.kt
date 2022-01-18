@@ -1,7 +1,5 @@
 package com.cyberfox21.tinkoffmessanger.di.module
 
-import com.cyberfox21.tinkoffmessanger.data.network.api.*
-import com.cyberfox21.tinkoffmessanger.di.qualifier.*
 import dagger.Module
 import dagger.Provides
 import okhttp3.Credentials
@@ -9,7 +7,6 @@ import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
-import javax.inject.Named
 import javax.inject.Singleton
 
 @Module
@@ -39,36 +36,6 @@ class NetworkModule {
             .baseUrl(BASE_URL)
             .build()
     }
-
-    @Provides
-    @Singleton
-    @ChannelsApiQualifier
-    fun provideChannelsApi(retrofit: Retrofit): ChannelsApi =
-        retrofit.create(ChannelsApi::class.java)
-
-    @Provides
-    @Singleton
-    @MessagesApiQualifier
-    fun provideMessagesApi(retrofit: Retrofit): MessagesApi =
-        retrofit.create(MessagesApi::class.java)
-
-    @Provides
-    @Singleton
-    @ReactionsApiQualifier
-    fun provideReactionsApi(retrofit: Retrofit): ReactionsApi =
-        retrofit.create(ReactionsApi::class.java)
-
-    @Provides
-    @Singleton
-    @TopicsApiQualifier
-    fun provideTopicsApi(retrofit: Retrofit): TopicsApi =
-        retrofit.create(TopicsApi::class.java)
-
-    @Provides
-    @Singleton
-    @UsersApiQualifier
-    fun provideUsersApi(retrofit: Retrofit): UsersApi =
-        retrofit.create(UsersApi::class.java)
 
     companion object {
         const val AUTHORIZATION = "Authorization"
